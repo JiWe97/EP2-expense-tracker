@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('banking_records', function (Blueprint $table) {
             $table->id();
             $table->string('bank_name');
-            $table->bigint('account_number');
-            $table->int('user_id');
+            $table->string('account_number');
+            $table->foreignId('user_id')->constrained();
             $table->boolean('private')->default(false);
             $table->float('balance');
-            $table->enum('type');
-            $table->enum('valuta');
-            $table->float('exchange_rate');
+            /* $table->enum('type'); //TODO: welke types? Wat bedoelde ik met type? */
+            $table->enum('valuta', ['EUR', 'USD'])->default('EUR'); //TODO: enum, welke valuta gaan we gebruiken?
+            $table->float('exchange_rate'); //TODO: Hoe implementeren?
             $table->timestamps();
         });
     }

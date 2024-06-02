@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->string('picture');
-            $table->int('transaction_id');
+            $table->foreignId('transaction_id')->constrained('transactions');
             $table->timestamps();
         });
     }

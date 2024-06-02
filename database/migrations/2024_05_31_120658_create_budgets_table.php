@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('budget');
             $table->boolean('mail_when_completely_spent')->default(false);
             $table->boolean('mail_when_partially_spent')->default(false);
-            $table->integer('bank_id');
+            $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->timestamps();
         });
     }

@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('recipient_user', function (Blueprint $table) {
-            //
+        Schema::create('recipient_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('recipient_id')->constrained('recipients');
+            $table->foreignId('user_id')->constrained();
         });
     }
 

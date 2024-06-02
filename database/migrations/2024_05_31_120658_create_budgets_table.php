@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->integer('budget');
             $table->boolean('mail_when_completely_spent')->default(false);
             $table->boolean('mail_when_partially_spent')->default(false);

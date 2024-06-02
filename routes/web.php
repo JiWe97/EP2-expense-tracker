@@ -6,6 +6,7 @@ use App\Http\Requests\Request;
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Budget;
+use App\Http\Requests\BudgetRequest;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,7 +64,48 @@ Route::put('/settings/categories/{category}/toggle-show', function(Category $cat
     return redirect()->back()->with('success', 'Category updated successfully');
 })->name('categories.toggle-show');
 
+
 //budgets
 Route::get('/settings/budgets', function () {
-    return view('settings.budgets.budgets', ['budgets' => budgets::all()]);
+    return view('settings.budgets.budgets', ['budgets' => Budget::all()]);
 })->name('budgets');
+
+/* Route::view('/settings/budgets/create', 'settings.budgets.create', ['categories' => Category::all()])
+    ->name('budgets.create'); */
+Route::view('/settings/budgets/create', 'settings.budgets.create')
+    ->name('budgets.create');
+
+/* Route::get('/settings/budgets/{budget}/edit', function (Budget $budget, Category $category) {
+    return view('settings.budgets.edit', ['budget' => $budget, 'category' => $category]);
+})->name('budgets.edit'); */
+Route::get('/settings/budgets/{budget}/edit', function (Budget $budget) {
+    return view('settings.budgets.edit', ['budget' => $budget]);
+})->name('budgets.edit');
+
+/* Route::post('/settings/budgets', function (BudgetRequest $request) {
+    $budget = Budget::create($request->validated());
+    return redirect()->route('budgets', ['budget' => $budget->id, 'category' => $category->id])
+        ->with('success', 'Budget created successfully');
+}) ->name('budgets.store'); */
+Route::post('/settings/budgets', function (BudgetRequest $request) {
+    $budget = Budget::create($request->validated());
+    return redirect()->route('budgets', ['budget' => $budget->id])
+        ->with('success', 'Budget created successfully');
+}) ->name('budgets.store');
+
+/* Route::put('/settings/budgets/{budget}', function (Budget $budget, Category $category, BudgetRequest $request) {
+    $budget->update($request->validated());
+    return redirect()->route('budgets', ['budget' => $budget->name, 'category' => $category->name])
+        ->with('success', 'budget updated successfully');
+}) ->name('budgets.update'); */
+Route::put('/settings/budgets/{budget}', function (Budget $budget, BudgetRequest $request) {
+    $budget->update($request->validated());
+    return redirect()->route('budgets', ['budget' => $budget->name])
+        ->with('success', 'budget updated successfully');
+}) ->name('budgets.update');
+
+Route::delete('/settings/budgets/{budget}', function (Budget $budget) {
+    $category->delete();
+    return redirect()->route('budgets')
+        ->with('success', 'budget deleted successfully');
+}) ->name('budgets.destroy');

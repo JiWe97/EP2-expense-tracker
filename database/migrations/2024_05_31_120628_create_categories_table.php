@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('color');
-            $table->boolean('show');
-            $table->enum('icon');
-            $table->boolean('subcategory');
-            $table->int('parent_id');
+            $table->enum('color', ['#FF6347', '#1E90FF', '#FFD700', '#FF4500', '#32CD32', '#8B4513', '#2E8B57', '#4682B4', '#FF69B4', '#D3D3D3'])->default('#4682B4');
+            $table->boolean('show')->default(true);
+            $table->string('icon');
+            /* $table->boolean('subcategory')->default(false);
+            $table->int('parent_id')->nullable(); */
             $table->timestamps();
         });
     }

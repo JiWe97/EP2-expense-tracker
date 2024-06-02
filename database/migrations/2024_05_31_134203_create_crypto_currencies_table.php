@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //TODO: DB opnieuw opstellen!
         Schema::create('crypto_currencies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('type');
+            $table->enum('name', ['BTC', 'ETH', 'USDT'])->default('BTC'); //TODO: enum, welke coins gaan we gebruiken?
+            $table->enum('type', ['buy', 'sell'])->default('buy');
             $table->float('amount');
             $table->float('price');
             $table->float('rate');
-            $table->integer('bank_id');
+            $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->timestamps();
         });
     }

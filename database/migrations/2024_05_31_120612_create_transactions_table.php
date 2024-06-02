@@ -14,18 +14,18 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
-            $table->int('category_id');
-            $table->int('user_id');
-            $table->string('description');
-            $table->enum('type');
-            $table->enum('valuta');
-            $table->int('recipient_id');
-            $table->float('exchange_rate');
-            $table->boolean('warranty');
-            $table->date('warranty_date');
-            $table->enum('status');
-            $table->date('due_before');
-            $table->int('banking_record_id');
+            $table->integer('category_id');
+            $table->foreignId('user_id')->constrained();
+            $table->string('description')->nullable();
+            $table->enum('type', ['income', 'outgoing'])->default('outgoing');
+            $table->enum('valuta', ['EUR', 'USD'])->default('EUR'); // TODO: enum
+            $table->foreignId('recipient_id')->nullable()->constrained('recipients');
+            $table->float('exchange_rate'); //TODO: hoe pakken we dit aan?
+            $table->boolean('warranty')->nullable();
+            $table->date('warranty_date')->nullable();
+            $table->enum('status', ['open', 'closed'])->default('closed');
+            $table->date('due_before'); //TODO: is dit nodig? Dit is een transactie dus deze is al gebeurd?
+            $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->timestamps();
         });
     }

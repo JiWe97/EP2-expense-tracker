@@ -73,7 +73,7 @@
           Add Category
         @endisset
       </button>
-      <a href="{{ route('categories') }}" class="link">Cancel</a>
+      <a href="{{ route('categories.index') }}" class="link">Cancel</a>
     </div>
   </form>
 @endsection

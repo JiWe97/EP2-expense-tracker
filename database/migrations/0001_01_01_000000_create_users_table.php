@@ -20,7 +20,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('profilepicture')->nullable();
             $table->boolean('darkmode')->default(false);
-            $table->datetime('birthday');
+            $table->datetime('birthdate');
             $table->timestamps();
         });
 

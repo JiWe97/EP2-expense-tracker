@@ -17,19 +17,18 @@ return new class extends Migration
             $table->integer('category_id');
             $table->foreignId('user_id')->constrained();
             $table->string('description')->nullable();
-            $table->enum('type', ['income', 'outgoing'])->default('outgoing');
-            $table->enum('valuta', ['EUR', 'USD'])->default('EUR'); // TODO: enum
+            $table->string('type');
+            $table->enum('valuta', ['EUR', 'USD'])->default('EUR');
             $table->foreignId('recipient_id')->nullable()->constrained('recipients');
-            $table->float('exchange_rate'); //TODO: hoe pakken we dit aan?
+            $table->float('exchange_rate')->nullable(); 
             $table->boolean('warranty')->nullable();
             $table->date('warranty_date')->nullable();
             $table->enum('status', ['open', 'closed'])->default('closed');
-            $table->date('due_before'); //TODO: is dit nodig? Dit is een transactie dus deze is al gebeurd?
             $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */
@@ -38,3 +37,4 @@ return new class extends Migration
         Schema::dropIfExists('transactions');
     }
 };
+

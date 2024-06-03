@@ -1,12 +1,21 @@
-@extends('layouts.app')
 
-@section('content')
-    <div class="w-full h-full flex justify-center items-center">
-        <h1 class="text-3xl font-bold">Dashboard</h1>
-    </div>
+
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
+    
+     @section('content')
+    
 
     <x-progress-bar></x-progress-bar>
 
     <a href="{{ route('transaction.create') }}" class="link">Add</a>
 
-@endSection
+    @endSection
+
+   
+</x-app-layout>
+

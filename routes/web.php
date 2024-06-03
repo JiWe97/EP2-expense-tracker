@@ -109,3 +109,8 @@ Route::delete('/settings/budgets/{budget}', function (Budget $budget) {
     return redirect()->route('budgets')
         ->with('success', 'budget deleted successfully');
 }) ->name('budgets.destroy');
+
+//transaction-history
+route::get('/profile/history', function (Transaction $transaction){
+    return view('profile.history.transaction-history', ['transaction' => transaction::all()]);
+}) ->name('transactions')

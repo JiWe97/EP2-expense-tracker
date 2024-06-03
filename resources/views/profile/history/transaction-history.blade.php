@@ -1,3 +1,15 @@
+<div class="mb-4">
+@foreach ($transactions as $transaction)
+    <div class="transaction-card">
+        <a href="{{ route('transactions', $transaction->id) }}">
+            <h3>{{ $transaction->amount }}</h3>
+            <p>{{ $transaction->category->name }}</p>
+        </a>
+    </div>
+    <x-transaction-details :transaction="$transaction" />
+@endforeach
+</div>
+
 <h1>Dashboard</h1>
 
 @if (count($transactions) > 0)

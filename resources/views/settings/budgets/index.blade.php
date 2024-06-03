@@ -12,16 +12,16 @@
             <p class="font-bold">No Budgets</p>
         </div>
     @endif
-    <div class="flex flex-wrap -m-2">
+    <div class="flex flex-col gap-2">
         @foreach($budgets as $budget)
-            <div class="p-2 w-1/2">
+            <div class="p-2">
                 <ul class="list-none p-0">
                     <li class="flex items-center space-x-2">
-                        {{ $budget->name }} - {{ $budget->amount }}
+                        <a href="{{ route('budgets.show', ['budget' => $budget->name]) }}" class="text-sm font-medium }}">
+                            <span>{{ $budget->name }} - {{ $budget->amount }}</span>
                     </li>
                 </ul>
             </div>
         @endforeach
     </div>
-      <x-progress-bar></x-progress-bar>
 @endsection

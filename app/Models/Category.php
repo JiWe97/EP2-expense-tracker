@@ -18,4 +18,9 @@ class Category extends Model
 
         return $this;
     }
+
+    public function budgets()
+    {
+        return $this->belongsToMany(Budget::class, 'budget_categories', 'category_id', 'budget_id');
+    }
 }

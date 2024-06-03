@@ -19,4 +19,14 @@ class Budget extends Model
 
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'budget_category', 'budget_id', 'category_id');
+    }
+
+    public function bankingRecord()
+    {
+        return $this->belongsTo(BankingRecord::class);
+    }
+
 }

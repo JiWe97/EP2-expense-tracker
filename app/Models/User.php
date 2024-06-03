@@ -47,4 +47,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function recipient()
+    {
+        return $this->belongsToMany(Recipient::class, 'recipient_user', 'recipient_id', 'user_id');
+    }
+    public function group()
+    {
+        return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id');
+    }
 }

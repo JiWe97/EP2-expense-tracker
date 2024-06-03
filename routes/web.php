@@ -14,15 +14,15 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})/* ->middleware(['auth', 'verified'])->name('dashboard')*/; 
-/* 
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php'; */
+require __DIR__ . '/auth.php';
 
 //Categories
 Route::get('/settings/categories', function () {
@@ -45,21 +45,21 @@ Route::post('/settings/categories', function (CategoryRequest $request) {
     $category = Category::create($request->validated());
     return redirect()->route('categories', ['category' => $category->id])
         ->with('success', 'Category created successfully');
-}) ->name('categories.store');
+})->name('categories.store');
 
 Route::put('/settings/categories/{category}', function (Category $category, CategoryRequest $request) {
     $category->update($request->validated());
     return redirect()->route('categories.show', ['category' => $category->name])
         ->with('success', 'category updated successfully');
-}) ->name('categories.update');
+})->name('categories.update');
 
 Route::delete('/settings/categories/{category}', function (category $category) {
     $category->delete();
     return redirect()->route('categories')
         ->with('success', 'category deleted successfully');
-}) ->name('categories.destroy');
+})->name('categories.destroy');
 
-Route::put('/settings/categories/{category}/toggle-show', function(Category $category) {
+Route::put('/settings/categories/{category}/toggle-show', function (Category $category) {
     $category->toggleShow();
     return redirect()->back()->with('success', 'Category updated successfully');
 })->name('categories.toggle-show');
@@ -91,7 +91,7 @@ Route::post('/settings/budgets', function (BudgetRequest $request) {
     $budget = Budget::create($request->validated());
     return redirect()->route('budgets', ['budget' => $budget->id])
         ->with('success', 'Budget created successfully');
-}) ->name('budgets.store');
+})->name('budgets.store');
 
 /* Route::put('/settings/budgets/{budget}', function (Budget $budget, Category $category, BudgetRequest $request) {
     $budget->update($request->validated());
@@ -102,10 +102,10 @@ Route::put('/settings/budgets/{budget}', function (Budget $budget, BudgetRequest
     $budget->update($request->validated());
     return redirect()->route('budgets', ['budget' => $budget->name])
         ->with('success', 'budget updated successfully');
-}) ->name('budgets.update');
+})->name('budgets.update');
 
 Route::delete('/settings/budgets/{budget}', function (Budget $budget) {
     $category->delete();
     return redirect()->route('budgets')
         ->with('success', 'budget deleted successfully');
-}) ->name('budgets.destroy');
+})->name('budgets.destroy');

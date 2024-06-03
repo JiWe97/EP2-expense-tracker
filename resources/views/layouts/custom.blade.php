@@ -5,6 +5,7 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="//unpkg.com/alpinejs" defer></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
         {{-- blade-formatter-disable --}}
         <style type="text/tailwindcss">
             .btn {

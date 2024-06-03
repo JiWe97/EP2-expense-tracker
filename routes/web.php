@@ -18,15 +18,15 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})/* ->middleware(['auth', 'verified'])*/->name('dashboard'); 
-/* 
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php'; */
+require __DIR__ . '/auth.php';
 
 Route::view('/dashboard/transaction', 'transaction')
     ->name('transaction.create');
@@ -39,12 +39,12 @@ Route::post('/dashboard/transaction', function (TransactionRequest $request) {
 
 //CATEGORIES
 /* Route::middleware('auth')->group(function () { */
-    Route::resource('/settings/categories', CategoryController::class);
-    Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
+Route::resource('/settings/categories', CategoryController::class);
+Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
 /* }); */
 
 
 //BUDGET
 /* Route::middleware('auth')->group(function () { */
-    Route::resource('/settings/budgets', BudgetController::class);
+Route::resource('/settings/budgets', BudgetController::class);
 /* }); */

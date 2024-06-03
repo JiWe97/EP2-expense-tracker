@@ -64,7 +64,9 @@
         <div>@yield('content')</div>
             
         </div>
-    
+        <main>
+            {{ $slot }}
+        </main>
         
     </body>
     </html>

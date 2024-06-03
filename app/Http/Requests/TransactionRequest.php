@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BudgetRequest extends FormRequest
+class TransactionRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,9 +14,12 @@ class BudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
             'amount' => 'required',
+            'user_id' => 'required',
+            'category_id' => 'required',
+            'type' => 'required',
             'banking_record_id' => 'required',
+            'valuta' => 'required',
         ];
     }
 }

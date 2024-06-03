@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('budget');
+            $table->integer('amount');
             $table->boolean('mail_when_completely_spent')->default(false);
             $table->boolean('mail_when_partially_spent')->default(false);
             $table->foreignId('banking_record_id')->constrained('banking_records');

@@ -7,4 +7,6 @@
 
     <x-progress-bar></x-progress-bar>
 
+    <a href="{{ route('transaction.create') }}" class="link">Add</a>
+
 @endSection

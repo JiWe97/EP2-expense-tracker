@@ -9,7 +9,7 @@ class Budget extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'budget', 'mail_when_completely_spent', 'mail_when_partially_spent', 'banking_record_id'];
+    protected $fillable = ['name', 'amount', 'mail_when_completely_spent', 'mail_when_partially_spent', 'banking_record_id'];
 
     public function store(Request $request)
     {

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="mb-4">
-      <a href="{{ route('categories') }}" class="link">Back</a>
+      <a href="{{ route('categories.index') }}" class="link">Back</a>
 </div>
 
 <div class="w-8 h-8 rounded-full flex justify-center items-center" style="background-color: {{ $category->color }}">

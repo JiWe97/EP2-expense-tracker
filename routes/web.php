@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
+use App\Http\Controllers\TransactionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -113,4 +114,4 @@ Route::delete('/settings/budgets/{budget}', function (Budget $budget) {
 //transaction-history
 route::get('/profile/history', function (Transaction $transaction){
     return view('profile.history.transaction-history', ['transaction' => transaction::all()]);
-}) ->name('transactions')
+}) ->name('transactions');

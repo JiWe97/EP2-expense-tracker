@@ -13,7 +13,7 @@
 
 @section('content')
     <div class="mb-4">
-        <a href="{{ route('budgets') }}" class="link">Back</a>
+        <a href="{{ route('budgets.index') }}" class="link">Back</a>
     </div>
   <form method="POST"
     action="{{ isset($budget) ? route('budgets.update', ['budget' => $budget->id, 'category' => $category->id]) : route('budgets.store') }}">
@@ -27,20 +27,18 @@
       @error('name')
         <p class="error">{{ $message }}</p>
       @enderror
-    </div>
+    </div> 
 
     <div class="mb-4">
-        <label for="budget">Amount</label>
-        <input type="budget" name="budget" id="budget" @class(['border-red-500' => $errors->has('budget')]) value="{{ $budget->budget?? old('budget') }}">
-        @error('budget')
+        <label for="amount">Amount</label>
+        <input type="amount" name="amount" id="amount" @class(['border-red-500' => $errors->has('amount')]) value="{{ $budget->amount?? old('amount') }}">
+        @error('amount')
             <p class="error">{{ $message }}</p>
         @enderror
     </div>
-
     <div class="mb-4">
-        <label for="banking_record_id" >Banking record</label>
-        <input type="text" name="banking_record_id" id="banking_record_id" @class(['border-red-500' => $errors->has('banking_record_id')]) value="{{ $budget->banking_record_id ?? old('banking_record_id') }}">
-    </div>
+        <input type="hidden" name="banking_record_id" id="banking_record_id" value="1">
+
 
    {{-- <div class="mb-4">
     <label for="completely">Mail if completely spent?</label>
@@ -74,7 +72,16 @@
           Add budget
         @endisset
       </button>
-      <a href="{{ route('budgets') }}" class="link">Cancel</a>
+      <a href="{{ route('budgets.index') }}" class="link">Cancel</a>
     </div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
   </form>
 @endsection

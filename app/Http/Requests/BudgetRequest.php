@@ -15,7 +15,7 @@ class BudgetRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'budget' => 'required',
+            'amount' => 'required',
             'banking_record_id' => 'required',
         ];
     }

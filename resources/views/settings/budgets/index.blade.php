@@ -17,7 +17,7 @@
             <div class="p-2 w-1/2">
                 <ul class="list-none p-0">
                     <li class="flex items-center space-x-2">
-                        {{ $budget->name }} - {{ $budget->budget }}
+                        {{ $budget->name }} - {{ $budget->amount }}
                     </li>
                 </ul>
             </div>

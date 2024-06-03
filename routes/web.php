@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::view('/dashboard/transaction', 'transaction')
-    ->name('transaction.create');
+    ->name('transactions.create');
 
 Route::post('/dashboard/transaction', function (TransactionRequest $request) {
     $transaction = Transaction::create($request->validated());

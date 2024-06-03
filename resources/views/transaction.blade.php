@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('content')
 <h1 class="text-3xl font-bold">Inkomsten</h1>

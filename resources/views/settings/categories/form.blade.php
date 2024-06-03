@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('title', isset($category) ? 'Edit Category' : 'Add Category')
 

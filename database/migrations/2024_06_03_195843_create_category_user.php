@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->nullable()->constrained('categories');
+            $table->string('displayname');
+            $table->string('icon');
+            $table->string('color');
             $table->timestamps();
         });
     }

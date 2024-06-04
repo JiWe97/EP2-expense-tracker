@@ -9,8 +9,10 @@ use App\Http\Controllers\CategoryController;
 use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +29,10 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+// Route::resource('/dashboard/transaction', [TransactionController::class, 'index'])
+//     ->name('transactions.index');
+Route::get('/transactions', [TransactionController::class, 'show'])->name('transaction.show');
 
 Route::view('/dashboard/transaction', 'transaction')
     ->name('transactions.create');

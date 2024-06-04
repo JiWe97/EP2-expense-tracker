@@ -14,6 +14,7 @@
                 <li><a href="{{ route('categories.index') }}">Categories</a></li>
                 <li><a href="{{ route('budgets.index') }}">Budgets</a></li>
                 <li><a href="{{ route('transactions.create') }}">Add income/expense</a></li>
+                <li><a href="{{ route('transaction.show') }}">View transaction History</a></li>
             </ul>
         </nav>
     </div>

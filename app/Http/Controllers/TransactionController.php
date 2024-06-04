@@ -37,7 +37,7 @@ class TransactionController extends Controller
     public function show()
     {
         $transactions = Transaction::paginate(10); // Add pagination
-        return view('transaction', compact('transactions'));
+        return view('history', compact('transactions'));
     }
     /**
      * Show the form for editing the specified resource.

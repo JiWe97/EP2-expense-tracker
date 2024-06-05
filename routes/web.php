@@ -33,7 +33,8 @@ require __DIR__ . '/auth.php';
 
 // Route::resource('/dashboard/transaction', [TransactionController::class, 'index'])
 //     ->name('transactions.index');
-Route::get('/history', [TransactionController::class, 'show'])->name('transaction.show');
+Route::get('/history', [TransactionController::class, 'show'])->name('transactions.show');
+Route::get('/search', [TransactionController::class, 'search'])->name('transactions.search');
 
 Route::view('/dashboard/transaction', 'transaction')
     ->name('transactions.create');

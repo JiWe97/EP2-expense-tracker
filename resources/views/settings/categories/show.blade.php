@@ -21,6 +21,10 @@
     @endif
 </p>
 
+<div class="mb-4">
+    <input type="hidden" name="user_id" value="1">
+</div>
+
 <div class="flex gap-2">
     <a href="{{ route('categories.edit', ['category' => $category->id]) }}" class="btn">Edit</a>
 

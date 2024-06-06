@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
 use App\Models\User;
+use App\Models\CustomCategory;
+use App\Http\Requests\CustomCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -14,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('settings.categories.index', ['categories' => Category::all()]);
+        return view('settings.categories.index', ['categories' => Category::all(), 'custom_categories' => CustomCategory::all()]);
     }
 
     /**
@@ -42,9 +44,15 @@ class CategoryController extends Controller
     public function show($categoryId)
     {
         $category = Category::where('name', $categoryId)->first();
+    
+        // Check if a category was found
+        if (!$category) {
+            // Handle the case where no category is found, e.g., redirect to a 404 page or show an error message
+            abort(404, "Category not found");
+        }
+    
         return view('settings.categories.show', ['category' => $category]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -56,12 +64,34 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(Request $request, CustomCategory $custom_category)
     {
-        $category->update($request->validated());
-        return redirect()->route('categories.show', ['category' => $category->name])
-            ->with('success', 'category updated successfully');
+    // Validate the incoming request data. Adjust the rules according to your needs.
+    $validatedData = $request->validate([
+        // Validation rules for updating a CustomCategory
+        'displayname' => 'required',
+        'color' => 'nullable|string',
+        'icon' => 'nullable|string',
+        'user_id' => 1,
+        // Add other fields as necessary
+    ]);
+
+    // Attempt to update the CustomCategory with the validated data
+    $isUpdated = $custom_category->update($validatedData);
+
+    // Check if the update was successful
+    if ($isUpdated) {
+        // Redirect to the show page for the updated CustomCategory
+        // Note: Using displayname in the route parameter is unconventional and may require adjustments
+        return redirect()->route('categories.show', ['custom_category' => $custom_category->displayname])
+            ->with('success', 'Custom category updated successfully');
+    } else {
+        // Handle the case where the update failed
+        // This could involve returning an error response or redirecting back with errors
+        return back()->withErrors(['custom_category' => 'Failed to update the custom category.']);
     }
+    }
+
 
     /**
      * Remove the specified resource from storage.

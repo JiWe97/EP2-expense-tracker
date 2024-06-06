@@ -24,4 +24,9 @@ class Category extends Model
         return $this->belongsToMany(Budget::class, 'budget_categories', 'category_id', 'budget_id');
     }
 
+    public function CustomCategory()
+    {
+        return $this->hasOne(CustomCategory::class);
+    }
+
 }

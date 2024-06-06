@@ -9,11 +9,13 @@ use App\Http\Controllers\CategoryController;
 use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\CustomCategoryController;
 use App\Http\Requests\CustomCategoryRequest;
 use App\Models\CustomCategory;
+use App\Http\Controllers\FileUploadController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +33,10 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
+// Route::resource('/dashboard/transaction', [TransactionController::class, 'index'])
+//     ->name('transactions.index');
+Route::get('/history', [TransactionController::class, 'show'])->name('transaction.show');
+
 Route::view('/dashboard/transaction', 'transaction')
     ->name('transactions.create');
 
@@ -39,6 +45,9 @@ Route::post('/dashboard/transaction', function (TransactionRequest $request) {
     return redirect()->route('dashboard', ['transaction' => $transaction])
         ->with('success', 'Transaction created successfully');
 })->name('transactions.store');
+
+// Upload pfp
+Route::post('/uploads', [FileUploadController::class, 'store']);
 
 //CATEGORIES
 /* Route::middleware('auth')->group(function () { */

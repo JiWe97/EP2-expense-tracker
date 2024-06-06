@@ -27,7 +27,9 @@
     </head>
 
     <body class="container mx-auto mt-10 mb-10 max-w-lg">
-        <h1 class="text-2xl mb-4">@yield('title')</h1>
+        <div class="flex justify-between mb-4">
+            <h1 class="text-2xl mb-4">@yield('title')</h1>
+        </div>
         <div x-data="{ flash: true }">
         @if (session()->has('success'))
             <div x-show="flash" class="relative mb-10 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700" role="alert">
@@ -43,6 +45,7 @@
             </div>
         </div>
         @endif
+
         <div>@yield('content')</div>
     </body>
     </html>

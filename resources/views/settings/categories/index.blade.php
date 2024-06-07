@@ -14,8 +14,8 @@
                     <div class="w-8 h-8 rounded-full flex justify-center items-center" style="background-color: {{ $category->show? $category->color : 'transparent' }}">
                         <i class="{{ $category->icon }}" style="color: {{ $category->show? '#ffffff' : '#d3d3d3' }}"></i>
                     </div>
-                    <!-- Check if a custom category exists for this category -->
-                    @if($category->customCategory)
+                    <!-- Check if a custom category exists for this category and has a display name -->
+                    @if($category->customCategory && $category->customCategory->displayname)
                         <a href="{{ route('categories.show', ['category' => $category->customCategory->displayname]) }}" class="text-sm font-medium {{ $category->show? '' : 'text-gray-400' }}">
                             <span>{{ $category->customCategory->displayname }}</span>
                         </a>
@@ -28,7 +28,8 @@
             </ul>
         </div>
     @endforeach
-    </div>
+</div>
+
     <hr>
 
 

@@ -25,7 +25,7 @@ class CategoryController extends Controller
     public function create()
     {
         
-        return view('settings.categories.create');
+        /* return view('settings.categories.create'); */
     }
 
     /**
@@ -33,9 +33,9 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $category = Category::create($request->validated());
+        /* $category = Category::create($request->validated());
         return redirect()->route('categories.index', ['category' => $category->id])
-            ->with('success', 'Category created successfully');
+            ->with('success', 'Category created successfully'); */
     }
 
     /**
@@ -58,7 +58,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('settings.categories.edit', ['category' => $category]);
+        /* return view('settings.categories.edit', ['category' => $category]); */
     }
 
     /**
@@ -67,7 +67,7 @@ class CategoryController extends Controller
     public function update(Request $request, CustomCategory $custom_category)
     {
     // Validate the incoming request data. Adjust the rules according to your needs.
-    $validatedData = $request->validate([
+    /* $validatedData = $request->validate([
         // Validation rules for updating a CustomCategory
         'displayname' => 'required',
         'color' => 'nullable|string',
@@ -89,7 +89,7 @@ class CategoryController extends Controller
         // Handle the case where the update failed
         // This could involve returning an error response or redirecting back with errors
         return back()->withErrors(['custom_category' => 'Failed to update the custom category.']);
-    }
+    } */
     }
 
 
@@ -98,9 +98,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {    
-        $category->delete();
+        /* $category->delete();
         return redirect()->route('categories.index')
-            ->with('success', 'category deleted successfully');
+            ->with('success', 'category deleted successfully'); */
     }
 
     public function toggle(Category $category)

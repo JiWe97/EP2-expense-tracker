@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\BankingRecord;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Http\Requests\TransactionRequest;
 
 class TransactionController extends Controller
 {
@@ -15,8 +17,8 @@ class TransactionController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
         $transactions = Transaction::paginate(10); // Add pagination
-        
 
         if(request()->has('search')){
             $query = request()->get('search','');
@@ -35,14 +37,12 @@ class TransactionController extends Controller
             ->orWhereHas('user', function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%");
             })
-            
             ->orWhereHas('bankingRecord', function ($q) use ($query) {
                 $q->where('bank_name', 'LIKE', "%{$query}%"); // Assuming banking records have a 'record_name' column
             })
             ->paginate(10);
             
         }
-
 
         // dd($transactions);
         foreach ($transactions as $transaction) {
@@ -57,10 +57,8 @@ class TransactionController extends Controller
             // $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null = $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null;
         }
         
-
-        return view('history', [
-            'transactions' => $transactions
-        ]);
+        return view('transactions.index', ['transactions' => $transactions, 'categories' => $categories]);
+        
     }
 
     /**
@@ -68,21 +66,41 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        //
+        // Fetch categories from the database
+        $categories = Category::all();
+        
+        // Pass categories to the view
+        return view('transactions.create', ['categories' => $categories]);
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $transaction = Transaction::create([
+            'amount' => $request->amount,
+            'category_id' => $request->category_id,
+            'user_id' => $request->user_id,
+            'description' => $request->description,
+            'recipient_id' => $request->recipient_id, // Ensure this is provided
+            'banking_record_id' => $request->banking_record_id,
+            'type' => $request->type,
+        ]);
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction created successfully');
     }
+
 
     /**
      * Display the specified resource.
      */
-    
+    public function show()
+    {
+        $transactions = Transaction::paginate(10); // Add pagination
+        return view('transactions.show', compact('transactions'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

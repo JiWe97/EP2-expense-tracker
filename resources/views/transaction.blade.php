@@ -15,7 +15,7 @@
                             <option value="expense">Expense</option>
                         </select>
                     </div>
-
+                    
                     <div class="mb-4">
                         <label for="amount" class="block text-lg font-medium text-white">Amount:</label>
                         <input type="number" step="0.01" class="form-control mt-1 block w-full text-black" id="amount" name="amount" placeholder="Amount">

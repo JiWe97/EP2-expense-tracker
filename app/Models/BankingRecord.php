@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class BankingRecord extends Model
 {
     use HasFactory;
+
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

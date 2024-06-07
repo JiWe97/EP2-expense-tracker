@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\User;
+use App\Models\BankingRecord;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -17,21 +20,43 @@ class TransactionController extends Controller
 
         if(request()->has('search')){
             $query = request()->get('search','');
-            $transactions = Transaction::where('amount', 'LIKE', "%{$query}%")
-                ->orWhere('custom_category_id', 'LIKE', "%{$query}%")
-                ->orWhere('user_id', 'LIKE', "%{$query}%")
-                ->orWhere('description', 'LIKE', "%{$query}%")
-                ->orWhere('type', 'LIKE', "%{$query}%")
-                ->orWhere('valuta', 'LIKE', "%{$query}%")
-                ->orWhere('recipient_id', 'LIKE', "%{$query}%")
-                ->orWhere('exchange_rate', 'LIKE', "%{$query}%")
-                ->orWhere('warranty', 'LIKE', "%{$query}%")
-                ->orWhere('warranty_date', 'LIKE', "%{$query}%")
-                ->orWhere('banking_record_id', 'LIKE', "%{$query}%")
-                ->orWhere('created_at', 'LIKE', "%{$query}%")
-                ->orWhere('updated_at', 'LIKE', "%{$query}%")
-                ->paginate(10);
+            $transactions = Transaction::with(['user', 'bankingRecord'])
+            ->where('amount', 'LIKE', "{$query}")
+            ->orWhere('custom_category_id', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orWhere('type', 'LIKE', "{$query}")
+            ->orWhere('valuta', 'LIKE', "{$query}")
+            ->orWhere('exchange_rate', 'LIKE', "{$query}")
+            ->orWhere('warranty', 'LIKE', "{$query}")
+            ->orWhere('warranty_date', 'LIKE', "{$query}")
+            ->orWhere('created_at', 'LIKE', "{$query}")
+            ->orWhere('updated_at', 'LIKE', "{$query}")
+            ->orWhere('recipient_id', 'LIKE', "%{$query}%")
+            ->orWhereHas('user', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            
+            ->orWhereHas('bankingRecord', function ($q) use ($query) {
+                $q->where('bank_name', 'LIKE', "%{$query}%"); // Assuming banking records have a 'record_name' column
+            })
+            ->paginate(10);
+            
         }
+
+
+        // dd($transactions);
+        foreach ($transactions as $transaction) {
+            $id = $transaction->user_id;
+            $user = User::find($id);
+            $transaction->user_id = $user->name;
+
+
+            $id = $transaction->banking_record_id;
+            $bankingRecord = BankingRecord::find($id);
+            $transaction->banking_record_id = $bankingRecord->bank_name;
+            // $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null = $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null;
+        }
+        
 
         return view('history', [
             'transactions' => $transactions

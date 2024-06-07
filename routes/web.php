@@ -43,6 +43,7 @@ Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->na
 Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
  */
 Route::resource('/transactions', TransactionController::class);
+Route::get('/search', [TransactionController::class, 'search'])->name('transactions.search');
 
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
-            $table->foreignId('custom_category_id')->constrained('custom_categories');
+            $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('user_id')->constrained();
             $table->string('description')->nullable();
             $table->string('type');

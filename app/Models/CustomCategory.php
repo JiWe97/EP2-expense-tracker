@@ -10,7 +10,7 @@ class CustomCategory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'displayname', 'icon', 'color'
+        'user_id', 'category_id', 'displayname', 'icon', 'color'
     ];
    
 }

@@ -14,6 +14,7 @@
                 <li><a href="{{ route('categories.index') }}">Categories</a></li>
                 <li><a href="{{ route('budgets.index') }}">Budgets</a></li>
                 <li><a href="{{ route('transactions.index') }}">Transactions</a></li>
+                <li><a href="{{ route('goals.index') }}">Goals</a></li>
             </ul>
         </nav>
     </div>

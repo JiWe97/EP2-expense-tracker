@@ -13,9 +13,6 @@ use App\Http\Controllers\BudgetController;
 use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\TransactionController;
-use App\Models\CustomCategory;
-use App\Http\Controllers\CustomCategoryController;
-use App\Http\Requests\CustomCategoryRequest;
 
 
 Route::get('/', function () {
@@ -50,13 +47,11 @@ Route::post('/uploads', [FileUploadController::class, 'store']);
 
 
 //CATEGORIES
-/* Route::middleware('auth')->group(function () { */
-Route::resource('/settings/categories', CategoryController::class);
-Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
-
-
-//CUSTOMCATEGORIES
-Route::resource('/settings/custom_categories', CustomCategoryController::class);
+Route::middleware('auth')->group(function () {
+    Route::resource('/settings/categories', CategoryController::class);
+    Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
+    Route::post('/categories/{category}/save', [CategoryController::class, 'save'])->name('categories.save');
+});
 
 
 //BUDGET

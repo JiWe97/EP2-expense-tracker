@@ -13,6 +13,7 @@ use App\Http\Controllers\BudgetController;
 use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\GoalController;
 
 
 Route::get('/', function () {
@@ -58,3 +59,9 @@ Route::middleware('auth')->group(function () {
 /* Route::middleware('auth')->group(function () { */
 Route::resource('/settings/budgets', BudgetController::class);
 /* }); */
+
+
+//GOALS
+Route::middleware('auth')->group(function () {
+    Route::resource('/goals', GoalController::class);
+});

@@ -10,6 +10,8 @@ use App\Models\Category;
 use App\Models\CustomCategory;
 use App\Http\Requests\TransactionRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
@@ -87,25 +89,48 @@ class TransactionController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
+     */   
+
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
+            'type' => 'required|string',
             'amount' => 'required|numeric',
             'description' => 'required|string',
-            'type' => 'required|string',
-            'user_id' => 'required|integer',
-            'recipient_id' => 'required|integer',
             'banking_record_id' => 'required|integer',
-            'category_id' => 'nullable|integer',
-            'custom_category_id' => 'nullable|integer',
+            'category_id' => 'required|integer',
+            'recipient_id' => 'required|integer',
+            'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
-    
-        $transaction = Transaction::create($validatedData);
-    
-        return redirect()->route('transactions.index')
-            ->with('success', 'Transaction created successfully');
+
+        // Save the transaction
+        $transaction = new Transaction();
+        $transaction->type = $request->type;
+        $transaction->amount = $request->amount;
+        $transaction->description = $request->description;
+        $transaction->banking_record_id = $request->banking_record_id;
+        $transaction->category_id = $request->category_id;
+        $transaction->recipient_id = $request->recipient_id;
+        $transaction->user_id = $request->user_id;
+        $transaction->valuta = $request->valuta;
+        $transaction->exchange_rate = $request->exchange_rate;
+        $transaction->save();
+
+        // Save attachments
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('attachments');
+
+                $attachment = new Attachment();
+                $attachment->picture = $path;
+                $attachment->transaction_id = $transaction->id;
+                $attachment->save();
+            }
+        }
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
+
 
     /**
      * Display the specified resource.

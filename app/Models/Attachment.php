@@ -11,7 +11,7 @@ class Attachment extends Model
 
     protected $fillable = [
         'picture', 'transaction_id'
-    ]
+    ];
 
     public function transaction()
     {

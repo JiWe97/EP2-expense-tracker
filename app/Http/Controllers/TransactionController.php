@@ -7,7 +7,9 @@ use App\Models\BankingRecord;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\CustomCategory;
 use App\Http\Requests\TransactionRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -65,12 +67,22 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        // Fetch categories from the database
-        $categories = Category::all();
-        
-        // Pass categories to the view
-        return view('transactions.create', ['categories' => $categories]);
+        $categories = Category::where('show', true)->get();  // Filter categories based on 'show' attribute
+        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
+
+        // Create a combined list where custom category display names override the category names
+        $combinedCategories = [];
+        foreach ($categories as $category) {
+            $customCategory = $custom_categories->firstWhere('category_id', $category->id);
+            $combinedCategories[] = [
+                'id' => $category->id,
+                'name' => $customCategory ? $customCategory->displayname : $category->name,
+            ];
+        }
+
+        return view('transactions.create', compact('combinedCategories'));
     }
+
 
 
     /**
@@ -78,19 +90,22 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $transaction = Transaction::create([
-            'amount' => $request->amount,
-            'category_id' => $request->category_id,
-            'user_id' => $request->user_id,
-            'description' => $request->description,
-            'recipient_id' => $request->recipient_id, // Ensure this is provided
-            'banking_record_id' => $request->banking_record_id,
-            'type' => $request->type,
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'description' => 'required|string',
+            'type' => 'required|string',
+            'user_id' => 'required|integer',
+            'recipient_id' => 'required|integer',
+            'banking_record_id' => 'required|integer',
+            'category_id' => 'nullable|integer',
+            'custom_category_id' => 'nullable|integer',
         ]);
+    
+        $transaction = Transaction::create($validatedData);
+    
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction created successfully');
     }
-
 
     /**
      * Display the specified resource.
@@ -124,9 +139,5 @@ class TransactionController extends Controller
         //
     }
 
-    // public function toggle(Transaction $transaction)
-    // {
-    //     $transaction->toggleShow();
-    //     return redirect()->back()->with('success', 'Show history updated successfully');
-    // }
+
 }

@@ -52,19 +52,25 @@
     </div>
 
     <div class="mb-4">
-        <label for="category">Category</label>
-        <select name="category" id="category" @class(['border-red-500' => $errors->has('category')]):
-            @error('category')
-                <option value="">Select a category</option>
-            @enderror
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-                </select>
-        @error('category')
-            <p class="error">{{ $message }}</p>
-        @enderror
-    </div>
+      <label for="category">Category</label>
+      <select name="category" id="category" @class(['border-red-500' => $errors->has('category')])>
+          <option value="">Select a category</option>
+          @foreach ($categories as $category)
+              @if($category->show)
+                  @php
+                      $custom_category = $custom_categories->firstWhere('category_id', $category->id);
+                      $categoryName = $custom_category ? $custom_category->displayname : $category->name;
+                  @endphp
+                  <option value="{{ $category->id }}">{{ $categoryName }}</option>
+              @endif
+          @endforeach
+      </select>
+      @error('category')
+          <p class="error">{{ $message }}</p>
+      @enderror
+  </div>
+
+
 
     <div class="mb-4">
         <label for="description">Description</label>

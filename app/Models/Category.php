@@ -28,5 +28,8 @@ class Category extends Model
     {
         return $this->hasOne(CustomCategory::class);
     }
-
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

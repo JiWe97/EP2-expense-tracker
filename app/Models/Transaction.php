@@ -10,13 +10,20 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'amount',
         'category_id',
         'user_id',
         'description',
+        'type',
+        'valuta',
         'recipient_id',
+        'exchange_rate',
+        'warranty',
+        'warranty_date',
         'banking_record_id',
-        'type'
+        'created_at',
+        'updated_at',
         
     ];
 

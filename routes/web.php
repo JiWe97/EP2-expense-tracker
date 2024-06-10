@@ -14,6 +14,8 @@ use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
+use App\Imports\BankStatementsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 Route::get('/', function () {
@@ -40,8 +42,9 @@ Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->na
 
 Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
  */
+
+Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 Route::resource('/transactions', TransactionController::class);
-Route::post('/search', [TransactionController::class, 'index'])->name('transactions.search');
 
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);
@@ -65,3 +68,4 @@ Route::resource('/settings/budgets', BudgetController::class);
 Route::middleware('auth')->group(function () {
     Route::resource('/goals', GoalController::class);
 });
+

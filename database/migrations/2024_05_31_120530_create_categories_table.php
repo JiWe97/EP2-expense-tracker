@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('color');
             $table->boolean('show')->default(true);
             $table->string('icon');
-            /* $table->boolean('subcategory')->default(false);
-            $table->int('parent_id')->nullable(); */
             $table->timestamps();
         });
     }

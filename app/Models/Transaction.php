@@ -14,8 +14,23 @@ class Transaction extends Model
         'category_id',
         'user_id',
         'description',
+        'recipient_id',
         'banking_record_id',
-        'type',
+        'type'
         
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function bankingRecord()
+    {
+        return $this->belongsTo(BankingRecord::class);
+    }
+    public function category()
+    {
+        return $this->belongsto(Category::class);
+    }
 }

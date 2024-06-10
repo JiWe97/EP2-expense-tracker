@@ -1,6 +1,6 @@
 @extends('layouts.custom')
 
 @section('content')
-@include('settings.categories.form')
+@include('goals.form')
 
 @endsection

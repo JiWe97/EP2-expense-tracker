@@ -7,6 +7,8 @@ use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
 use App\Models\BankingRecord;
 use App\Models\Category;
+use App\Models\CustomCategory;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
 {
@@ -17,9 +19,11 @@ class BudgetController extends Controller
 
     public function create()
     {
-        $banking_records = BankingRecord::all(); // Fetch all banking records
         $categories = Category::all();
-        return view('settings.budgets.form', compact('banking_records', 'categories'));
+        $banking_records = BankingRecord::all();
+        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
+
+        return view('settings.budgets.create', compact('categories', 'banking_records', 'custom_categories'));
     }
 
     public function store(BudgetRequest $request)
@@ -47,11 +51,14 @@ class BudgetController extends Controller
         return view('settings.budgets.show', ['budget' => $budget]);
     }
 
-    public function edit(Budget $budget)
+    public function edit($id)
     {
+        $budget = Budget::findOrFail($id);
+        $categories = Category::all();
         $banking_records = BankingRecord::all();
-        $categories = Category::all(); // Fetch all categories
-        return view('settings.budgets.form', compact('budget', 'banking_records', 'categories'));
+        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
+
+        return view('settings.budgets.edit', compact('budget', 'categories', 'banking_records', 'custom_categories'));
     }
 
     public function update(BudgetRequest $request, Budget $budget)
@@ -73,7 +80,14 @@ class BudgetController extends Controller
 
     public function destroy(Budget $budget)
     {
+        // Delete the associated budget categories for this budget
+        \DB::table('budget_category')
+            ->where('budget_id', $budget->id)
+            ->delete();
+
+        // Now delete the budget
         $budget->delete();
+
         return redirect()->route('budgets.index')
             ->with('success', 'Budget deleted successfully');
     }

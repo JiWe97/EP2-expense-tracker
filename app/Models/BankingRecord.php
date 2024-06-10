@@ -14,4 +14,10 @@ class BankingRecord extends Model
         'bank_name',
         'account_number',
     ];
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
 }

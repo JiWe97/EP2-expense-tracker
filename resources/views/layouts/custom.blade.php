@@ -47,5 +47,7 @@
         @endif
 
         <div>@yield('content')</div>
+        
+        <div>@yield('script')</div>
     </body>
     </html>

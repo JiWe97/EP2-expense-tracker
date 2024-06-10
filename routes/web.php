@@ -33,15 +33,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-/* Route::resource('/dashboard/transactions', [TransactionController::class, 'index'])
-    ->with('categories', Category::all())
-    ->name('transactions.index');
-
-Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
-
-Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
- */
-Route::get('/transactions/graph',  [GraphController::class, 'index']);
+Route::get('/graph', [GraphController::class, 'index']);
 
 Route::resource('/transactions', TransactionController::class);
 Route::post('/search', [TransactionController::class, 'index'])->name('transactions.search');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class GraphController extends Controller
@@ -12,11 +13,23 @@ class GraphController extends Controller
      */
     public function index()
     {
+       $transactions = Transaction::with('category')->get();
 
-        $transactions = Transaction::all();
-        // dd($transactions); // This will dump the transactions and stop the execution
-        return view('graph', ['transactions' => $transactions]);
-            
+    // Aggregate data by category and calculate total amount for each category
+    $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
+        return $categoryTransactions->sum('amount');
+    });
+
+    // Map transaction types
+    $transactionData = $transactions->map(function ($transaction) {
+        return [
+            'type' => $transaction->type,
+            'amount' => $transaction->amount,
+        ];
+    });
+    // print_r($transactionData);
+
+    return view('graph', ['categoryTotals' => $categoryTotals, 'transactionData' => $transactionData]);
     }
 
     /**

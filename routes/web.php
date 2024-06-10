@@ -62,3 +62,4 @@ Route::resource('/settings/budgets', BudgetController::class);
 
 //Bank
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
+Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');

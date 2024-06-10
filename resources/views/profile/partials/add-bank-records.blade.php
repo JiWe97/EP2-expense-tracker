@@ -40,4 +40,8 @@
         </div>
         
     </form>
+
+    <!--Display bank records here-->
+    @include('profile.partials.display-bank-records')
+
 </section>

@@ -58,7 +58,6 @@
     </style>
 @endsection
 
-
 @section('content')
 <h2 class="text-3xl pt-5 font-bold">Transaction history</h2>
 

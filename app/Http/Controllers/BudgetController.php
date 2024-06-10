@@ -40,7 +40,7 @@ class BudgetController extends Controller
             $budget->categories()->attach($request->input('category_id'));
         }
 
-        return redirect()->route('settings.budgets.index')
+        return redirect()->route('budgets.index')
             ->with('success', 'Budget created successfully');
     }
 
@@ -74,13 +74,20 @@ class BudgetController extends Controller
             $budget->categories()->sync($request->input('category_id'));
         }
 
-        return redirect()->route('settings.budgets.index')
+        return redirect()->route('budgets.index')
             ->with('success', 'Budget updated successfully');
     }
 
     public function destroy(Budget $budget)
     {
+        // Delete the associated budget categories for this budget
+        \DB::table('budget_category')
+            ->where('budget_id', $budget->id)
+            ->delete();
+
+        // Now delete the budget
         $budget->delete();
+
         return redirect()->route('budgets.index')
             ->with('success', 'Budget deleted successfully');
     }

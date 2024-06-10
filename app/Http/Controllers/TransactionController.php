@@ -49,12 +49,6 @@ class TransactionController extends Controller
             
         }
 
-<<<<<<< HEAD
-        
-
-
-=======
->>>>>>> 452396750a87c6abd80d2c27387b0bf77243455b
         // dd($transactions);
         foreach ($transactions as $transaction) {
             $id = $transaction->user_id;

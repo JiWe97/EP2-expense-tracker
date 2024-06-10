@@ -59,6 +59,7 @@
 @endsection
 
 @section('content')
+<a href="{{ route('transactions.create') }}" class="link">Add Transaction</a>
 <h1 class="text-3xl font-bold">Inkomsten</h1>
     <div class="mb-4">
         <a href="{{ route('transactions.create') }}" class="link">Add new transaction</a>

@@ -14,7 +14,7 @@ class GraphController extends Controller
     {
 
         $transactions = Transaction::all();
-        dd($transactions); // This will dump the transactions and stop the execution
+        // dd($transactions); // This will dump the transactions and stop the execution
         return view('graph', ['transactions' => $transactions]);
             
     }

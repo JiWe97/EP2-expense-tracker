@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('amount');
             $table->boolean('mail_when_completely_spent')->default(false);
             $table->boolean('mail_when_partially_spent')->default(false);
-            $table->foreignId('banking_record_id')->constrained('banking_records');
+            $table->foreignId('banking_record_id')->constrained('banking_records')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -58,12 +58,8 @@
     </style>
 @endsection
 
-@section('content')
-<h1 class="text-3xl font-bold">Inkomsten</h1>
-    <div class="mb-4">
-        <a href="{{ route('transactions.create') }}" class="link">Add new transaction</a>
-    </div>
 
+@section('content')
 <h2 class="text-3xl pt-5 font-bold">Transaction history</h2>
 
 @include('search-bar')
@@ -84,8 +80,8 @@
                 <th>Amount</th>
                 <th>Description</th>
                 <th>Type</th>
-                <th>Custom Category ID</th>
-                <th>Recipient ID</th>
+                <th>Category</th>
+                <th>Recipient</th>
                 <th>Exchange Rate</th>
                 <th>Warranty</th>
                 <th>Warranty Date</th>
@@ -102,8 +98,8 @@
                 <td>{{ $transaction->amount }} {{ $transaction->valuta }}</td>
                 <td>{{ $transaction->description }}</td>
                 <td>{{ $transaction->type }}</td>
-                @if($transaction->custom_category_id !== null)
-                    <td>{{ $transaction->custom_category_id }}</td>
+                @if($transaction->category_id !== null)
+                    <td>{{ $transaction->category_id }}</td>
                 @else
                     <td></td>
                 @endif
@@ -182,5 +178,4 @@
     });
 </script>
 @endsection
-
 

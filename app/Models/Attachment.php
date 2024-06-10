@@ -9,5 +9,12 @@ class Attachment extends Model
 {
     use HasFactory;
 
-    
+    protected $fillable = [
+        'picture', 'transaction_id'
+    ];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 }

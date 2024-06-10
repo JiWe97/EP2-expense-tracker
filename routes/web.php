@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Request;
 use App\Models\Category;
@@ -9,13 +10,11 @@ use App\Http\Controllers\CategoryController;
 use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
 use App\Http\Controllers\BudgetController;
-use App\Http\Controllers\TransactionController;
 use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
-use App\Http\Controllers\CustomCategoryController;
-use App\Http\Requests\CustomCategoryRequest;
-use App\Models\CustomCategory;
-use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\GoalController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,33 +32,36 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-// Route::resource('/dashboard/transaction', [TransactionController::class, 'index'])
-//     ->name('transactions.index');
-Route::get('/history', [TransactionController::class, 'index'])->name('transactions.show');
-Route::post('/history', [TransactionController::class, 'index'])->name('transactions.search');
+/* Route::resource('/dashboard/transactions', [TransactionController::class, 'index'])
+    ->with('categories', Category::all())
+    ->name('transactions.index');
 
-Route::view('/dashboard/transaction', 'transaction')
-    ->name('transactions.create');
+Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
 
-Route::post('/dashboard/transaction', function (TransactionRequest $request) {
-    $transaction = Transaction::create($request->validated());
-    return redirect()->route('dashboard', ['transaction' => $transaction])
-        ->with('success', 'Transaction created successfully');
-})->name('transactions.store');
+Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
+ */
+Route::resource('/transactions', TransactionController::class);
+Route::get('/search', [TransactionController::class, 'search'])->name('transactions.search');
 
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);
 
+
 //CATEGORIES
-/* Route::middleware('auth')->group(function () { */
-Route::resource('/settings/categories', CategoryController::class);
-Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
+Route::middleware('auth')->group(function () {
+    Route::resource('/settings/categories', CategoryController::class);
+    Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
+    Route::post('/categories/{category}/save', [CategoryController::class, 'save'])->name('categories.save');
+});
 
-
-//CUSTOMCATEGORIES
-Route::resource('/settings/custom_categories', CustomCategoryController::class);
 
 //BUDGET
 /* Route::middleware('auth')->group(function () { */
 Route::resource('/settings/budgets', BudgetController::class);
 /* }); */
+
+
+//GOALS
+Route::middleware('auth')->group(function () {
+    Route::resource('/goals', GoalController::class);
+});

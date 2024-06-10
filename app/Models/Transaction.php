@@ -14,6 +14,7 @@ class Transaction extends Model
         'category_id',
         'user_id',
         'description',
+        'recipient_id',
         'banking_record_id',
         'type'
         

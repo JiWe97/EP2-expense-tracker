@@ -59,6 +59,13 @@
 @endsection
 
 @section('content')
+<a href="{{ route('transactions.create') }}" class="btn btn-primary">Add Transaction</a>
+<h1>Upload Bank Statement</h1>
+    <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file" accept=".csv">
+        <button type="submit">Upload</button>
+    </form>
 <h2 class="text-3xl pt-5 font-bold">Transaction history</h2>
 
 @include('search-bar')
@@ -160,7 +167,7 @@
             }
 
             $.ajax({
-                url: '{{ route("transactions.search") }}',
+                url: '{{ route("transactions.index") }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',

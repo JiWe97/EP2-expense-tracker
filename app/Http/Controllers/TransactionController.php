@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\BankingRecord;
 use App\Models\Transaction;
+use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\CustomCategory;
-use App\Http\Requests\TransactionRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BankStatementsImport; 
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -169,5 +172,31 @@ class TransactionController extends Controller
         //
     }
 
+    public function import(TransactionRequest $request) 
+    {
+        if ($request->hasFile('file')) {
+            try {
+                // Log file upload start
+                Log::info('File upload started');
 
+                Excel::import(new BankStatementsImport, $request->file('file'));
+
+                // Log file upload success
+                Log::info('File upload completed successfully');
+
+                return response()->json(['data' => 'Transactions imported successfully.', 201]);
+            } catch (Exception $ex) {
+                // Log exception
+                Log::error('File import error: ' . $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+
+                return response()->json(['data' => 'Some error has occurred.', 'message' => $ex->getMessage()], 400);
+            }
+        } else {
+            // Log no file error
+            Log::error('No file was uploaded');
+
+            return response()->json(['data' => 'No file uploaded.', 400]);
+        }
+    }
 }

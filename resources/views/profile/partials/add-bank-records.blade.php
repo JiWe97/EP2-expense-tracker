@@ -12,15 +12,32 @@
 
     <form method="POST" action="{{ route('store.banking.record') }}" class="mt-6 space-y-6">
         @csrf
-        
-        <div>
-        <label for="bankName">Bank Name:</label>
-        <input type="text" id="bankName" name="bank_name" required>
-    </div>
+
     <div>
-        <label for="accountNumber">Account Number:</label>
-        <input type="text" id="accountNumber" name="account_number" required>
+        <x-input-label for="bankName" value="{{ __('Bank Name') }}" />
+        <x-text-input id="bankName" name="bank_name" type="text" class="mt-1 block w-full" required autofocus />
+        <x-input-error class="mt-2" :messages="$errors->get('bank_name')" />
     </div>
-    <button type="submit">Save</button>
+
+    <div>
+        <x-input-label for="accountNumber" value="{{ __('Account Number') }}" />
+        <x-text-input id="accountNumber" name="account_number" type="text" class="mt-1 block w-full" required />
+        <x-input-error class="mt-2" :messages="$errors->get('account_number')" />
+    </div>
+
+     <div class="flex items-center gap-4">
+            <x-primary-button>{{ __('Save') }}</x-primary-button>
+
+            @if (session('status') === 'profile-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600 dark:text-gray-400"
+                >{{ __('Saved.') }}</p>
+            @endif
+        </div>
+        
     </form>
 </section>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Request;
@@ -58,3 +59,6 @@ Route::put('/settings/categories/{category}/toggle-show', [CategoryController::c
 /* Route::middleware('auth')->group(function () { */
 Route::resource('/settings/budgets', BudgetController::class);
 /* }); */
+
+//Bank
+Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');

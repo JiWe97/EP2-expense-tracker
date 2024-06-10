@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\GraphController;
 
 
 Route::get('/', function () {
@@ -40,8 +41,10 @@ Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->na
 
 Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
  */
+
 Route::resource('/transactions', TransactionController::class);
 Route::post('/search', [TransactionController::class, 'index'])->name('transactions.search');
+Route::get('/transactions/graph',  [GraphController::class, 'index']);
 
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);

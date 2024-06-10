@@ -16,7 +16,7 @@ class Transaction extends Model
         'description',
         'recipient_id',
         'banking_record_id',
-        'type',
+        'type'
         
     ];
 
@@ -28,5 +28,9 @@ class Transaction extends Model
     public function bankingRecord()
     {
         return $this->belongsTo(BankingRecord::class);
+    }
+    public function category()
+    {
+        return $this->belongsto(Category::class);
     }
 }

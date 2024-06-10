@@ -27,7 +27,6 @@ class TransactionController extends Controller
             $query = request()->get('search','');
             $transactions = Transaction::with(['user', 'bankingRecord'])
             ->where('amount', 'LIKE', "{$query}")
-            ->orWhere('custom_category_id', 'LIKE', "%{$query}%")
             ->orWhere('description', 'LIKE', "%{$query}%")
             ->orWhere('type', 'LIKE', "{$query}")
             ->orWhere('valuta', 'LIKE', "{$query}")
@@ -37,11 +36,14 @@ class TransactionController extends Controller
             ->orWhere('created_at', 'LIKE', "{$query}")
             ->orWhere('updated_at', 'LIKE', "{$query}")
             ->orWhere('recipient_id', 'LIKE', "%{$query}%")
+            ->orWhereHas('category', function ($q) use ($query){
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
             ->orWhereHas('user', function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%");
             })
             ->orWhereHas('bankingRecord', function ($q) use ($query) {
-                $q->where('bank_name', 'LIKE', "%{$query}%"); // Assuming banking records have a 'record_name' column
+                $q->where('bank_name', 'LIKE', "%{$query}%");
             })
             ->paginate(10);
             
@@ -57,7 +59,10 @@ class TransactionController extends Controller
             $id = $transaction->banking_record_id;
             $bankingRecord = BankingRecord::find($id);
             $transaction->banking_record_id = $bankingRecord->bank_name;
-            // $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null = $transaction->bankingRecord ? $transaction->bankingRecord->record_name : null;
+
+            $id = $transaction->category_id;
+            $category = Category::find($id);
+            $transaction->category_id = $category->name;
         }
         
         return view('transactions.index', ['transactions' => $transactions, 'categories' => $categories]);

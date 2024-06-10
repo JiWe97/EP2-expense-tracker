@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FileUploadController;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,10 @@ Route::middleware('auth')->group(function () {
 Route::resource('/settings/budgets', BudgetController::class);
 /* }); */
 
+
+//Bank
+Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
+Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');
 
 //GOALS
 Route::middleware('auth')->group(function () {

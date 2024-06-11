@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
         <div class="input-group mb-3">
-            <form method="POST" action="{{route('transactions.search')}}">
+            <form method="POST" action="{{route('transactions.index')}}">
                 @csrf
                 <input name="search" type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
                 <div class="input-group-append">

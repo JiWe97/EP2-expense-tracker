@@ -1,7 +1,9 @@
 @extends('layouts.custom')
+
 <div class="mb-4">
-      <a href="{{ route('budgets.index') }}" class="link">Back</a>
+    <a href="{{ route('budgets.index') }}" class="link">Back</a>
 </div>
+
 @section('title', $budget->name)
 
 @section('content')
@@ -14,6 +16,7 @@
         </div>
     @endforeach
 </div>
+
 <div class="mb-4">
     @if ($budget->mail_when_completely_spent)
         <p>You will receive an email when your budget is completely spent.</p>
@@ -22,8 +25,13 @@
         <p>You will receive an email when your budget is 80% spent</p>
     @endif
 </div>
-<x-progress-bar :budget="$budget"></x-progress-bar>
 
+<x-progress-bar :budget="$budget" :transactions="$transactions" />
+
+{{-- Werkt nog niet --}}
+{{-- <div class="mb-4">
+    @livewire('progress-bar', ['budget' => $budget, 'transactions' => $transactions])
+</div> --}}
 
 <div class="flex gap-2">
     <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="btn">Edit</a>
@@ -34,4 +42,5 @@
         <button type="submit" class="btn">Delete</button>
     </form>
 </div>
+
 @endsection

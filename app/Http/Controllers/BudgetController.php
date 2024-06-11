@@ -8,6 +8,7 @@ use App\Http\Requests\BudgetRequest;
 use App\Models\BankingRecord;
 use App\Models\Category;
 use App\Models\CustomCategory;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
@@ -46,9 +47,23 @@ class BudgetController extends Controller
 
     public function show(BankingRecord $banking_record, $budgetId)
     {
-        $budget = Budget::where('name', $budgetId)->first();
+        $budget = Budget::findOrFail($budgetId);
+        
+        // Retrieve the category IDs associated with the budget
+        $categoryIds = $budget->categories()->pluck('category_id')->toArray();
+
+        // Retrieve the transactions that match the category IDs
+        $transactions = Transaction::where('type', 'expense')
+            ->whereIn('category_id', $categoryIds)
+            ->get();
+
         $banking_records = BankingRecord::all(); // Fetch all banking records
-        return view('settings.budgets.show', ['budget' => $budget]);
+
+        return view('settings.budgets.show', [
+            'budget' => $budget,
+            'transactions' => $transactions,
+            'banking_records' => $banking_records,
+        ]);
     }
 
     public function edit($id)

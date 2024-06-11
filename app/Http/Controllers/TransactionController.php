@@ -31,6 +31,7 @@ class TransactionController extends Controller
             $transactions = Transaction::with(['user', 'bankingRecord'])
             ->where('amount', 'LIKE', "{$query}")
             ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orWhere('date', 'LIKE', "{$query}")
             ->orWhere('type', 'LIKE', "{$query}")
             ->orWhere('valuta', 'LIKE', "{$query}")
             ->orWhere('exchange_rate', 'LIKE', "{$query}")
@@ -90,10 +91,10 @@ class TransactionController extends Controller
             ];
         }
 
-        return view('transactions.create', compact('combinedCategories'));
+        $bankingRecords = BankingRecord::all();  // Add this line to fetch banking records
+
+        return view('transactions.create', compact('combinedCategories', 'bankingRecords'));
     }
-
-
 
     /**
      * Store a newly created resource in storage.
@@ -103,6 +104,7 @@ class TransactionController extends Controller
     {
         $request->validate([
             'type' => 'required|string',
+            'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
             'banking_record_id' => 'required|integer',
@@ -114,6 +116,7 @@ class TransactionController extends Controller
         // Save the transaction
         $transaction = new Transaction();
         $transaction->type = $request->type;
+        $transaction->date = $request->date;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->banking_record_id = $request->banking_record_id;
@@ -151,18 +154,73 @@ class TransactionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Transaction $transaction)
+    public function edit($id)
     {
-        //
+        $transaction = Transaction::findOrFail($id);
+        $bankingRecords = BankingRecord::all();
+        $categories = Category::where('show', true)->get();
+        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
+
+        // Create a combined list where custom category display names override the category names
+        $combinedCategories = [];
+        foreach ($categories as $category) {
+            $customCategory = $custom_categories->firstWhere('category_id', $category->id);
+            $combinedCategories[] = [
+                'id' => $category->id,
+                'name' => $customCategory ? $customCategory->displayname : $category->name,
+            ];
+        }
+
+        return view('transactions.edit', compact('transaction', 'bankingRecords', 'combinedCategories'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'type' => 'required|string',
+            'date' => 'required|date',
+            'amount' => 'required|numeric',
+            'description' => 'required|string',
+            'date' => 'required|date',
+            'banking_record_id' => 'required|integer',
+            'category_id' => 'required|integer',
+            'recipient_id' => 'required|integer',
+            'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->type = $request->type;
+        $transaction->amount = $request->amount;
+        $transaction->description = $request->description;
+        $transaction->date = $request->date;
+        $transaction->banking_record_id = $request->banking_record_id;
+        $transaction->category_id = $request->category_id;
+        $transaction->recipient_id = $request->recipient_id;
+        $transaction->user_id = $request->user_id;
+        $transaction->valuta = $request->valuta;
+        $transaction->exchange_rate = $request->exchange_rate;
+        $transaction->save();
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('attachments');
+
+                $attachment = new Attachment();
+                $attachment->picture = $path;
+                $attachment->transaction_id = $transaction->id;
+                $attachment->save();
+            }
+        }
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction updated successfully.');
     }
+
+   
 
     /**
      * Remove the specified resource from storage.
@@ -184,7 +242,7 @@ class TransactionController extends Controller
                 // Log file upload success
                 Log::info('File upload completed successfully');
 
-                return response()->json(['data' => 'Transactions imported successfully.', 201]);
+                return redirect()->route('transactions.index', ['transactions' => Transaction::paginate(10)])->with('success', 'Transactions imported successfully.');
             } catch (Exception $ex) {
                 // Log exception
                 Log::error('File import error: ' . $ex->getMessage());
@@ -196,7 +254,7 @@ class TransactionController extends Controller
             // Log no file error
             Log::error('No file was uploaded');
 
-            return response()->json(['data' => 'No file uploaded.', 400]);
+            return redirect()->route('transactions.index', ['transactions' => Transaction::paginate(10)])->with('error', 'No file uploaded.');
         }
     }
 }

@@ -1,12 +1,12 @@
 @extends('layouts.custom')
 
-<div class="mb-4">
-    <a href="{{ route('budgets.index') }}" class="link">Back</a>
-</div>
-
 @section('title', $budget->name)
 
 @section('content')
+
+<div class="mb-4">
+    <a href="{{ route('budgets.index') }}" class="link">Back</a>
+</div>
 
 <div class="mb-4 flex gap-2 items-center">
     <p class="font-bold">€ {{ $budget->amount }}</p>
@@ -26,21 +26,8 @@
     @endif
 </div>
 
-<x-progress-bar :budget="$budget" :transactions="$transactions" />
-
-{{-- Werkt nog niet --}}
-{{-- <div class="mb-4">
-    @livewire('progress-bar', ['budget' => $budget, 'transactions' => $transactions])
-</div> --}}
-
-<div class="flex gap-2">
-    <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="btn">Edit</a>
-
-    <form action="{{ route('budgets.destroy', ['budget' => $budget->id])}}" method="POST">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn">Delete</button>
-    </form>
+<div class="mb-4">
+    @livewire('progressbar', ['budget' => $budget, 'transactions' => \App\Models\Transaction::whereIn('category_id', $budget->categories->pluck('id'))->get()])
 </div>
 
 @endsection

@@ -29,4 +29,6 @@ class Budget extends Model
         return $this->belongsTo(BankingRecord::class);
     }
 
+
+
 }

@@ -99,7 +99,6 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */   
-
     public function store(Request $request)
     {
         $request->validate([
@@ -122,7 +121,7 @@ class TransactionController extends Controller
         $transaction->banking_record_id = $request->banking_record_id;
         $transaction->category_id = $request->category_id;
         $transaction->recipient_id = $request->recipient_id;
-        $transaction->user_id = $request->user_id;
+        $transaction->user_id = Auth::id(); // Set the user_id to the authenticated user
         $transaction->valuta = $request->valuta;
         $transaction->exchange_rate = $request->exchange_rate;
         $transaction->save();
@@ -142,7 +141,6 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -151,6 +149,7 @@ class TransactionController extends Controller
         $transactions = Transaction::paginate(10); // Add pagination
         return view('transactions.show', compact('transactions'));
     }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -174,7 +173,6 @@ class TransactionController extends Controller
         return view('transactions.edit', compact('transaction', 'bankingRecords', 'combinedCategories'));
     }
 
-
     /**
      * Update the specified resource in storage.
      */
@@ -185,10 +183,9 @@ class TransactionController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
-            'date' => 'required|date',
             'banking_record_id' => 'required|integer',
             'category_id' => 'required|integer',
-            'recipient_id' => 'required|integer',
+            'recipient_id' => 'required|integer', // Validate budget_id
             'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -201,7 +198,7 @@ class TransactionController extends Controller
         $transaction->banking_record_id = $request->banking_record_id;
         $transaction->category_id = $request->category_id;
         $transaction->recipient_id = $request->recipient_id;
-        $transaction->user_id = $request->user_id;
+        $transaction->user_id = $request->user_id; // Set the budget_id
         $transaction->valuta = $request->valuta;
         $transaction->exchange_rate = $request->exchange_rate;
         $transaction->save();
@@ -220,14 +217,15 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')->with('success', 'Transaction updated successfully.');
     }
 
-   
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
-        //
+        $transaction = Transaction::findOrFail($id);
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction deleted successfully.');
     }
 
     public function import(TransactionRequest $request) 

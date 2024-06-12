@@ -50,7 +50,7 @@
     <div>@yield('content')</div>
     @livewireScripts
     <script>
-        document.addEventListener('livewire:load', function () {
+        document.addEventListener('livewire:init', function () {
             window.addEventListener('alert', event => { 
                 alert(event.detail.message); 
             });

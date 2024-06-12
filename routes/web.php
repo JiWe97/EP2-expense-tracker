@@ -18,7 +18,6 @@ use App\Http\Controllers\GoalController;
 use App\Imports\BankStatementsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -60,9 +59,10 @@ Route::middleware('auth')->group(function () {
 
 
 //BUDGET
-/* Route::middleware('auth')->group(function () { */
-Route::resource('/settings/budgets', BudgetController::class);
-/* }); */
+Route::middleware('auth')->group(function () {
+    Route::resource('/settings/budgets', BudgetController::class);
+    Route::get('budgets/{budgetId}/history', [BudgetController::class, 'history'])->name('budgets.history');
+});
 
 
 //Bank

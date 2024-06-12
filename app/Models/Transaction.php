@@ -24,8 +24,9 @@ class Transaction extends Model
         'banking_record_id',
         'created_at',
         'updated_at',
-        
     ];
+
+    protected $dates = ['created_at', 'updated_at', 'date'];
 
     public function user()
     {

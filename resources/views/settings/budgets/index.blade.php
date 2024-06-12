@@ -18,7 +18,8 @@
                 <ul class="list-none p-0">
                     <li class="flex items-center space-x-2">
                         <a href="{{ route('budgets.show', ['budget' => $budget->id]) }}" class="text-sm font-medium }}">
-                            <span>{{ $budget->name }} - {{ $budget->amount }}</span>
+                            <span><i class="fa fa-money-bill"></i> {{ $budget->name }} - {{ $budget->amount }}</span>
+                        </a>
                     </li>
                 </ul>
             </div>

@@ -10,13 +10,16 @@ use App\Models\Category;
 use App\Models\CustomCategory;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
+use App\Models\HistoricalBudget;
 
 class BudgetController extends Controller
 {
     public function index()
     {
-        return view('settings.budgets.index', ['budgets' => Budget::all()]);
+        $budgets = Budget::all();
+        return view('settings.budgets.index', compact('budgets'));
     }
+
 
     public function create()
     {
@@ -106,4 +109,23 @@ class BudgetController extends Controller
         return redirect()->route('budgets.index')
             ->with('success', 'Budget deleted successfully');
     }
+
+    public function history($budgetId)
+    {
+        $categoryIds = Budget::find($budgetId)->categories()->pluck('category_id')->toArray();
+        $transactions = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(amount) as total_amount')
+            ->whereIn('category_id', $categoryIds)
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $budget = Budget::findOrFail($budgetId);
+
+        return view('settings.budgets.history', [
+            'budget' => $budget,
+            'transactions' => $transactions,
+        ]);
+    }
+    
 }

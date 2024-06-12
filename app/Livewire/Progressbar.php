@@ -27,16 +27,23 @@ class Progressbar extends Component
     public function refreshProgress()
     {
         // Re-fetch transactions that belong to the budget's categories
-        $this->filterTransactions(Transaction::whereIn('category_id', $this->budget->categories->pluck('id'))->get());
+        $this->filterTransactions($this->budget->categories->pluck('id'));
         $this->calculatePercentage();
     }
 
     private function filterTransactions($transactions)
     {
         $budgetCategoryIds = $this->budget->categories->pluck('id');
-        $this->transactions = $transactions->filter(function ($transaction) use ($budgetCategoryIds) {
-            return $budgetCategoryIds->contains($transaction->category_id);
-        });
+
+        // Current month and year
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        // Filter transactions directly in the query
+        $this->transactions = Transaction::whereIn('category_id', $budgetCategoryIds)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
     }
 
     public function calculatePercentage()

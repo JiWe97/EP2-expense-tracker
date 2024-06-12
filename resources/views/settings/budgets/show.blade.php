@@ -27,7 +27,7 @@
 </div>
 
 <div class="mb-4">
-    @livewire('progressbar', ['budget' => $budget, 'transactions' => \App\Models\Transaction::whereIn('category_id', $budget->categories->pluck('id'))->get()])
+    @livewire('progressbar', ['budget' => $budget, 'budgetId' => $budget->id, 'transactions' => \App\Models\Transaction::whereIn('category_id', $budget->categories->pluck('id'))->get()])
 </div>
 
 @endsection

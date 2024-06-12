@@ -26,9 +26,9 @@
     <div class="mb-4">
 
         <div class="mb-4">
-            <p>Total Budget: {{ $budget->amount }}</p>
-            <p>Total Spent: {{ $transactions->sum('amount') }}</p>
-            <p>Remaining: {{ $budget->amount - $transactions->sum('amount') }}</p>
+            <p>Total Budget: € {{ $budget->amount }}</p>
+            <p>Total Spent: € {{ $transactions->sum('amount') }}</p>
+            <p>Remaining: € {{ $budget->amount - $transactions->sum('amount') }}</p>
         </div>
         <div class="mb-4">
             <h1 class="text-black pr-10 pt-2 sm:pt-5 sm:pr-80 pt-5">
@@ -42,11 +42,11 @@
     </div>
 
     <div class="transactions">
-        <h2>Transactions</h2>
+        <h2 class="text-l font-semibold underline">Transactions</h2>
         <ul>
             @foreach($transactions as $transaction)
                 <li>
-                    <p>{{ $transaction->description }} - €{{ $transaction->amount }}</p>
+                    <p><i class="fa fa-coins"></i> {{ $transaction->description }}  -  €{{ $transaction->amount }}</p>
                 </li>
             @endforeach
         </ul>

@@ -40,4 +40,5 @@ class Transaction extends Model
     {
         return $this->belongsto(Category::class);
     }
+
 }

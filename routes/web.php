@@ -17,6 +17,8 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
 use App\Imports\BankStatementsImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\GraphController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,17 +36,16 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-/* Route::resource('/dashboard/transactions', [TransactionController::class, 'index'])
-    ->with('categories', Category::all())
-    ->name('transactions.index');
+Route::get('/graph', [GraphController::class, 'index']);
 
 Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
 
-Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
- */
+// Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
 
 Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
+
 Route::resource('/transactions', TransactionController::class);
+
 
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);

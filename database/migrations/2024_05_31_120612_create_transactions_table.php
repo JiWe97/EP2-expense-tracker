@@ -17,14 +17,13 @@ return new class extends Migration
             $table->float('amount');
             $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('user_id')->constrained();
-            $table->string('description')->nullable();
+            $table->string('description');
+            $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->string('type');
             $table->enum('valuta', ['EUR', 'USD'])->default('EUR');
-            $table->foreignId('recipient_id')->constrained('recipients');
             $table->float('exchange_rate')->nullable(); 
             $table->boolean('warranty')->nullable();
             $table->date('warranty_date')->nullable();
-            $table->foreignId('banking_record_id')->constrained('banking_records');
             $table->timestamps();
         });
     }

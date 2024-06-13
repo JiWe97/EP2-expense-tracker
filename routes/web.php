@@ -55,7 +55,6 @@ Route::post('/uploads', [FileUploadController::class, 'store']);
 Route::middleware('auth')->group(function () {
     Route::resource('/settings/categories', CategoryController::class);
     Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
-    Route::post('/categories/{category}/save', [CategoryController::class, 'save'])->name('categories.save');
 });
 
 

@@ -7,7 +7,6 @@ use App\Models\BankingRecord;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Models\CustomCategory;
 use App\Http\Requests\TransactionRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attachment;
@@ -111,6 +110,7 @@ class TransactionController extends Controller
             });
             
               
+
             
         return view('transactions.index', ['transactions' => $transactions, 'categories' => $categories]);
             
@@ -121,23 +121,12 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('show', true)->get();  // Filter categories based on 'show' attribute
-        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
+        $categories = Category::where('show', true)->where('user_id', Auth::id())->get();
+        $bankingRecords = BankingRecord::all();  // Add this line to fetch banking records
 
-        // Create a combined list where custom category display names override the category names
-        $combinedCategories = [];
-        foreach ($categories as $category) {
-            $customCategory = $custom_categories->firstWhere('category_id', $category->id);
-            $combinedCategories[] = [
-                'id' => $category->id,
-                'name' => $customCategory ? $customCategory->displayname : $category->name,
-            ];
-        }
+        return view('transactions.create', compact('categories', 'bankingRecords'));
 
-        return view('transactions.create', compact('combinedCategories'));
     }
-
-
 
     /**
      * Store a newly created resource in storage.
@@ -151,7 +140,6 @@ class TransactionController extends Controller
             'description' => 'required|string',
             'banking_record_id' => 'required|integer',
             'category_id' => 'required|integer',
-            'recipient_id' => 'required|integer',
             'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -162,8 +150,7 @@ class TransactionController extends Controller
         $transaction->description = $request->description;
         $transaction->banking_record_id = $request->banking_record_id;
         $transaction->category_id = $request->category_id;
-        $transaction->recipient_id = $request->recipient_id;
-        $transaction->user_id = $request->user_id;
+        $transaction->user_id = Auth::id(); // Set the user_id to the authenticated user
         $transaction->valuta = $request->valuta;
         $transaction->exchange_rate = $request->exchange_rate;
         $transaction->save();
@@ -197,7 +184,11 @@ class TransactionController extends Controller
      */
     public function edit(Transaction $transaction)
     {
-        //
+        $transaction = Transaction::findOrFail($id);
+        $bankingRecords = BankingRecord::all();
+        $categories = Category::where('show', true)->where('user_id', Auth::id())->get();
+
+        return view('transactions.edit', compact('transaction', 'bankingRecords', 'categories'));
     }
 
     /**
@@ -205,7 +196,41 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-        //
+        $request->validate([
+            'type' => 'required|string',
+            'date' => 'required|date',
+            'amount' => 'required|numeric',
+            'description' => 'required|string',
+            'banking_record_id' => 'required|integer',
+            'category_id' => 'required|integer',
+            'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->type = $request->type;
+        $transaction->amount = $request->amount;
+        $transaction->description = $request->description;
+        $transaction->date = $request->date;
+        $transaction->banking_record_id = $request->banking_record_id;
+        $transaction->category_id = $request->category_id;
+        $transaction->user_id = $request->user_id; // Set the budget_id
+        $transaction->valuta = $request->valuta;
+        $transaction->exchange_rate = $request->exchange_rate;
+        $transaction->save();
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('attachments');
+
+                $attachment = new Attachment();
+                $attachment->picture = $path;
+                $attachment->transaction_id = $transaction->id;
+                $attachment->save();
+            }
+        }
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction updated successfully.');
     }
 
     /**

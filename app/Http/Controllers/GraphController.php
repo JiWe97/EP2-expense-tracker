@@ -56,7 +56,7 @@ class GraphController extends Controller
                 'date' => $transaction->created_at ? $transaction->created_at->format('d-m-Y') :null,
             ];
         })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
-        print_r($transactionData);
+        // print_r($transactionData);
 
         return view('graph', ['categoryTotals' => $categoryTotalsWithName, 'transactionData' => $transactionData]);
     }

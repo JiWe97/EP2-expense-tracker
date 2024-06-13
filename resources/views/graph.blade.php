@@ -115,7 +115,7 @@
 
 @section('content')
 <h2 class="text-3xl pt-5 font-bold">Graphs</h2>
-<p>circle graph</p>
+<!-- <p>circle graph</p> -->
 <div id="pieChart"></div>
 <div id="chart_div" style="width: 100%; height: 400px;"></div>
 @endsection

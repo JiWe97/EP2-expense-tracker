@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('name');
             $table->string('color');
             $table->boolean('show')->default(true);
             $table->string('icon');
+            $table->boolean('is_income')->default(false);
             $table->timestamps();
         });
     }

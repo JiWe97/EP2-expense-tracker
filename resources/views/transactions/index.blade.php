@@ -2,157 +2,193 @@
 
 @section('styles')
     <style>
-        /* body.table{
+        body {
             font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333;
-            background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        }
 
-        } */
         .table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            font-size: 18px;
+            font-size: 16px;
             text-align: left;
-            /* position: absolute;
-            left: 100px; */
         }
+
         th, td {
             padding: 12px;
             border-bottom: 1px solid #ddd;
         }
+
         th {
-            background-color: #f4f4f4;
+            background-color: #e0e0e0;
         }
+
         .transaction-table {
             width: 100%;
             margin-top: 20px;
             border-collapse: collapse;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .transaction-table th, .transaction-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: none;
+            padding: 12px 15px;
         }
+
         .transaction-table th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #f2f2f2;
-            color: black;
+            background-color: #f7f7f7;
+            font-weight: bold;
+            color: #333;
         }
+
+        .transaction-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
         .transaction-table tr:hover {
             background-color: #f1f1f1;
         }
-        .transaction-table .conditional {
-            background-color: #eaf3ff;
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control:focus {
+            border-color: #333;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f1f1f1;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-top: 20px;
         }
     </style>
 @endsection
 
 @section('content')
 <div class="mb-4">
-    <h1 class="text-xl pt-5 font-bold">Manual Entry</h1>
+    <h1 class="text-2xl pt-5 font-bold">Manual Entry</h1>
     <a href="{{ route('transactions.create') }}" class="btn btn-primary mb-5">Add Transaction</a>
 </div>
 
 <div class="mb-4">
-    <h1 class="text-xl pt-5 font-bold">Upload Bank Statement</h1>
-        <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <input type="file" name="file" accept=".csv">
-            <button class="btn btn-primary" type="submit">Upload</button>
-        </form>
+    <h1 class="text-2xl pt-5 font-bold">Upload Bank Statement</h1>
+    <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file" accept=".csv" class="form-control">
+        <button class="btn btn-primary mt-2" type="submit">Upload</button>
+    </form>
 </div>
 
 <div class="mb-4">
-    <h2 class="text-3xl pt-5 font-bold">Transaction history</h2>
+    <h2 class="text-2xl pt-5 font-bold">Transaction history</h2>
 
     @include('search-bar')
 
-
     <div class="justify-center flex items-center">
         @if(isset($query))
-                <h3 class="text-2xl font-semibold">Search Results for "{{ $query }}"</h3>
+            <h3 class="text-2xl font-semibold">Search Results for "{{ $query }}"</h3>
         @endif
         @if($transactions->isEmpty())
-            <td>No transactions found.</td>
+            <p class="text-center">No transactions found.</p>
         @else
         <div class="table-responsive">
-            <table class="table table-dark table-sm">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Recipient</th>
-                    <th>Exchange Rate</th>
-                    <th>Warranty</th>
-                    <th>Warranty Date</th>
-                    <th>Bank</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                </tr>
-            </thead>
-            @foreach ($transactions as $transaction)
-                <?php //echo $transaction; ?>
-                <tbody class="table-group-divider">
-                <div class="transaction-item mb-4 td-4 bg-gray-100 rounded shadow">
-                    <th scope="row">{{ $transaction->user_id }}</th>
-                    <td>{{ $transaction->date }}</td>
-                    <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</td>
-                    <td>{{ $transaction->description }}</td>
-                    <td>{{ $transaction->type }}</td>
-                    @if($transaction->category_id !== null)
-                        <td>{{ $transaction->category_id }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    @if($transaction->recipient_id !== null)
-                        <td>{{ $transaction->recipient_id }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    @if($transaction->exchange_rate !== null)
-                        <td>{{ $transaction->exchange_rate }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    @if($transaction->warranty !== null)
-                        <td> {{ $transaction->warranty }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    @if($transaction->warranty_date !== null)
-                        <td>{{ $transaction->warranty_date }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    <td>{{ $transaction->banking_record_id }}</td>
-                    @if($transaction->created_at !== null)
-                    <td>{{ $transaction->created_at }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    @if($transaction->updated_at !== null)
-                    <td>{{ $transaction->updated_at }}</td>
-                    @else
-                        <td></td>
-                    @endif
-                </div>
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Bank</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach ($transactions as $transaction)
+                    <tr>
+                        <td>{{ $transaction->user_id }}</td>
+                        <td>{{ $transaction->date }}</td>
+                        <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
+                        <td>{{ $transaction->description }}</td>
+                        <td>{{ $transaction->type }}</td>
+                        <td>{{ $transaction->category_id ?? '' }}</td>
+                        <td>{{ $transaction->banking_record_id }}</td>
+                        <td>{{ $transaction->created_at ?? '' }}</td>
+                        <td>{{ $transaction->updated_at ?? '' }}</td>
+                    </tr>
+                @endforeach
                 </tbody>
-            @endforeach
             </table>
         </div>
         @endif
@@ -195,4 +231,3 @@
     });
 </script>
 @endsection
-

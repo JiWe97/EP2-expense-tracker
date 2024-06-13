@@ -7,10 +7,8 @@ use App\Models\Budget;
 use App\Http\Requests\BudgetRequest;
 use App\Models\BankingRecord;
 use App\Models\Category;
-use App\Models\CustomCategory;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
-use App\Models\HistoricalBudget;
 
 class BudgetController extends Controller
 {
@@ -23,11 +21,10 @@ class BudgetController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::where('show', true)->where('is_income', false)->where('user_id', Auth::id())->get();
         $banking_records = BankingRecord::all();
-        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
 
-        return view('settings.budgets.create', compact('categories', 'banking_records', 'custom_categories'));
+        return view('settings.budgets.create', compact('categories', 'banking_records'));
     }
 
     public function store(BudgetRequest $request)
@@ -72,11 +69,10 @@ class BudgetController extends Controller
     public function edit($id)
     {
         $budget = Budget::findOrFail($id);
-        $categories = Category::all();
+        $categories = Category::where('show', true)->where('is_income', false)->where('user_id', Auth::id())->get();
         $banking_records = BankingRecord::all();
-        $custom_categories = CustomCategory::where('user_id', Auth::id())->get();
 
-        return view('settings.budgets.edit', compact('budget', 'categories', 'banking_records', 'custom_categories'));
+        return view('settings.budgets.edit', compact('budget', 'categories', 'banking_records'));
     }
 
     public function update(BudgetRequest $request, Budget $budget)

@@ -17,7 +17,6 @@ class Transaction extends Model
         'description',
         'type',
         'valuta',
-        'recipient_id',
         'exchange_rate',
         'warranty',
         'warranty_date',

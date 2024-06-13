@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'color', 'icon'];
+    protected $fillable = ['name', 'color', 'icon', 'show', 'is_income', 'user_id'];
 
     public function toggleShow()
     {
@@ -19,14 +19,13 @@ class Category extends Model
         return $this;
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function budget()
     {
         return $this->belongsToMany(Budget::class, 'budget_categories', 'category_id', 'budget_id');
-    }
-
-    public function CustomCategory()
-    {
-        return $this->hasOne(CustomCategory::class);
     }
     public function transaction()
     {

@@ -14,9 +14,12 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
-            'color' => 'required',
-            'icon' => 'required',
+            'name' => 'required|string|max:255',
+            'color' => 'required|string|max:7',
+            'icon' => 'required|string|max:255',
+            'show' => 'boolean',
+            'is_income' => 'required|boolean',
+            'user_id' => 'required|exists:users,id',
         ];
     }
 }

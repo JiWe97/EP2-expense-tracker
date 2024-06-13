@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('mail_when_completely_spent')->default(false);
             $table->boolean('mail_when_partially_spent')->default(false);
             $table->foreignId('banking_record_id')->constrained('banking_records')->onDelete('cascade');
+            $table->timestamp('last_partially_spent_notification')->nullable();
+            $table->timestamp('last_completely_spent_notification')->nullable();
             $table->timestamps();
         });
     }

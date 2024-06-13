@@ -46,7 +46,7 @@
         <ul>
             @foreach($transactions as $transaction)
                 <li>
-                    <p><i class="fa fa-coins"></i> {{ $transaction->description }}  -  €{{ $transaction->amount }}</p>
+                    <a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}"><p><i class="fa fa-coins"></i> {{ $transaction->description }}  -  €{{ $transaction->amount }}</p></a>
                 </li>
             @endforeach
         </ul>

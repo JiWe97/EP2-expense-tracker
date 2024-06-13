@@ -33,4 +33,12 @@
     @livewire('progressbar', ['budget' => $budget, 'budgetId' => $budget->id, 'transactions' => \App\Models\Transaction::whereIn('category_id', $budget->categories->pluck('id'))->get()])
 </div>
 
+<div class="mb-4">
+    <form method="POST" action="{{ route('budgets.destroy', ['budget' => $budget->id]) }}">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>     
+</div>
+
 @endsection

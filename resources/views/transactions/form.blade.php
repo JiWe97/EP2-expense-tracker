@@ -103,15 +103,6 @@
       </button>
       <a href="{{ route('transactions.index') }}" class="link">Cancel</a>
     </div>
-    <div class="mb-4">
-      @isset($transaction)
-        <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn">Delete</button>
-        </form>
-      @endisset
-    </div>
 
     {{-- Error messages --}}
     @if ($errors->any())
@@ -124,4 +115,12 @@
       </div>
     @endif
   </form>
+
+  @isset($transaction)
+    <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" class="mt-4">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  @endisset
 @endsection

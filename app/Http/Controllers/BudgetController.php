@@ -110,22 +110,67 @@ class BudgetController extends Controller
             ->with('success', 'Budget deleted successfully');
     }
 
-    public function history($budgetId)
+    public function history(Request $request, $budgetId)
     {
-        $categoryIds = Budget::find($budgetId)->categories()->pluck('category_id')->toArray();
-        $transactions = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(amount) as total_amount')
-            ->whereIn('category_id', $categoryIds)
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
-
         $budget = Budget::findOrFail($budgetId);
+        $totalBudget = $budget->amount;
+        $categoryIds = $budget->categories()->pluck('category_id')->toArray();
+
+        // Fetch query parameters
+        $year = $request->input('year');
+        $month = $request->input('month');
+        $sortSpent = $request->input('sort_spent');
+        $sortRemaining = $request->input('sort_remaining');
+
+        // Build the base query
+        $query = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(amount) as total_amount')
+            ->whereIn('category_id', $categoryIds)
+            ->groupBy('year', 'month');
+
+        // Apply year filter
+        if ($year) {
+            $query->whereRaw('YEAR(date) = ?', [$year]);
+        }
+
+        // Apply month filter
+        if ($month) {
+            $query->whereRaw('MONTH(date) = ?', [$month]);
+        }
+
+        // Fetch transactions
+        $transactions = $query->get();
+
+        // Calculate remaining budget and add month name
+        $totalSpent = 0;
+        $transactions->each(function ($transaction) use ($totalBudget, &$totalSpent) {
+            $totalSpent += $transaction->total_amount;
+            $transaction->remaining_amount = $totalBudget - $totalSpent;
+            $transaction->month_name = \Carbon\Carbon::create()->month($transaction->month)->format('F');
+        });
+
+        // Sort by amount spent
+        if ($sortSpent) {
+            $transactions = $sortSpent == 'highest'
+                ? $transactions->sortByDesc('total_amount')
+                : $transactions->sortBy('total_amount');
+        }
+
+        // Sort by amount remaining
+        if ($sortRemaining) {
+            $transactions = $sortRemaining == 'highest'
+                ? $transactions->sortByDesc('remaining_amount')
+                : $transactions->sortBy('remaining_amount');
+        }
 
         return view('settings.budgets.history', [
             'budget' => $budget,
             'transactions' => $transactions,
+            'year' => $year,
+            'month' => $month,
+            'sortSpent' => $sortSpent,
+            'sortRemaining' => $sortRemaining,
         ]);
     }
-    
+
+
 }

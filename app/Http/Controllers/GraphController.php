@@ -19,12 +19,13 @@ class GraphController extends Controller
         $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
             return $categoryTransactions->sum('amount');
         });
+        
+        $categoryTotalsWithName = $categoryTotals->mapWithKeys(function ($total, $categoryId) {
+            $name = Category::find($categoryId)->name;
+            return [$name => $total];
+        });
 
-        foreach ($categoryTotals as $categoryId => $total) {
-            $id = $categoryId;
-            $name = $categories[$categoryId]->name;
-            // $categoryTotals[$categoryId] = $name;
-        }
+        // print_r($categoryTotals);
 
 
         // Map transaction types
@@ -32,14 +33,12 @@ class GraphController extends Controller
             return [
                 'type' => $transaction->type,
                 'amount' => $transaction->amount,
-                'date' => $transaction->created_at->format('d-m-Y'),
+                'date' => $transaction->created_at ? $transaction->created_at->format('d-m-Y') :null,
             ];
-        })->filter(function ($transaction) {
-            return $transaction['date'] !== null;
         })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
-        // print_r($transactionData);
+        print_r($transactionData);
 
-        return view('graph', ['categoryTotals' => $categoryTotals, 'transactionData' => $transactionData]);
+        return view('graph', ['categoryTotals' => $categoryTotalsWithName, 'transactionData' => $transactionData]);
     }
 
     /**

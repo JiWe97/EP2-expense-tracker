@@ -20,53 +20,100 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        $transactions = Transaction::paginate(10); // Add pagination
-
-        if(request()->has('search')){
-            $query = request()->get('search','');
-            $transactions = Transaction::with(['user', 'bankingRecord'])
-            ->where('amount', 'LIKE', "{$query}")
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->orWhere('type', 'LIKE', "{$query}")
-            ->orWhere('valuta', 'LIKE', "{$query}")
-            ->orWhere('exchange_rate', 'LIKE', "{$query}")
-            ->orWhere('warranty', 'LIKE', "{$query}")
-            ->orWhere('warranty_date', 'LIKE', "{$query}")
-            ->orWhere('created_at', 'LIKE', "{$query}")
-            ->orWhere('updated_at', 'LIKE', "{$query}")
-            ->orWhere('recipient_id', 'LIKE', "%{$query}%")
-            ->orWhereHas('category', function ($q) use ($query){
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
-            ->orWhereHas('user', function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
-            ->orWhereHas('bankingRecord', function ($q) use ($query) {
-                $q->where('bank_name', 'LIKE', "%{$query}%");
-            })
-            ->paginate(10);
+            $categories = Category::all();
             
-        }
-
-        // dd($transactions);
-        foreach ($transactions as $transaction) {
-            $id = $transaction->user_id;
-            $user = User::find($id);
-            $transaction->user_id = $user->name;
-
-
-            $id = $transaction->banking_record_id;
-            $bankingRecord = BankingRecord::find($id);
-            $transaction->banking_record_id = $bankingRecord->bank_name;
-
-            $id = $transaction->category_id;
-            $category = Category::find($id);
-            $transaction->category_id = $category->name;
-        }
-        
+            $transactions = Transaction::with(['user', 'bankingRecord']);
+            
+              
+            
+            // Check if search query is present
+            
+            if(request()->has('search')){
+                $query = request()->get('search', '');
+                // Search for transactions based on various fields
+                $transactions->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('amount', 'LIKE', "%{$query}%")
+                ->orWhere('description', 'LIKE', "%{$query}%")
+                ->orWhere('type', 'LIKE', "%{$query}%")
+                ->orWhere('valuta', 'LIKE', "%{$query}%")
+                ->orWhere('exchange_rate', 'LIKE', "%{$query}%")
+                ->orWhere('warranty', 'LIKE', "%{$query}%")
+                ->orWhere('warranty_date', 'LIKE', "%{$query}%")
+                ->orWhere('created_at', 'LIKE', "%{$query}%")
+                ->orWhere('updated_at', 'LIKE', "%{$query}%")
+                ->orWhere('recipient_id', 'LIKE', "%{$query}%")
+                ->orWhereHas('category', function ($q) use ($query) {
+                    $q->where('name', 'LIKE', "%{$query}%");
+                })
+                ->orWhereHas('user', function ($q) use ($query) {
+                    $q->where('name', 'LIKE', "%{$query}%");
+                })
+                ->orWhereHas('bankingRecord', function ($q) use ($query) {
+                    $q->where('bank_name', 'LIKE', "%{$query}%");
+                });
+                });
+            
+              
+            
+                // Attempt to parse the query as a date
+                $dateFormats = ['d-m', 'd/m', 'd-m-Y', 'd/m/Y', 'Y-m-d'];
+                $monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+              
+                foreach ($dateFormats as $format) {
+                    $date = DateTime::createFromFormat($format, $query);
+                    if ($date && $date->format($format) === $query) {
+                    // If the query matches a valid date format
+                    $year = $date->format('Y');
+                    $month = $date->format('m');
+                    $day = $date->format('d');
+                    // Filter transactions by month
+            
+                    $transactions->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->orWhereYear('updated_at', $year)
+                    ->whereMonth('updated_at', $month)
+                    ->orWhereDay('created_at', $day)
+                    ->orWhereDay('updated_at', $day);
+                    break;
+                    }
+            
+                }
+            
+              
+            
+                // Check if the query is a month name
+            
+                if (in_array($query, $monthsOfYear)) 
+                {
+                    $monthIndex = array_search($query, $monthsOfYear) + 1; // Get month index (1-based)
+                    // Filter transactions by month
+                    $transactions->whereMonth('created_at', $monthIndex)
+                    ->orWhereMonth('updated_at', $monthIndex);
+                }
+            
+            }
+            
+              
+            
+            // Paginate the results
+            
+            $transactions = $transactions->paginate(10);
+            
+              
+            
+            // Replace IDs with corresponding names
+            
+            $transactions->each(function ($transaction) {
+                $transaction->user_id = User::find($transaction->user_id)->name;
+                $transaction->banking_record_id = BankingRecord::find($transaction->banking_record_id)->bank_name;
+                $transaction->category_id = Category::find($transaction->category_id)->name;
+            });
+            
+              
+            
         return view('transactions.index', ['transactions' => $transactions, 'categories' => $categories]);
-        
+            
     }
 
     /**

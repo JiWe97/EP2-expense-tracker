@@ -11,6 +11,7 @@ use App\Http\Requests\TransactionRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
+use DateTime;
 
 class TransactionController extends Controller
 {
@@ -19,28 +20,20 @@ class TransactionController extends Controller
      */
     public function index()
     {
-            $categories = Category::all();
-            
-            $transactions = Transaction::with(['user', 'bankingRecord']);
-            
-              
-            
-            // Check if search query is present
-            
-            if(request()->has('search')){
-                $query = request()->get('search', '');
-                // Search for transactions based on various fields
-                $transactions->where(function ($queryBuilder) use ($query) {
+        $categories = Category::all();
+        $transactions = Transaction::with(['user', 'bankingRecord']);
+
+        // Check if search query is present
+        if(request()->has('search')){
+            $query = request()->get('search', '');
+            // Search for transactions based on various fields
+            $transactions->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('amount', 'LIKE', "%{$query}%")
                 ->orWhere('description', 'LIKE', "%{$query}%")
                 ->orWhere('type', 'LIKE', "%{$query}%")
                 ->orWhere('valuta', 'LIKE', "%{$query}%")
-                ->orWhere('exchange_rate', 'LIKE', "%{$query}%")
-                ->orWhere('warranty', 'LIKE', "%{$query}%")
-                ->orWhere('warranty_date', 'LIKE', "%{$query}%")
                 ->orWhere('created_at', 'LIKE', "%{$query}%")
                 ->orWhere('updated_at', 'LIKE', "%{$query}%")
-                ->orWhere('recipient_id', 'LIKE', "%{$query}%")
                 ->orWhereHas('category', function ($q) use ($query) {
                     $q->where('name', 'LIKE', "%{$query}%");
                 })
@@ -50,24 +43,21 @@ class TransactionController extends Controller
                 ->orWhereHas('bankingRecord', function ($q) use ($query) {
                     $q->where('bank_name', 'LIKE', "%{$query}%");
                 });
-                });
-            
-              
-            
-                // Attempt to parse the query as a date
-                $dateFormats = ['d-m', 'd/m', 'd-m-Y', 'd/m/Y', 'Y-m-d'];
-                $monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            
-              
-                foreach ($dateFormats as $format) {
-                    $date = DateTime::createFromFormat($format, $query);
-                    if ($date && $date->format($format) === $query) {
+            });
+
+            // Attempt to parse the query as a date
+            $dateFormats = ['d-m', 'd/m', 'd-m-Y', 'd/m/Y', 'Y-m-d'];
+            $monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            foreach ($dateFormats as $format) {
+                $date = DateTime::createFromFormat($format, $query);
+                if ($date && $date->format($format) === $query) {
                     // If the query matches a valid date format
                     $year = $date->format('Y');
                     $month = $date->format('m');
                     $day = $date->format('d');
                     // Filter transactions by month
-            
+
                     $transactions->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->orWhereYear('updated_at', $year)
@@ -75,45 +65,29 @@ class TransactionController extends Controller
                     ->orWhereDay('created_at', $day)
                     ->orWhereDay('updated_at', $day);
                     break;
-                    }
-            
                 }
-            
-              
-            
-                // Check if the query is a month name
-            
-                if (in_array($query, $monthsOfYear)) 
-                {
-                    $monthIndex = array_search($query, $monthsOfYear) + 1; // Get month index (1-based)
-                    // Filter transactions by month
-                    $transactions->whereMonth('created_at', $monthIndex)
-                    ->orWhereMonth('updated_at', $monthIndex);
-                }
-            
             }
-            
-              
-            
-            // Paginate the results
-            
-            $transactions = $transactions->paginate(10);
-            
-              
-            
-            // Replace IDs with corresponding names
-            
-            $transactions->each(function ($transaction) {
-                $transaction->user_id = User::find($transaction->user_id)->name;
-                $transaction->banking_record_id = BankingRecord::find($transaction->banking_record_id)->bank_name;
-                $transaction->category_id = Category::find($transaction->category_id)->name;
-            });
-            
-              
 
-            
+            // Check if the query is a month name
+            if (in_array($query, $monthsOfYear)) {
+                $monthIndex = array_search($query, $monthsOfYear) + 1; // Get month index (1-based)
+                // Filter transactions by month
+                $transactions->whereMonth('created_at', $monthIndex)
+                ->orWhereMonth('updated_at', $monthIndex);
+            }
+        }
+
+        // Paginate the results
+        $transactions = $transactions->paginate(10);
+
+        // Replace IDs with corresponding names
+        $transactions->each(function ($transaction) {
+            $transaction->user_id = User::find($transaction->user_id)->name;
+            $transaction->banking_record_id = BankingRecord::find($transaction->banking_record_id)->bank_name;
+            $transaction->category_id = Category::find($transaction->category_id)->name;
+        });
+
         return view('transactions.index', ['transactions' => $transactions, 'categories' => $categories]);
-            
     }
 
     /**
@@ -125,17 +99,16 @@ class TransactionController extends Controller
         $bankingRecords = BankingRecord::all();  // Add this line to fetch banking records
 
         return view('transactions.create', compact('categories', 'bankingRecords'));
-
     }
 
     /**
      * Store a newly created resource in storage.
      */   
-
     public function store(Request $request)
     {
         $request->validate([
             'type' => 'required|string',
+            'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
             'banking_record_id' => 'required|integer',
@@ -146,6 +119,7 @@ class TransactionController extends Controller
         // Save the transaction
         $transaction = new Transaction();
         $transaction->type = $request->type;
+        $transaction->date = $request->date;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->banking_record_id = $request->banking_record_id;
@@ -170,7 +144,6 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -179,12 +152,12 @@ class TransactionController extends Controller
         $transactions = Transaction::paginate(10); // Add pagination
         return view('transactions.show', compact('transactions'));
     }
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Transaction $transaction)
     {
-        $transaction = Transaction::findOrFail($id);
         $bankingRecords = BankingRecord::all();
         $categories = Category::where('show', true)->where('user_id', Auth::id())->get();
 
@@ -205,8 +178,6 @@ class TransactionController extends Controller
             'category_id' => 'required|integer',
             'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
-
-        $transaction = Transaction::findOrFail($id);
 
         $transaction->type = $request->type;
         $transaction->amount = $request->amount;
@@ -238,8 +209,7 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        $transaction->delete();
+        return redirect()->route('transactions.index')->with('success', 'Transaction deleted successfully.');
     }
-
-
 }

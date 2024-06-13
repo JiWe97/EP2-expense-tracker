@@ -16,14 +16,34 @@ class GraphController extends Controller
        $transactions = Transaction::with('category')->get();
 
         //Aggregate data by category and calculate total amount for each category
-        $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
+        // $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
+        //     return $categoryTransactions->sum('amount');
+        // });
+        
+        // $categoryTotalsWithName = $categoryTotals->mapWithKeys(function ($total, $categoryId) {
+        //     $name = Category::find($categoryId)->name;
+        //     return [$name => $total];
+        // });
+
+        $expenseTransactions = $transactions->filter(function ($transaction) {
+            return $transaction->type === 'expense';
+        });
+        
+        // Group filtered transactions by 'category_id' and sum the 'amount'
+        $categoryTotals = $expenseTransactions->groupBy('category_id')->map(function ($categoryTransactions) {
             return $categoryTransactions->sum('amount');
         });
         
-        $categoryTotalsWithName = $categoryTotals->mapWithKeys(function ($total, $categoryId) {
-            $name = Category::find($categoryId)->name;
+        // Pre-fetch categories to avoid multiple queries
+        $categories = Category::whereIn('id', $categoryTotals->keys())->pluck('name', 'id');
+        
+        // Map category IDs to category names and keep the totals
+        $categoryTotalsWithName = $categoryTotals->mapWithKeys(function ($total, $categoryId) use ($categories) {
+            $name = $categories->get($categoryId, 'Unknown Category');
             return [$name => $total];
         });
+
+        
 
         // print_r($categoryTotals);
 

@@ -57,30 +57,50 @@
     //     chart.draw(data, options);
     // }
 
+    // function drawChart() {
+    //     let data = new google.visualization.DataTable();
+    //     let transactionData = @json($transactionData);
+    //     data.addColumn('string', 'Date');
+    //     data.addColumn('number', 'Amount');
+    //     // Sample data (replace this with your actual data)
+    //     // let transactions = [
+    //     //     { month: 'Jan', type: 'income', amount: 1000 },
+    //     //     { month: 'Feb', type: 'income', amount: 1200 },
+    //     //     { month: 'Mar', type: 'expense', amount: 500 },
+    //     //     { month: 'Apr', type: 'expense', amount: 700 },
+    //     //     { month: 'Feb', type: 'income', amount: 100 }
+    //     //     // Add more data rows here...
+    //     // ];
+
+    //     transactions.forEach(function(transaction) {
+    //     //     console.log(transaction);
+    //         let value = (transaction.type === 'income') ? transaction.amount : -transaction.amount;
+    //         data.addRow([transaction.date, value]);
+    //     });
+    //     // Process data rows
+
+    //     transactions.forEach(function(transaction) {
+    //         let value = (transaction.type === 'income') ? transaction.amount : -transaction.amount;
+    //         data.addRow([transaction.month, value]);
+    //     });
+    //     let options = {
+    //         title: 'Transaction Trend',
+    //         curveType: 'function',
+    //         legend: { position: 'bottom' }
+    //     };
+    //     let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    //     chart.draw(data, options);
+    // }
+
     function drawChart() {
         let data = new google.visualization.DataTable();
         data.addColumn('string', 'Date');
         data.addColumn('number', 'Amount');
-        // Sample data (replace this with your actual data)
-        // let transactions = [
-        //     { month: 'Jan', type: 'income', amount: 1000 },
-        //     { month: 'Feb', type: 'income', amount: 1200 },
-        //     { month: 'Mar', type: 'expense', amount: 500 },
-        //     { month: 'Apr', type: 'expense', amount: 700 },
-        //     { month: 'Feb', type: 'income', amount: 100 }
-        //     // Add more data rows here...
-        // ];
-
+        // Retrieve transaction data passed from the controller
+        let transactions = @json($transactionData);
         transactions.forEach(function(transaction) {
-        //     console.log(transaction);
             let value = (transaction.type === 'income') ? transaction.amount : -transaction.amount;
             data.addRow([transaction.date, value]);
-        });
-        // Process data rows
-
-        transactions.forEach(function(transaction) {
-            let value = (transaction.type === 'income') ? transaction.amount : -transaction.amount;
-            data.addRow([transaction.month, value]);
         });
         let options = {
             title: 'Transaction Trend',
@@ -89,30 +109,6 @@
         };
         let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
-
-        // __________________________________________________________
-        // console.log('jdiejifjwi');
-        // console.log(transactionData);
-
-        // let data = new google.visualization.DataTable();
-        // data.addColumn('string', 'Date');
-        // data.addColumn('number', 'Amount');
-
-        // // Process data rows from transactionData
-        // transactionData.forEach(function(transaction) {
-        //     console.log(transaction);
-        //     let value = (transaction.type === 'income') ? transaction.amount : -transaction.amount;
-        //     data.addRow([transaction.date, value]);
-        // });
-        
-        // let options = {
-        //     title: 'Transaction Trend',
-        //     curveType: 'function',
-        //     legend: { position: 'bottom' }
-        // };
-
-        // let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        // chart.draw(data, options);
     }
 </script>
 @endsection

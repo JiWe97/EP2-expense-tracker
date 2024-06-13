@@ -15,21 +15,31 @@ class GraphController extends Controller
     {
        $transactions = Transaction::with('category')->get();
 
-    // Aggregate data by category and calculate total amount for each category
-    $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
-        return $categoryTransactions->sum('amount');
-    });
+        //Aggregate data by category and calculate total amount for each category
+        $categoryTotals = $transactions->groupBy('category_id')->map(function ($categoryTransactions) {
+            return $categoryTransactions->sum('amount');
+        });
 
-    // Map transaction types
-    $transactionData = $transactions->map(function ($transaction) {
-        return [
-            'type' => $transaction->type,
-            'amount' => $transaction->amount,
-        ];
-    });
-    // print_r($transactionData);
+        foreach ($categoryTotals as $categoryId => $total) {
+            $id = $categoryId;
+            $name = $categories[$categoryId]->name;
+            // $categoryTotals[$categoryId] = $name;
+        }
 
-    return view('graph', ['categoryTotals' => $categoryTotals, 'transactionData' => $transactionData]);
+
+        // Map transaction types
+        $transactionData = $transactions->map(function ($transaction) {
+            return [
+                'type' => $transaction->type,
+                'amount' => $transaction->amount,
+                'date' => $transaction->created_at->format('d-m-Y'),
+            ];
+        })->filter(function ($transaction) {
+            return $transaction['date'] !== null;
+        })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
+        // print_r($transactionData);
+
+        return view('graph', ['categoryTotals' => $categoryTotals, 'transactionData' => $transactionData]);
     }
 
     /**

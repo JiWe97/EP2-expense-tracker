@@ -37,11 +37,12 @@ class Iconchooser extends Component
         'fas fa-baby' => 'Baby',
         'fas fa-gift' => 'Gift',
     ];
+
     public function mount($initialIcon = null)
     {
         $this->selectedIcon = $initialIcon;
     }
-    
+
     public function selectIcon($icon)
     {
         $this->selectedIcon = $icon;

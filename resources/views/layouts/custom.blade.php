@@ -8,9 +8,8 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" integrity="sha512-7/PE/C+i9i1E+ORLceHDquXXE0VuHlVrOAMy/Czpt4MpjVD5A4EIvBvQ2E7x4IF7ry4Z20+UzZ+VIFZmAzrTug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
+     --}}<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     {{-- blade-formatter-disable --}}
     <style type="text/tailwindcss">
         .btn {

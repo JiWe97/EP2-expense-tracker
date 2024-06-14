@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Goal;
 use Illuminate\Http\Request;
+use App\Models\GoalTransaction;
 
 class GoalController extends Controller
 {
@@ -39,6 +40,16 @@ class GoalController extends Controller
         Goal::create($request->all());
 
         return redirect()->route('goals.index')->with('success', 'Goal created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($goalId)
+    {
+        $goal = Goal::findOrFail($goalId);
+        $goal_transactions = GoalTransaction::where('goal_id', $goalId)->get();
+        return view('goals.show', compact('goal', 'goal_transactions'));
     }
 
     /**

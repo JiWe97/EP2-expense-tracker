@@ -101,7 +101,7 @@
       </div>
 
       <div class="mb-4">
-        @livewire('iconchooser', ['initialIcon' => $category->icon ?? null])
+        @livewire('iconchooser', ['initialIcon' => $initialIcon ?? null])
         @error('icon')
           <p class="error">{{ $message }}</p>
         @enderror

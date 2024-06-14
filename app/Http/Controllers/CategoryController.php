@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Transaction;
 
 class CategoryController extends Controller
 {
@@ -46,7 +47,12 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::findOrFail($id);
-        return view('settings.categories.show', ['category' => $category]);
+        $categories = Category::where('id', '!=', $category->id)->get(); // Fetch other categories for the dropdown
+
+        return view('settings.categories.show', [
+            'category' => $category,
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -70,12 +76,30 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
-        $category->delete();
+        $newCategoryId = $request->input('new_category_id');
+
+        if ($newCategoryId) {
+            // Validate the new category ID
+            $request->validate([
+                'new_category_id' => 'exists:categories,id'
+            ]);
+
+            // Reassign transactions to the new category
+            Transaction::where('category_id', $category->id)->update(['category_id' => $newCategoryId]);
+            dd($category->id, $newCategoryId);
+            // Ensure the original category is deleted
+            $category->forceDelete();
+        } else {
+            // Perform a soft delete, keeping the category name in transactions
+            $category->delete();
+        }
+
         return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully');
+            ->with('success', 'Category deleted successfully and transactions reassigned or category soft deleted.');
     }
+
 
     public function toggle(Category $category)
     {

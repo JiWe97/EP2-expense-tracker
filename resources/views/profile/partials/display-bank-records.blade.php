@@ -5,7 +5,16 @@
         <h3 class="text-lg font-semibold">{{ $record->bank_name }}</h3>
         <p>{{ $record->account_number }}</p>
 
-        
+        <!-- Add Balance Form -->
+<form method="POST" action="{{ route('add.balance', $record) }}" id="addBalanceForm{{ $record->id }}">
+    @csrf
+    <input type="hidden" name="_method" value="PUT">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount{{ $record->id }}" name="amount" min="0" required>
+    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        {{ __('Add Balance') }}
+    </button>
+</form>
         <!-- Delete Button -->
         <form method="POST" action="{{ route('delete.banking.record', $record) }}">
             @csrf

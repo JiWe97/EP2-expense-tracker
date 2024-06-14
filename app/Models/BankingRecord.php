@@ -13,11 +13,11 @@ class BankingRecord extends Model
         'user_id',
         'bank_name',
         'account_number',
+        'balance',
     ];
 
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
     }
-
 }

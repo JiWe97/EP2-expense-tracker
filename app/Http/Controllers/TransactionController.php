@@ -107,12 +107,12 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'amount' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
             'type' => 'required|string',
             'date' => 'required|date',
-            'amount' => 'required|numeric',
             'description' => 'required|string',
             'banking_record_id' => 'required|integer',
-            'category_id' => 'required|integer',
             'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -175,7 +175,7 @@ class TransactionController extends Controller
             'amount' => 'required|numeric',
             'description' => 'required|string',
             'banking_record_id' => 'required|integer',
-            'category_id' => 'required|integer',
+            'category_id' => 'required||exists:categories,id',
             'attachments.*' => 'file|mimes:jpeg,png,jpg|max:2048',
         ]);
 

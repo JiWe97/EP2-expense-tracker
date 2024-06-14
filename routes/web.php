@@ -40,16 +40,12 @@ Route::get('/graph', [GraphController::class, 'index']);
 
 Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
 
-// Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
-
 Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 
 Route::resource('/transactions', TransactionController::class);
 
-
 // Upload pfp
 Route::post('/uploads', [FileUploadController::class, 'store']);
-
 
 //CATEGORIES
 Route::middleware('auth')->group(function () {
@@ -57,13 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
 });
 
-
 //BUDGET
 Route::middleware('auth')->group(function () {
     Route::resource('/settings/budgets', BudgetController::class);
     Route::get('budgets/{budgetId}/history', [BudgetController::class, 'history'])->name('budgets.history');
 });
-
 
 //Bank
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');

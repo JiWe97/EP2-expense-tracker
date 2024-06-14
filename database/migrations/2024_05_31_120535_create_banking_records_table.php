@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('bank_name');
             $table->string('account_number')->unique();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->float('balance')->default(0);
             $table->enum('valuta', ['EUR', 'USD'])->default('EUR')->nullable(); //TODO: enum, welke valuta gaan we gebruiken?
             $table->float('exchange_rate')->nullable(); //TODO: Hoe implementeren?

@@ -42,9 +42,11 @@ Route::get('/pdf', [PDFController::class, 'generatePDF']);
 Route::get('/graph', [GraphController::class, 'index']);
 
 
+
 //MOGEN DEZE WEG?
 Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
 // Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
+
 
 
 
@@ -71,6 +73,7 @@ Route::middleware('auth')->group(function () {
 });
 
 //BANK
+
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
 Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');
 

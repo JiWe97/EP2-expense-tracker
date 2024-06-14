@@ -28,6 +28,11 @@ class Transaction extends Model
 
     protected $dates = ['created_at', 'updated_at', 'date'];
 
+    public function setAmountAttribute($value)
+    {
+        $this->attributes['amount'] = floatval(str_replace(',', '.', $value));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

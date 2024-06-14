@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->float('amount');
-            $table->foreignId('category_id')->constrained('categories');
-            $table->foreignId('user_id')->constrained();
-            $table->string('description');
-            $table->foreignId('banking_record_id')->constrained('banking_records');
+            $table->decimal('amount', 15, 2);
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('description')->nullable();
+            $table->foreignId('banking_record_id')->constrained('banking_records')->onDelete('cascade');
             $table->string('type');
             $table->enum('valuta', ['EUR', 'USD'])->default('EUR');
             $table->float('exchange_rate')->nullable(); 

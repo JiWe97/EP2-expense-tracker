@@ -17,7 +17,7 @@
             <div class="p-2">
                 <ul class="list-none p-0">
                     <li class="flex items-center space-x-2">
-                        <a href="{{ route('goals.edit', ['goal' => $goal->id]) }}" class="text-sm font-medium">
+                        <a href="{{ route('goals.show', ['goal' => $goal->id]) }}" class="text-sm font-medium">
                             <span>{{ $goal->name }} - € {{ $goal->amount }}</span>
                         </a>
                     </li>

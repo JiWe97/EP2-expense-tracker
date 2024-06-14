@@ -25,4 +25,13 @@ class Goal extends Model
     protected $casts = [
         'deadline' => 'date',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function goal_transactions()
+    {
+        return $this->hasMany(GoalTransaction::class);
+    }
 }

@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
+Route::get('/pdf', [PDFController::class, 'generatePDF']);
+
 Route::get('/graph', [GraphController::class, 'index']);
 
 Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');

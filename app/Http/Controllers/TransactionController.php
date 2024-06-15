@@ -24,7 +24,7 @@ class TransactionController extends Controller
     {
         $bankingRecords = BankingRecord::where('user_id', Auth::user()->id)->get();
         $goals = Goal::where('user_id', Auth::user()->id)->get();
-        $totalAmountSaved = GoalTransaction::where('goal_id', $goals->pluck('id'))->sum('amount');
+        $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals->pluck('id')->toArray())->sum('amount'); // Fix here
         $categories = Category::all();
         $transactions = Transaction::with(['user', 'bankingRecord']);
 
@@ -89,6 +89,7 @@ class TransactionController extends Controller
             'totalAmountSaved' => $totalAmountSaved
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

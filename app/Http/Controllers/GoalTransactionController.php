@@ -10,7 +10,7 @@ class GoalTransactionController extends Controller
 {
     public function index()
     {
-        // dont need
+        // don't need
     }
 
     /**
@@ -27,15 +27,18 @@ class GoalTransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'goal_id' => 'required|exists:goals,id',
             'amount' => 'required|numeric',
             'type' => 'required|in:Add,Remove',
         ]);
 
-        GoalTransaction::create($request->all());
+        if ($validated['type'] === 'Remove') {
+            $validated['amount'] = -abs($validated['amount']);
+        }
 
-        return redirect()->route('goals.show', $request->goal_id)->with('success', 'Transaction created successfully.');
+        GoalTransaction::create($validated);
+        return redirect()->route('goals.show', $validated['goal_id'])->with('success', 'Transaction created successfully.');
     }
 
     /**
@@ -43,7 +46,7 @@ class GoalTransactionController extends Controller
      */
     public function show()
     {
-        // dont need
+        // don't need
     }
 
     /**
@@ -70,20 +73,16 @@ class GoalTransactionController extends Controller
             'type' => 'required|in:Add,Remove',
         ]);
 
+        if ($validated['type'] === 'Remove') {
+            $validated['amount'] = -abs($validated['amount']);
+        }
+
         $goal_transaction = GoalTransaction::findOrFail($id);
         
-        // Debugging statements
-        \Log::info('Updating transaction:', $validated);
-        \Log::info('Goal Transaction before update:', $goal_transaction->toArray());
-
         $goal_transaction->update($validated);
 
-        \Log::info('Goal Transaction after update:', $goal_transaction->toArray());
-
-        return redirect()->route('goals.show', $request->goal_id)->with('success', 'Transaction updated successfully.');
+        return redirect()->route('goals.show', $validated['goal_id'])->with('success', 'Transaction updated successfully.');
     }
-
-
 
     /**
      * Remove the specified resource from storage.

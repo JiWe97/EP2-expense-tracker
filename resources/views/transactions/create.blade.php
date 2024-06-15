@@ -1,5 +1,7 @@
 @extends('layouts.custom')
 
+@section('title', 'Add Transaction')
+
 @section('content')
-@include('transactions.form')
+  @livewire('transaction-form')
 @endsection

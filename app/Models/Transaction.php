@@ -42,9 +42,14 @@ class Transaction extends Model
     {
         return $this->belongsTo(BankingRecord::class);
     }
+
     public function category()
     {
-        return $this->belongsto(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
 }

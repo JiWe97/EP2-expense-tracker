@@ -129,10 +129,62 @@
             border-radius: 5px;
             margin-top: 20px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            width: 80%;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .modal img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .modal:target {
+            display: flex;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
     </style>
 @endsection
 
 @section('content')
+<div class="mb-4">
+    <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
+    @foreach ($bankingRecords as $bankingRecord)
+        <p>{{ $bankingRecord->name }}: € {{ $bankingRecord->balance }}</p>
+        <p> Total saved: € {{ $totalAmountSaved }} </p>
+        <p> Total without savings: € {{ $bankingRecord->balance - $totalAmountSaved }} </p>
+    @endforeach
+</div>
 <div class="mb-4">
     <h1 class="text-2xl pt-5 font-bold">Manual Entry</h1>
     <a href="{{ route('transactions.create') }}" class="btn btn-primary mb-5">Add Transaction</a>
@@ -170,8 +222,7 @@
                         <th>Type</th>
                         <th>Category</th>
                         <th>Bank</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
+                        <th>Attachment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -184,8 +235,23 @@
                         <td>{{ $transaction->type }}</td>
                         <td>{{ $transaction->category_id ?? '' }}</td>
                         <td>{{ $transaction->banking_record_id }}</td>
-                        <td>{{ $transaction->created_at ?? '' }}</td>
-                        <td>{{ $transaction->updated_at ?? '' }}</td>
+                        <td>
+                            @if ($transaction->attachments->isNotEmpty())
+                                @foreach ($transaction->attachments as $attachment)
+                                    <a href="#modal-{{ $attachment->id }}">View Attachment</a>
+
+                                    <!-- Modal Structure -->
+                                    <div id="modal-{{ $attachment->id }}" class="modal">
+                                        <div class="modal-content">
+                                            <a href="#" class="close">&times;</a>
+                                            <img src="{{ asset('storage/' . $attachment->picture) }}" alt="Attachment">
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                No Attachment
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

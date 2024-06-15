@@ -31,19 +31,21 @@ class Progressbar extends Component
         $this->calculatePercentage();
     }
 
-    private function filterTransactions($transactions)
+    private function filterTransactions($categoryIds)
     {
-        $budgetCategoryIds = $this->budget->categories->pluck('id');
-
         // Current month and year
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        // Filter transactions directly in the query
-        $this->transactions = Transaction::whereIn('category_id', $budgetCategoryIds)
+        // Filter transactions directly in the query and ensure amounts are positive
+        $this->transactions = Transaction::whereIn('category_id', $categoryIds)
             ->whereMonth('date', $currentMonth)
             ->whereYear('date', $currentYear)
-            ->get();
+            ->get()
+            ->map(function ($transaction) {
+                $transaction->amount = abs($transaction->amount);
+                return $transaction;
+            });
     }
 
     public function calculatePercentage()

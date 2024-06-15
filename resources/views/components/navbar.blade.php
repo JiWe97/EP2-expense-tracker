@@ -1,6 +1,8 @@
 <div class="w-64 h-screen bg-gray-800 text-white fixed left-0 top-0 flex flex-col">
     <div class="flex items-center p-4">
-        <img src="{{ Storage::url(Auth::user()->profilepicture) }}" alt="Profile Picture" class="w-16 h-16 rounded-full mr-4">
+        @if(Auth::user()->profilepicture)
+            <img src="{{ Storage::url(Auth::user()->profilepicture) }}" alt="Profile Picture" class="w-16 h-16 rounded-full mr-4">
+        @endif
         <div>
             <p class="font-bold">{{ Auth::user()->name }}</p>
         </div>

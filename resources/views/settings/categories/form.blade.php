@@ -86,7 +86,7 @@
         <label for="is_income" class="block text-sm font-medium text-gray-700">Income or Expense?</label>
         <select name="is_income" id="is_income" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('is_income') border-red-500 @enderror">
           <option value="1" {{ old('is_income', isset($category) ? $category->is_income : '') == 1 ? 'selected' : '' }}>Income</option>
-          <option value="0" {{ old('is_income', isset($category) ? !$category->is_income : '') == 0 ? 'selected' : '' }}>Expense</option>
+          <option value="0" {{ old('is_income', isset($category) ? $category->is_income : '') == 0 ? 'selected' : '' }}>Expense</option>
         </select>
         @error('is_income')
           <p class="error">{{ $message }}</p>
@@ -101,7 +101,7 @@
       </div>
 
       <div class="mb-4">
-        @livewire('iconchooser', ['initialIcon' => $initialIcon ?? null])
+        @livewire('iconchooser', ['initialIcon' => $category->icon ?? old('icon')])
         @error('icon')
           <p class="error">{{ $message }}</p>
         @enderror

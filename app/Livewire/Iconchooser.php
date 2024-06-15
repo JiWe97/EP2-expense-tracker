@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Iconchooser extends Component
+class IconChooser extends Component
 {
     public $selectedIcon;
     public $icons = [

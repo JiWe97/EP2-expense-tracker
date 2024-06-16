@@ -1,8 +1,17 @@
 <style>
+    /* Base Styles */
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 20px;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     /* Button Styles */
@@ -27,6 +36,11 @@
 
     .btn-danger:hover {
         background-color: #c82333;
+    }
+
+    .btn-full {
+        width: 100%;
+        background-color: #f0f0f0;
     }
 
     /* Link Styles */
@@ -268,20 +282,13 @@
         margin-top: 10px;
     }
 
-    .mb-4 {
-        margin-bottom: 1.5rem;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
     .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 16px;
     }
 
+    /* Table Styles */
     .table, .transaction-table {
         width: 100%;
         border-collapse: collapse;
@@ -326,6 +333,7 @@
         background-color: #f1f1f1;
     }
 
+    /* Pagination Styles */
     .pagination {
         display: flex;
         justify-content: center;
@@ -400,5 +408,81 @@
         color: black;
         text-decoration: none;
         cursor: pointer;
+    }
+
+    /* Alert Styles */
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+
+    .alert-warning {
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+    }
+
+    /* Additional Form Control Styles */
+    .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    /* Specific Button Styles */
+    .btn-income:hover {
+        background-color: rgba(144, 238, 144, 1);
+    }
+
+    .btn-expense:hover {
+        background-color: rgba(255, 99, 71, 1);
+    }
+
+    .bg-green-200 {
+        background-color: rgba(144, 238, 144, 0.8); /* LightGreen with 80% opacity */
+    }
+
+    .bg-red-200 {
+        background-color: rgba(255, 99, 71, 0.8); /* Tomato with 80% opacity */
+    }
+
+    .bg-gray-200 {
+        background-color: rgba(211, 211, 211, 0.5); /* LightGray with 50% opacity */
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-group textarea {
+        height: 150px;
+    }
+
+    .form-group select {
+        height: 50px;
     }
 </style>

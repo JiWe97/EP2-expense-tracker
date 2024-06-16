@@ -38,16 +38,33 @@ class IconChooser extends Component
         'fas fa-gift' => 'Gift',
     ];
 
+    /**
+     * Mount the component with an optional initial icon.
+     *
+     * @param string|null $initialIcon
+     * @return void
+     */
     public function mount($initialIcon = null)
     {
         $this->selectedIcon = $initialIcon;
     }
 
+    /**
+     * Select an icon.
+     *
+     * @param string $icon
+     * @return void
+     */
     public function selectIcon($icon)
     {
         $this->selectedIcon = $icon;
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.iconchooser');

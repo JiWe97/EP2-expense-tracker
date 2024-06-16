@@ -10,13 +10,28 @@ class GoalProgress extends Component
     public $goal;
     public $progress;
     public $colorClass;
+    public $totalSaved;
+    public $remaining;
 
+    /**
+     * Mount the component with the given goal.
+     *
+     * @param Goal $goal
+     * @return void
+     */
     public function mount(Goal $goal)
     {
         $this->goal = $goal;
         $this->calculateProgress();
+        $this->totalSaved = $this->goal->goalTransactions()->sum('amount');
+        $this->remaining = $this->goal->amount - $this->totalSaved;
     }
 
+    /**
+     * Calculate the progress of the goal.
+     *
+     * @return void
+     */
     public function calculateProgress()
     {
         $totalAmount = $this->goal->amount;
@@ -34,6 +49,11 @@ class GoalProgress extends Component
         }
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.goal-progress');

@@ -1,22 +1,8 @@
 <div wire:poll.10s="refreshProgress">
-    <style>
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-        }
-        .alert-danger {
-            color: #a94442;
-            background-color: #f2dede;
-            border-color: #ebccd1;
-        }
-        .alert-warning {
-            color: #8a6d3b;
-            background-color: #fcf8e3;
-            border-color: #faebcc;
-        }
-    </style>
+    @push('styles')
+        @include('layouts.styles')
+    @endpush
+
     @if (session()->has('alert'))
         <div class="alert alert-{{ session('alert')['type'] }}">
             {{ session('alert')['message'] }}
@@ -24,14 +10,13 @@
     @endif
 
     <div class="mb-4">
-
         <div class="mb-4">
             <p>Total Budget: € {{ $budget->amount }}</p>
             <p>Total Spent: € {{ $transactions->sum('amount') }}</p>
             <p>Remaining: € {{ $budget->amount - $transactions->sum('amount') }}</p>
         </div>
         <div class="mb-4">
-            <h1 class="text-black pr-10 pt-2 sm:pt-5 sm:pr-80 pt-5">
+            <h1 class="text-black pr-10 pt-2 sm:pt-5 sm:pr-80">
                 <span class="text-xs text-grey-400">{{ round($percentage) }}%</span>
             </h1>
             <div class="flex mt-2 mr-10 sm:mr-80 h-4 relative w-60 rounded-full overflow-hidden">
@@ -46,7 +31,9 @@
         <ul>
             @foreach($transactions as $transaction)
                 <li>
-                    <a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}"><p><i class="fa fa-coins"></i> {{ $transaction->description }}  -  €{{ $transaction->amount }}</p></a>
+                    <a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">
+                        <p><i class="fa fa-coins"></i> {{ $transaction->description }} - €{{ $transaction->amount }}</p>
+                    </a>
                 </li>
             @endforeach
         </ul>

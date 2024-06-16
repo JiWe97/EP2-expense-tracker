@@ -1,99 +1,7 @@
 <div>
-    <style>
-        .form-control {
-            width: 100%;
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-control:focus {
-            border-color: #007bff;
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: black;
-            text-align: center;
-            text-decoration: none;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-full {
-            width: 100%;
-            background-color: #f0f0f0;
-        }
-
-        .bg-green-200 {
-            background-color: rgba(144, 238, 144, 0.8); /* LightGreen with 80% opacity */
-        }
-
-        .btn-income:hover {
-            background-color: rgba(144, 238, 144, 1);
-        }
-
-        .bg-red-200 {
-            background-color: rgba(255, 99, 71, 0.8); /* Tomato with 80% opacity */
-        }
-
-        .btn-expense:hover {
-            background-color: rgba(255, 99, 71, 1);
-        }
-
-        .bg-gray-200 {
-            background-color: rgba(211, 211, 211, 0.5); /* LightGray with 50% opacity */
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-        .error {
-            color: red;
-            font-size: 0.9rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .form-group textarea {
-            height: 150px;
-        }
-
-        .form-group select {
-            height: 50px;
-        }
-    </style>
+    @push('styles')
+        @include('layouts.styles')
+    @endpush
 
     <div x-data="{ is_income: @entangle('is_income').defer }">
         <a href="{{ route('transactions.index') }}" class="link">Back</a>
@@ -130,7 +38,7 @@
             <div class="form-group">
                 <label for="amount">Amount</label>
                 <p class="text-sm">Don't use negative numbers, this happens automatically when needed!</p>
-                <input type="number" wire:model.lazy="amount" min=0 id="amount" class="form-control @error('amount') border-red-500 @enderror">
+                <input type="number" wire:model.lazy="amount" min="0" id="amount" class="form-control @error('amount') border-red-500 @enderror">
                 @error('amount')
                     <p class="error">{{ $message }}</p>
                 @enderror

@@ -59,16 +59,18 @@ class Progressbar extends Component
             Session::flash('alert', ['type' => 'danger', 'message' => 'Budget has reached 100%!']);
 
             if ($this->shouldSendCompleteNotification()) {
-                Mail::to($this->budget->bankingRecord->user->email)->send(new CompletelySpent($this->budget, $this->transactions));
+                Mail::to($this->budget->bankingRecord->user->email)
+                    ->send(new CompletelySpent($this->budget, $this->transactions));
                 $this->budget->last_completely_spent_notification = now();
                 $this->budget->save();
             }
         } elseif ($this->percentage >= 80) {
             $this->colorClass = 'bg-orange-500';
             Session::flash('alert', ['type' => 'warning', 'message' => 'Budget has reached 80%!']);
-            
+
             if ($this->shouldSendPartialNotification()) {
-                Mail::to($this->budget->bankingRecord->user->email)->send(new PartiallySpent($this->budget, $this->transactions));
+                Mail::to($this->budget->bankingRecord->user->email)
+                    ->send(new PartiallySpent($this->budget, $this->transactions));
                 $this->budget->last_partially_spent_notification = now();
                 $this->budget->save();
             }
@@ -81,16 +83,20 @@ class Progressbar extends Component
     {
         $lastNotification = $this->budget->last_partially_spent_notification;
 
-        return $this->budget->mail_when_partially_spent && $this->budget->bankingRecord && $this->budget->bankingRecord->user &&
-            (!$lastNotification || $lastNotification->lt(now()->subMonth()));
+        return $this->budget->mail_when_partially_spent
+            && $this->budget->bankingRecord
+            && $this->budget->bankingRecord->user
+            && (!$lastNotification || $lastNotification->lt(now()->subMonth()));
     }
 
     private function shouldSendCompleteNotification()
     {
         $lastNotification = $this->budget->last_completely_spent_notification;
 
-        return $this->budget->mail_when_completely_spent && $this->budget->bankingRecord && $this->budget->bankingRecord->user &&
-            (!$lastNotification || $lastNotification->lt(now()->subMonth()));
+        return $this->budget->mail_when_completely_spent
+            && $this->budget->bankingRecord
+            && $this->budget->bankingRecord->user
+            && (!$lastNotification || $lastNotification->lt(now()->subMonth()));
     }
 
     public function render()

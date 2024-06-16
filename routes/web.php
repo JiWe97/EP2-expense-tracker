@@ -11,7 +11,6 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\GoalTransactionController;
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -75,4 +74,3 @@ Route::middleware('auth')->group(function () {
     Route::resource('goal_transactions', GoalTransactionController::class)->except(['create', 'store']);
     Route::resource('/goals', GoalController::class);
 });
-

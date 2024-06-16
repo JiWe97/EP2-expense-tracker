@@ -20,7 +20,7 @@ class GoalProgress extends Component
     public function calculateProgress()
     {
         $totalAmount = $this->goal->amount;
-        $currentAmount = $this->goal->goal_transactions()->sum('amount');
+        $currentAmount = $this->goal->goalTransactions()->sum('amount');
 
         $this->progress = ($totalAmount > 0) ? ($currentAmount / $totalAmount) * 100 : 0;
 

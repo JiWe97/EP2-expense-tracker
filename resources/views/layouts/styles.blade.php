@@ -1,36 +1,44 @@
 <style>
-    .btn {
+    .btn, .btn-custom, .btn-danger, .form-container .btn {
         @apply rounded-md px-2 py-1 text-center font-medium text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50;
-    }
-    .link {
-        @apply font-medium text-gray-700 underline decoration-pink-500;
-    }
-    label {
-        @apply block uppercase text-slate-700 mb-2;
-    }
-    input, textarea {
-        @apply shadow-sm appearance-none border w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none;
-    }
-    .form-container {
-        background-color: #ffffff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin: auto;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #4a4a4a;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
 
-    .form-container label {
+    .btn:hover, .btn-custom:hover, .btn-danger:hover, .form-container .btn:hover {
+        background-color: #2e2e2e;
+    }
+
+    .link, .form-container .link, .link-custom {
+        @apply font-medium text-gray-700 underline decoration-pink-500;
+        color: #333;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .link:hover, .form-container .link:hover, .link-custom:hover {
+        color: #555;
+    }
+
+    label, .form-container label {
+        @apply block uppercase text-slate-700 mb-2;
         display: block;
         margin-bottom: 8px;
         font-weight: bold;
         color: #333;
     }
 
-    .form-container input[type="text"],
-    .form-container input[type="number"],
-    .form-container input[type="file"],
-    .form-container select {
+    input, textarea, .form-container input[type="text"], .form-container input[type="number"], .form-container input[type="file"], .form-container select {
+        @apply shadow-sm appearance-none border w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none;
         width: calc(100% - 24px);
         padding: 12px;
         margin-bottom: 16px;
@@ -43,6 +51,15 @@
     .form-container input[type="checkbox"] {
         margin-right: 8px;
         vertical-align: middle;
+    }
+
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: auto;
     }
 
     .form-container .checkbox-group {
@@ -88,36 +105,7 @@
         transform: rotate(45deg);
     }
 
-    .form-container .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        border-radius: 5px;
-        background-color: #4a4a4a;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        font-size: 1rem;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .form-container .btn:hover {
-        background-color: #2e2e2e;
-    }
-
-    .form-container .link {
-        color: #333;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .form-container .link:hover {
-        color: #555;
-    }
-
-    .form-container .error,
-    .error {
+    .form-container .error, .error {
         color: red;
         font-size: 0.9rem;
     }
@@ -151,33 +139,6 @@
 
     .info-message i {
         color: #4a4a4a;
-    }
-
-    .btn-custom,
-    .btn-danger {
-        padding: 10px 20px;
-        border-radius: 5px;
-        background-color: #4a4a4a;
-        color: white;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .btn-custom:hover,
-    .btn-danger:hover {
-        background-color: #2e2e2e;
-    }
-
-    .link-custom {
-        color: #333;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .link-custom:hover {
-        color: #555;
     }
 
     .header {

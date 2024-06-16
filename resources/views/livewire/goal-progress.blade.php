@@ -1,8 +1,8 @@
 <div>
     <div class="mb-4">
         <div class="mb-4">
-            <p>Total Saved: € {{ $goal->goal_transactions()->sum('amount') }}</p>
-            <p>Remaining: € {{ $goal->amount - $goal->goal_transactions()->sum('amount') }}</p>
+            <p>Total Saved: € {{ $goal->goalTransactions()->sum('amount') }}</p>
+            <p>Remaining: € {{ $goal->amount - $goal->goalTransactions()->sum('amount') }}</p>
         </div>
         <div class="mb-4">
             <h1 class="text-black pr-10 pt-2 sm:pt-5">

@@ -14,6 +14,7 @@ class GoalController extends Controller
     public function index()
     {
         $goals = Goal::all();
+        
         return view('goals.index', compact('goals'));
     }
 
@@ -48,8 +49,9 @@ class GoalController extends Controller
     public function show($goalId)
     {
         $goal = Goal::findOrFail($goalId);
-        $goal_transactions = GoalTransaction::where('goal_id', $goalId)->get();
-        return view('goals.show', compact('goal', 'goal_transactions'));
+        $goalTransactions = GoalTransaction::where('goal_id', $goalId)->get();
+        
+        return view('goals.show', compact('goal', 'goalTransactions'));
     }
 
     /**
@@ -72,7 +74,6 @@ class GoalController extends Controller
             'deadline' => 'required|date',
         ]);
 
-        // Attempt to update the goal
         $goal->update($validatedData);
 
         return redirect()->route('goals.index')->with('success', 'Goal updated successfully.');

@@ -26,10 +26,17 @@ class Goal extends Model
         'deadline' => 'date',
     ];
 
+    /**
+     * Get the user that owns the goal.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the goal transactions for the goal.
+     */
     public function goalTransactions()
     {
         return $this->hasMany(GoalTransaction::class);

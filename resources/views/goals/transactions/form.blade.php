@@ -1,15 +1,10 @@
 @extends('layouts.custom')
 
-@section('title', isset($goal_transaction) ? 'Edit' : 'Add')
+@push('styles')
+    @include('layouts.styles')
+@endpush
 
-@section('styles')
-    <style>
-        .error {
-            color: red;
-            font-size: 0.8rem;
-        }
-    </style>
-@endsection
+@section('title', isset($goal_transaction) ? 'Edit' : 'Add')
 
 @section('content')
     <form method="POST" action="{{ isset($goal_transaction) ? route('goal_transactions.update', $goal_transaction->id) : route('goal_transactions.store') }}">
@@ -37,9 +32,7 @@
             @enderror
         </div>
 
-        <div class="mb-4">
-            <input type="hidden" name="goal_id" value="{{ $goal->id ?? '' }}">
-        </div>
+        <input type="hidden" name="goal_id" value="{{ $goal->id ?? '' }}">
 
         <div class="flex items-center gap-2">
             <button type="submit" class="btn">
@@ -54,7 +47,7 @@
     </form>
 
     @isset($goal_transaction)
-        <form action="{{ route('goal_transactions.destroy', $goal_transaction->id) }}" method="POST">
+        <form action="{{ route('goal_transactions.destroy', $goal_transaction->id) }}" method="POST" class="mt-4">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn">Delete</button>

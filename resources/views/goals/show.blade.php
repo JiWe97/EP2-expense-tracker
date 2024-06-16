@@ -39,7 +39,7 @@
                 @foreach ($goalTransactions as $goalTransaction)
                     <tr>
                         <td>
-                            <a href="{{ route('goalTransactions.edit', $goalTransaction->id) }}">
+                            <a href="{{ route('goal_transactions.edit', $goalTransaction->id) }}">
                                 {{ $goalTransaction->type }}
                             </a>
                         </td>

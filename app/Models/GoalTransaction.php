@@ -15,6 +15,9 @@ class GoalTransaction extends Model
         'type',
     ];
 
+    /**
+     * Get the goal that owns the transaction.
+     */
     public function goal()
     {
         return $this->belongsTo(Goal::class);

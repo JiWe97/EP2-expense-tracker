@@ -1,5 +1,9 @@
 @extends('layouts.custom')
 
+@push('styles')
+    @include('layouts.styles')
+@endpush
+
 @section('content')
 <div class="container mx-auto py-8">
     <a href="{{ route('budgets.show', ['budget' => $budget->id]) }}" class="text-gray-600 hover:text-gray-900 mb-5 inline-block">Back</a>
@@ -37,7 +41,7 @@
         </div>
     </form>
 
-    @if (count($transactions) > 0)
+    @if ($transactions->count() > 0)
         <div class="overflow-x-auto">
             <table class="w-full border-collapse table-auto">
                 <thead>

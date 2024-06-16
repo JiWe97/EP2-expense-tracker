@@ -18,12 +18,23 @@ class Progressbar extends Component
     public $percentage;
     public $colorClass;
 
+    /**
+     * Mount the component with the given budget ID.
+     *
+     * @param int $budgetId
+     * @return void
+     */
     public function mount($budgetId)
     {
         $this->budget = Budget::with(['bankingRecord.user', 'categories'])->findOrFail($budgetId);
         $this->refreshProgress();
     }
 
+    /**
+     * Refresh the progress of the budget.
+     *
+     * @return void
+     */
     public function refreshProgress()
     {
         // Re-fetch transactions that belong to the budget's categories
@@ -31,6 +42,12 @@ class Progressbar extends Component
         $this->calculatePercentage();
     }
 
+    /**
+     * Filter transactions based on category IDs.
+     *
+     * @param array $categoryIds
+     * @return void
+     */
     private function filterTransactions($categoryIds)
     {
         // Current month and year
@@ -48,6 +65,11 @@ class Progressbar extends Component
             });
     }
 
+    /**
+     * Calculate the percentage of the budget spent.
+     *
+     * @return void
+     */
     public function calculatePercentage()
     {
         $totalBudget = $this->budget->amount;
@@ -79,6 +101,11 @@ class Progressbar extends Component
         }
     }
 
+    /**
+     * Determine if a partial notification should be sent.
+     *
+     * @return bool
+     */
     private function shouldSendPartialNotification()
     {
         $lastNotification = $this->budget->last_partially_spent_notification;
@@ -89,6 +116,11 @@ class Progressbar extends Component
             && (!$lastNotification || $lastNotification->lt(now()->subMonth()));
     }
 
+    /**
+     * Determine if a complete notification should be sent.
+     *
+     * @return bool
+     */
     private function shouldSendCompleteNotification()
     {
         $lastNotification = $this->budget->last_completely_spent_notification;
@@ -99,6 +131,11 @@ class Progressbar extends Component
             && (!$lastNotification || $lastNotification->lt(now()->subMonth()));
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.progressbar', [

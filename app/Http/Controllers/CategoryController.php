@@ -38,6 +38,7 @@ class CategoryController extends Controller
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
         $category = Category::create($validated);
+
         return redirect()->route('categories.index')->with('success', 'Category created successfully');
     }
 
@@ -51,7 +52,7 @@ class CategoryController extends Controller
 
         return view('settings.categories.show', [
             'category' => $category,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 
@@ -69,6 +70,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category)
     {
         $category->update($request->validated());
+
         return redirect()->route('categories.show', ['category' => $category->id])
             ->with('success', 'Category updated successfully');
     }
@@ -83,12 +85,11 @@ class CategoryController extends Controller
         if ($newCategoryId) {
             // Validate the new category ID
             $request->validate([
-                'new_category_id' => 'exists:categories,id'
+                'new_category_id' => 'exists:categories,id',
             ]);
 
             // Reassign transactions to the new category
             Transaction::where('category_id', $category->id)->update(['category_id' => $newCategoryId]);
-            dd($category->id, $newCategoryId);
             // Ensure the original category is deleted
             $category->forceDelete();
         } else {
@@ -100,10 +101,13 @@ class CategoryController extends Controller
             ->with('success', 'Category deleted successfully and transactions reassigned or category soft deleted.');
     }
 
-
+    /**
+     * Toggle the visibility of the specified resource.
+     */
     public function toggle(Category $category)
     {
         $category->toggleShow();
+
         return redirect()->back()->with('success', 'Category updated successfully');
     }
 }

@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\Transaction;
 
-class Deletecategory extends Component
+class DeleteCategory extends Component
 {
     public $category;
     public $newCategoryId;
@@ -15,11 +15,22 @@ class Deletecategory extends Component
         'newCategoryId' => 'nullable|exists:categories,id',
     ];
 
+    /**
+     * Mount the component with the given category.
+     *
+     * @param Category $category
+     * @return void
+     */
     public function mount(Category $category)
     {
         $this->category = $category;
     }
 
+    /**
+     * Delete the category and reassign transactions if a new category ID is provided.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deleteCategory()
     {
         $this->validate();
@@ -36,6 +47,11 @@ class Deletecategory extends Component
         return redirect()->route('categories.index');
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.deletecategory', [

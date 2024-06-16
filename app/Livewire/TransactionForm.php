@@ -26,6 +26,12 @@ class TransactionForm extends Component
     public $transaction;
     public $type;
 
+    /**
+     * Mount the component with an optional transaction.
+     *
+     * @param Transaction|null $transaction
+     * @return void
+     */
     public function mount($transaction = null)
     {
         if ($transaction) {
@@ -40,11 +46,21 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Handle changes to the is_income property.
+     *
+     * @return void
+     */
     public function updatedIsIncome()
     {
         $this->category_id = null; // Reset category when type changes
     }
 
+    /**
+     * Save or update the transaction.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function saveOrUpdate()
     {
         $this->validate([
@@ -83,12 +99,26 @@ class TransactionForm extends Component
         return redirect()->route('transactions.index')->with('success', 'Transaction saved successfully.');
     }
 
+    /**
+     * Create a new transaction.
+     *
+     * @param array $data
+     * @param float $amount
+     * @return void
+     */
     private function createTransaction($data, $amount)
     {
         $this->transaction = Transaction::create($data);
         $this->updateBankingRecordBalance($this->banking_record_id, $amount);
     }
 
+    /**
+     * Update an existing transaction.
+     *
+     * @param array $data
+     * @param float $amount
+     * @return void
+     */
     private function updateTransaction($data, $amount)
     {
         $transaction = Transaction::find($this->transaction->id);
@@ -97,6 +127,13 @@ class TransactionForm extends Component
         $this->updateBankingRecordBalance($this->banking_record_id, $amount);
     }
 
+    /**
+     * Update the balance of a banking record.
+     *
+     * @param int $bankingRecordId
+     * @param float $amount
+     * @return void
+     */
     private function updateBankingRecordBalance($bankingRecordId, $amount)
     {
         $bankingRecord = BankingRecord::find($bankingRecordId);
@@ -106,6 +143,11 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Save attachments for the transaction.
+     *
+     * @return void
+     */
     private function saveAttachments()
     {
         foreach ($this->attachments as $file) {
@@ -114,6 +156,11 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $categories = Category::where('is_income', $this->is_income)->get();

@@ -1,6 +1,6 @@
 @extends('layouts.custom')
 
 @section('content')
-@include('settings.budgets.form')
+@include('budgets.form')
 
 @endsection

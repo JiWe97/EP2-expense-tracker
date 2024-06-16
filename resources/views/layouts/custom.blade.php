@@ -8,25 +8,8 @@
     <script src="//unpkg.com/alpinejs" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
-     --}}<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    {{-- blade-formatter-disable --}}
-    <style type="text/tailwindcss">
-        .btn {
-            @apply rounded-md px-2 py-1 text-center font-medium text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50
-        }
-        .link {
-            @apply font-medium text-gray-700 underline decoration-pink-500
-        }
-        label {
-            @apply block uppercase text-slate-700 mb-2
-        }
-        input, textarea {
-            @apply shadow-sm appearance-none border w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none
-        }
-    </style>
-    {{-- blade-formatter-enable --}}
-    @yield('styles')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    @stack('styles')
 </head>
 
 <body class="container mx-auto mt-10 mb-10 max-w-lg">

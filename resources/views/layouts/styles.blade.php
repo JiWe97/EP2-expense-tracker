@@ -1,4 +1,11 @@
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Button Styles */
     .btn, .btn-custom, .btn-danger, .form-container .btn {
         @apply rounded-md px-2 py-1 text-center font-medium text-slate-700 shadow-sm ring-1 ring-slate-700/10 hover:bg-slate-50;
         display: inline-block;
@@ -18,6 +25,11 @@
         background-color: #2e2e2e;
     }
 
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    /* Link Styles */
     .link, .form-container .link, .link-custom {
         @apply font-medium text-gray-700 underline decoration-pink-500;
         color: #333;
@@ -29,7 +41,17 @@
         color: #555;
     }
 
-    label, .form-container label {
+    /* Form Styles */
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .form-container label, label {
         @apply block uppercase text-slate-700 mb-2;
         display: block;
         margin-bottom: 8px;
@@ -37,7 +59,11 @@
         color: #333;
     }
 
-    input, textarea, .form-container input[type="text"], .form-container input[type="number"], .form-container input[type="file"], .form-container select {
+    .form-container input[type="text"],
+    .form-container input[type="number"],
+    .form-container input[type="file"],
+    .form-container select,
+    input, textarea {
         @apply shadow-sm appearance-none border w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none;
         width: calc(100% - 24px);
         padding: 12px;
@@ -51,15 +77,6 @@
     .form-container input[type="checkbox"] {
         margin-right: 8px;
         vertical-align: middle;
-    }
-
-    .form-container {
-        background-color: #ffffff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin: auto;
     }
 
     .form-container .checkbox-group {
@@ -105,12 +122,29 @@
         transform: rotate(45deg);
     }
 
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 1rem;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control:focus {
+        border-color: #333;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+    }
+
     .form-container .error, .error {
         color: red;
         font-size: 0.9rem;
     }
 
-    .form-container .alert {
+    .form-container .alert, .alert {
         background-color: #f8d7da;
         color: #721c24;
         padding: 10px 15px;
@@ -119,6 +153,7 @@
         margin-top: 20px;
     }
 
+    /* Category Styles */
     .category-icon {
         width: 40px;
         height: 40px;
@@ -127,35 +162,6 @@
         justify-content: center;
         align-items: center;
         margin-right: 12px;
-    }
-
-    .info-message {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 8px;
-        color: #333;
-    }
-
-    .info-message i {
-        color: #4a4a4a;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        font-weight: 600;
-    }
-
-    .title {
-        margin: 0;
-    }
-
-    .actions {
-        display: flex;
-        gap: 10px;
     }
 
     .category-item {
@@ -184,16 +190,6 @@
 
     .category-link.inactive:hover {
         color: #a1a1a1;
-    }
-
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-    }
-
-    .status-icon {
-        font-size: 1.5rem;
     }
 
     .category-header {
@@ -228,6 +224,40 @@
         color: #c62828;
     }
 
+    /* Utility Classes */
+    .info-message {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .info-message i {
+        color: #4a4a4a;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        font-weight: 600;
+    }
+
+    .title {
+        margin: 0;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .status-icon {
+        font-size: 1.5rem;
+    }
+
     .action-buttons {
         display: flex;
         gap: 10px;
@@ -238,34 +268,131 @@
         margin-top: 10px;
     }
 
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .table, .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 16px;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #e0e0e0;
+    }
+
+    .transaction-table {
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .transaction-table th, .transaction-table td {
+        border: none;
+        padding: 12px 15px;
+    }
+
+    .transaction-table th {
+        background-color: #f7f7f7;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .transaction-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .transaction-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 1rem 0;
+    }
+
+    .pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .pagination .page-link {
+        color: #333;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Modal Styles */
     .modal {
         display: none;
         position: fixed;
-        z-index: 1;
+        z-index: 1000;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 60px;
+        justify-content: center;
+        align-items: center;
     }
 
     .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto;
+        background-color: #fff;
         padding: 20px;
-        border: 1px solid #888;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
         width: 80%;
         max-width: 500px;
-        border-radius: 10px;
+        margin: auto;
+    }
+
+    .modal img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .modal:target {
+        display: flex;
     }
 
     .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
         font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        color: #aaa;
     }
 
     .close:hover,

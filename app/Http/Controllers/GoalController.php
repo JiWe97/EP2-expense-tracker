@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Goal;
 use Illuminate\Http\Request;
+use App\Models\GoalTransaction;
 
 class GoalController extends Controller
 {
@@ -13,6 +14,7 @@ class GoalController extends Controller
     public function index()
     {
         $goals = Goal::all();
+        
         return view('goals.index', compact('goals'));
     }
 
@@ -42,6 +44,17 @@ class GoalController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show($goalId)
+    {
+        $goal = Goal::findOrFail($goalId);
+        $goalTransactions = GoalTransaction::where('goal_id', $goalId)->get();
+        
+        return view('goals.show', compact('goal', 'goalTransactions'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Goal $goal)
@@ -61,7 +74,6 @@ class GoalController extends Controller
             'deadline' => 'required|date',
         ]);
 
-        // Attempt to update the goal
         $goal->update($validatedData);
 
         return redirect()->route('goals.index')->with('success', 'Goal updated successfully.');

@@ -1,48 +1,47 @@
 @extends('layouts.custom')
 
+@push('styles')
+    @include('layouts.styles')
+@endpush
+
 @section('content')
-<div class="mb-4">
-    <a href="{{ route('categories.index') }}" class="link">Back</a>
-</div>
+    <div class="mb-4">
+        <a href="{{ route('categories.index') }}" class="link-custom">Back</a>
+    </div>
 
-<div class="w-8 h-8 rounded-full flex justify-center items-center" style="background-color: {{ $category->color }}">
-    <i class="{{ $category->icon }}" style="color: #fff;"></i>
-</div>
+    <div class="category-header mb-4">
+        <div class="category-icon" style="background-color: {{ $category->color }}">
+            <i class="{{ $category->icon }}" style="color: #fff;"></i>
+        </div>
+        <div>
+            <span class="category-name">{{ $category->name }}</span>
+            <div>
+                <span class="income-expense-tag {{ $category->is_income ? 'income-tag' : 'expense-tag' }}">
+                    {{ $category->is_income ? 'Income' : 'Expense' }}
+                </span>
+            </div>
+        </div>
+    </div>
 
-{{-- Display custom category name if exists, else display regular category name --}}
-@if(isset($custom_category) && $custom_category->category_id == $category->id)
-    <span class="text-sm font-medium">{{ $custom_category->displayname }}</span>
-@else
-    <span class="text-sm font-medium">{{ $category->name }}</span>
-@endif
+    <div class="mb-4">
+        @if($category->show)
+            <span class="font-medium text-green-500 status-icon"><i class="fa fa-eye"></i> Visible</span>
+        @else
+            <span class="font-medium text-red-500 status-icon"><i class="fa fa-eye-slash"></i> Hidden</span>
+        @endif
+    </div>
 
-<p class="mb-4">
-    @if($category->show)
-        <span class="font-medium text-green-500"><i class="fa fa-eye"></i></span>
-    @else
-        <span class="font-medium text-red-500"><i class="fa fa-eye-slash"></i></span>
-    @endif
-</p>
+    <div class="action-buttons">
+        <a href="{{ route('categories.edit', ['category' => $category->id]) }}" class="btn-custom">Edit</a>
 
-<div class="mb-4">
-    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-</div>
-
-<div class="flex gap-2">
-    <a href="{{ route('categories.edit', ['category' => $category->id]) }}" class="btn">Edit</a>
-
-    <form action="{{ route('categories.toggle-show', ['category' => $category->id])}}" method="POST">
-        @csrf
-        @method('PUT')
-        <button type="submit" class="btn">{{ $category->show ? 'Hide' : 'Show' }}</button>
-    </form>
-
-    @if(isset($custom_category) && $custom_category->category_id == $category->id)
-        <form action="{{ route('categories.destroy', ['category' => $custom_category->id]) }}" method="POST">
+        <form action="{{ route('categories.toggle-show', ['category' => $category->id]) }}" method="POST">
             @csrf
-            @method('DELETE')
-            <button type="submit" class="btn">Reset to default values</button>
+            @method('PUT')
+            <button type="submit" class="btn-custom">{{ $category->show ? 'Hide' : 'Show' }}</button>
         </form>
-    @endif
-</div>
+    </div>
+
+    <div class="delete-form">
+        @livewire('deletecategory', ['category' => $category])
+    </div>
 @endsection

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\User;
+use Database\Seeders\CategoriesTableSeeder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        User::created(function ($user) {
+            $seeder = new CategoriesTableSeeder();
+            $seeder->run($user->id);
+        });
     }
 }

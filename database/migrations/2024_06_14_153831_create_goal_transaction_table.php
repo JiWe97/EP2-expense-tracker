@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('custom_categories', function (Blueprint $table) {
+        Schema::create('goal_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('category_id')->nullable()->constrained('categories');
-            $table->string('displayname');
-            $table->string('icon');
-            $table->string('color');
+            $table->foreignId('goal_id')->constrained('goals')->onDelete('cascade');
+            $table->decimal('amount', 15, 2);
+            $table->enum('type', ['Add', 'Remove'])->default('Add');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_user');
+        Schema::dropIfExists('goal_transactions');
     }
 };

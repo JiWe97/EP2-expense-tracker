@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,38 +35,44 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
+    /**
+     * Get the recipients associated with the user.
+     */
     public function recipient()
     {
         return $this->belongsToMany(Recipient::class, 'recipient_user', 'recipient_id', 'user_id');
     }
 
+    /**
+     * Get the categories associated with the user.
+     */
     public function category()
     {
         return $this->belongsToMany(Category::class, 'category_user', 'category_id', 'user_id');
     }
 
-
+    /**
+     * Get the banking records for the user.
+     */
     public function bankingRecords()
     {
         return $this->hasMany(BankingRecord::class);
-      
     }
 
+    /**
+     * Get the transactions for the user.
+     */
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
-
     }
 }

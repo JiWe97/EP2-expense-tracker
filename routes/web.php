@@ -3,19 +3,13 @@
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FileUploadController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Requests\Request;
-use App\Models\Category;
-use App\Http\Requests\CategoryRequest;
 use App\Http\Controllers\CategoryController;
-use App\Models\Budget;
-use App\Http\Requests\BudgetRequest;
 use App\Http\Controllers\BudgetController;
-use App\Models\Transaction;
-use App\Http\Requests\TransactionRequest;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
-
+use App\Http\Controllers\GraphController;
+use App\Http\Controllers\GoalTransactionController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +20,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -33,41 +28,42 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-/* Route::resource('/dashboard/transactions', [TransactionController::class, 'index'])
-    ->with('categories', Category::all())
-    ->name('transactions.index');
+// PDF Generation Route
+Route::get('/pdf', [PDFController::class, 'generatePDF']);
 
-Route::get('/dashboard/transaction', [TransactionController::class, 'show'])->name('transactions.show');
+// Graph Route
+Route::get('/graph', [GraphController::class, 'index']);
 
-Route::get('/dashboard/transaction/create', [TransactionController::class, 'create'])->name('transactions.create');
- */
-Route::resource('/transactions', TransactionController::class);
-Route::post('/search', [TransactionController::class, 'index'])->name('transactions.search');
+// Transaction Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('/transactions', TransactionController::class);
+    Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
+});
 
-// Upload pfp
+// File Upload Routes
 Route::post('/uploads', [FileUploadController::class, 'store']);
 
-
-//CATEGORIES
+// Category Routes
 Route::middleware('auth')->group(function () {
     Route::resource('/settings/categories', CategoryController::class);
     Route::put('/settings/categories/{category}/toggle-show', [CategoryController::class, 'toggle'])->name('categories.toggle-show');
-    Route::post('/categories/{category}/save', [CategoryController::class, 'save'])->name('categories.save');
 });
 
+// Budget Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('/budgets', BudgetController::class);
+    Route::get('/budgets/{budgetId}/history', [BudgetController::class, 'history'])->name('budgets.history');
+});
 
-//BUDGET
-/* Route::middleware('auth')->group(function () { */
-Route::resource('/settings/budgets', BudgetController::class);
-/* }); */
-
-
-//Bank
+// Banking Routes
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
 Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');
 Route::put('/banking-record/{bankingRecord}/add-balance', [BankController::class, 'addBalance'])->name('add.balance');
 
-//GOALS
+// Goal and Goal Transaction Routes
 Route::middleware('auth')->group(function () {
     Route::resource('/goals', GoalController::class);
+    Route::get('/goal_transactions/create/{goalId}', [GoalTransactionController::class, 'create'])->name('goal_transactions.create');
+    Route::post('/goal_transactions', [GoalTransactionController::class, 'store'])->name('goal_transactions.store');
+    Route::resource('/goal_transactions', GoalTransactionController::class)->except(['create', 'store']);
 });

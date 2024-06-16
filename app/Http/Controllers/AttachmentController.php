@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Attachment
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Attachment;
 
 class AttachmentController extends Controller
 {
@@ -28,24 +30,24 @@ class AttachmentController extends Controller
      */
     public function store(Request $request)
     {
-        //Validate the uploaded file
+        // Validate the uploaded file
         $request->validate([
-            'attachment' => 'nullable|file|max:2048|mimes:jpeg, png, jpg',
+            'attachment' => 'nullable|file|max:2048|mimes:jpeg,png,jpg',
         ]);
 
-        //Define the file path and name
-        $path = 'storage/app/public/uploads/User_' . Auth::user()->id . '.png';
+        // Define the file path and name
+        $path = 'uploads/User_' . Auth::user()->id . '.png';
 
-        //Check if a file already exists
+        // Check if a file already exists
         if (Storage::disk('public')->exists($path)) {
             // Delete the existing file
             Storage::disk('public')->delete($path);
         }
 
         // Store the new file
-        $request->file('my_file')->storeAs('public', $path);
+        $request->file('attachment')->storeAs('public', $path);
 
-        // store the path in the database user table
+        // Store the path in the database user table
         $user = Auth::user();
         $user->profilepicture = $path;
         $user->save();
@@ -56,7 +58,7 @@ class AttachmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
         //
     }

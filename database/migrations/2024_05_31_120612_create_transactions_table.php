@@ -21,13 +21,13 @@ return new class extends Migration
             $table->foreignId('banking_record_id')->constrained('banking_records')->onDelete('cascade');
             $table->string('type');
             $table->enum('valuta', ['EUR', 'USD'])->default('EUR');
-            $table->float('exchange_rate')->nullable(); 
+            $table->float('exchange_rate')->nullable();
             $table->boolean('warranty')->nullable();
             $table->date('warranty_date')->nullable();
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
@@ -36,4 +36,3 @@ return new class extends Migration
         Schema::dropIfExists('transactions');
     }
 };
-

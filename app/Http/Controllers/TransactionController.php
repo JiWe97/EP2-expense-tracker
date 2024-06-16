@@ -24,11 +24,12 @@ class TransactionController extends Controller
     {
         $bankingRecords = BankingRecord::where('user_id', Auth::user()->id)->get();
         $goals = Goal::where('user_id', Auth::user()->id)->get();
-        $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals->pluck('id')->toArray())->sum('amount'); // Fix here
+        $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals
+            ->pluck('id')->toArray())->sum('amount');
         $categories = Category::all();
         $transactions = Transaction::with(['user', 'bankingRecord']);
 
-        if(request()->has('search')){
+        if (request()->has('search')) {
             $query = request()->get('search', '');
             $transactions->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('amount', 'LIKE', "%{$query}%")
@@ -105,7 +106,7 @@ class TransactionController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */   
+     */
     /* public function store(Request $request)
 {
     \Log::info('Store method entered');
@@ -259,5 +260,4 @@ class TransactionController extends Controller
         $transaction->delete();
         return redirect()->route('transactions.index')->with('success', 'Transaction deleted successfully.');
     }
-
 }

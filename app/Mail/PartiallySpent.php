@@ -13,7 +13,8 @@ use App\Models\Budget;
 
 class PartiallySpent extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $budget;
     public $transactions;
@@ -47,7 +48,7 @@ class PartiallySpent extends Mailable
             view: 'mails.partial',
             with: [
                 'budgetName' => $this->budget->name,
-                'budgetCategory' => $this->budget->categories->first()->name, // Assuming a single category for simplicity
+                'budgetCategory' => $this->budget->categories->first()->name,
                 'budgetAmount' => $this->budget->amount,
                 'transactions' => $this->transactions,
             ]

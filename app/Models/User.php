@@ -9,7 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,11 +60,9 @@ class User extends Authenticatable
     public function bankingRecords()
     {
         return $this->hasMany(BankingRecord::class);
-      
     }
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
-
     }
 }

@@ -15,7 +15,7 @@ class Category extends Model
 
     public function toggleShow()
     {
-        $this->show =!$this->show;
+        $this->show = !$this->show;
         $this->save();
 
         return $this;

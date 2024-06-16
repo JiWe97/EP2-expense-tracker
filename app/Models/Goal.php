@@ -30,7 +30,7 @@ class Goal extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function goal_transactions()
+    public function goalTransactions()
     {
         return $this->hasMany(GoalTransaction::class);
     }

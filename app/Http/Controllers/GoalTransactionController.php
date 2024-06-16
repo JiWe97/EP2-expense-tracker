@@ -38,7 +38,8 @@ class GoalTransactionController extends Controller
         }
 
         GoalTransaction::create($validated);
-        return redirect()->route('goals.show', $validated['goal_id'])->with('success', 'Transaction created successfully.');
+        return redirect()->route('goals.show', $validated['goal_id'])
+            ->with('success', 'Transaction created successfully.');
     }
 
     /**
@@ -78,10 +79,11 @@ class GoalTransactionController extends Controller
         }
 
         $goal_transaction = GoalTransaction::findOrFail($id);
-        
+
         $goal_transaction->update($validated);
 
-        return redirect()->route('goals.show', $validated['goal_id'])->with('success', 'Transaction updated successfully.');
+        return redirect()->route('goals.show', $validated['goal_id'])
+            ->with('success', 'Transaction updated successfully.');
     }
 
     /**
@@ -93,6 +95,7 @@ class GoalTransactionController extends Controller
         $goalId = $goal_transaction->goal_id;
         $goal_transaction->delete();
 
-        return redirect()->route('goals.show', $goalId)->with('success', 'Transaction deleted successfully.');
+        return redirect()->route('goals.show', $goalId)
+            ->with('success', 'Transaction deleted successfully.');
     }
 }

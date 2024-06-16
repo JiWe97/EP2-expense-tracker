@@ -23,7 +23,7 @@ class GoalProgress extends Component
         $currentAmount = $this->goal->goal_transactions()->sum('amount');
 
         $this->progress = ($totalAmount > 0) ? ($currentAmount / $totalAmount) * 100 : 0;
-        
+
         // Determine color class based on progress
         if ($this->progress < 50) {
             $this->colorClass = 'bg-green-600';

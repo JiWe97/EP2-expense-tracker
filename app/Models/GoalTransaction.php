@@ -20,4 +20,3 @@ class GoalTransaction extends Model
         return $this->belongsTo(Goal::class);
     }
 }
-

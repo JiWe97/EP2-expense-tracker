@@ -52,4 +52,8 @@ class Transaction extends Model
     {
         return $this->hasMany(Attachment::class);
     }
+    public function scopeExpense($query)
+    {
+        return $query->where('type', 'expense');
+    }
 }

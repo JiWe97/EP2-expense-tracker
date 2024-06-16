@@ -1,85 +1,8 @@
 @extends('layouts.custom')
 
-@section('styles')
-    <style>
-        .category-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 8px;
-        }
-
-        .info-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .info-message i {
-            color: #4a4a4a;
-        }
-
-        .btn-custom {
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #4a4a4a;
-            color: white;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-custom:hover {
-            background-color: #2e2e2e;
-        }
-
-        .btn-danger {
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #4a4a4a;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-danger:hover {
-            background-color: #2e2e2e;
-        }
-
-        .link-custom {
-            color: #333;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .link-custom:hover {
-            color: #555;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .title {
-            margin: 0;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-    </style>
-@endsection
+@push('styles')
+    @include('layouts.styles')
+@endpush
 
 @section('content')
 <div class="container mx-auto py-8">
@@ -92,7 +15,7 @@
     <div class="flex items-center mb-6">
         <p class="font-bold text-xl">€ {{ $budget->amount }}</p>
         <div class="flex items-center ml-4">
-            @foreach($budget->categories as $category)
+            @foreach ($budget->categories as $category)
                 <div class="category-icon" style="background-color: {{ $category->color }}">
                     <i class="{{ $category->icon }}" style="color: #fff;"></i>
                 </div>

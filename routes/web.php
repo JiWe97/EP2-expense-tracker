@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
 
 //BUDGET
 Route::middleware('auth')->group(function () {
-    Route::resource('/settings/budgets', BudgetController::class);
+    Route::resource('/budgets', BudgetController::class);
     Route::get('budgets/{budgetId}/history', [BudgetController::class, 'history'])->name('budgets.history');
 });
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Category extends Model
 {
@@ -32,5 +33,11 @@ class Category extends Model
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
+    }
+    public function scopeVisibleToUser($query)
+    {
+        return $query->where('show', true)
+                     ->where('is_income', false)
+                     ->where('user_id', Auth::id());
     }
 }

@@ -21,6 +21,7 @@ class BankController extends Controller
             'user_id' => auth()->id(),
             'bank_name' => $validated['bank_name'],
             'account_number' => $validated['account_number'],
+            'balance' => 0,
         ]);
 
         $bankingRecord->save();

@@ -10,7 +10,6 @@ Welcome to the EP2 Expense Tracker project! This application helps users track a
 - [Usage](#usage)
 - [Mailables](#mailables)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -102,6 +101,3 @@ We welcome contributions to improve this project! To contribute:
 
 Please make sure to update tests as appropriate.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

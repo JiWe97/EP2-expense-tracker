@@ -23,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('budget_category', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('budget_category');
     }
 };

@@ -17,10 +17,6 @@ class BankStatementsImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // Log the row data
-        Log::info('Importing row: ', $row);
-
-        // Define the validation rules
         $rules = [
             'id' => 'required|integer',
             'amount' => 'required|numeric',
@@ -38,17 +34,14 @@ class BankStatementsImport implements ToModel, WithHeadingRow
             'updated_at' => 'required|date',
         ];
 
-        // Validate the row before processing
         $validator = Validator::make($row, $rules);
-
+        
+        //Keep logs to improve this function in the future
         // If validation fails, log the errors and return null to skip the row
         if ($validator->fails()) {
             Log::error('Validation failed: ', $validator->errors()->toArray());
             return null;
         }
-
-        // Log successful validation
-        Log::info('Validation passed: ', $row);
 
         // Create the new Transaction model
         $transaction = new Transaction([

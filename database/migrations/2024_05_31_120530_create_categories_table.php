@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('icon');
             $table->boolean('is_income')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

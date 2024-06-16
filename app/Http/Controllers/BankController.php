@@ -21,6 +21,7 @@ class BankController extends Controller
             'user_id' => auth()->id(),
             'bank_name' => $validated['bank_name'],
             'account_number' => $validated['account_number'],
+            'balance' => 0,
         ]);
 
         $bankingRecord->save();
@@ -52,5 +53,16 @@ class BankController extends Controller
     {
         $bankingRecord->delete();
         return redirect('/profile')->with('success', 'Banking information deleted successfully');
+    }
+
+    public function addBalance(Request $request, BankingRecord $bankingRecord)
+    {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $bankingRecord->update(['balance' => $bankingRecord->balance + $validated['amount']]);
+
+        return redirect('/profile')->with('success', 'Balance added successfully');
     }
 }

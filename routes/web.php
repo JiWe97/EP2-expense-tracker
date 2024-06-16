@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
 // Banking Routes
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
 Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');
+Route::put('/banking-record/{bankingRecord}/add-balance', [BankController::class, 'addBalance'])->name('add.balance');
 
 // Goal and Goal Transaction Routes
 Route::middleware('auth')->group(function () {

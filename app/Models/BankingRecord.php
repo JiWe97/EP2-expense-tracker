@@ -14,6 +14,7 @@ class BankingRecord extends Model
         'bank_name',
         'balance',
         'account_number',
+        'balance',
     ];
 
     public function transaction()
@@ -21,8 +22,10 @@ class BankingRecord extends Model
         return $this->hasMany(Transaction::class);
     }
 
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

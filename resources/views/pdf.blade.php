@@ -16,32 +16,34 @@
         th {
             background-color: #f2f2f2;
         }
+        img{
+            max-width: 500px;
+        }
     </style>
 </head>
 <body>
     <h2>{{ $title }}</h2>
-
-    <h3>Transactions:</h3>
+    <!-- <h2>Graphs</h2> -->
+    <div>
+        <img src="{{ $transactionChartUrl }}" alt="Transaction Trend Chart">
+    </div>
     <table>
         <thead>
             <tr>
-                <th>Type</th>
-                <th>Amount</th>
                 <th>Date</th>
+                <th>Amount</th>
             </tr>
         </thead>
         <tbody>
             @foreach($transactions as $transaction)
                 <tr>
-                    <td>{{ $transaction['type'] }}</td>
-                    <td>{{ $transaction['amount'] }}</td>
                     <td>{{ $transaction['date'] }}</td>
+                    <td>{{ $transaction['amount'] }} €</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <h3>Category Totals:</h3>
     <table>
         <thead>
             <tr>
@@ -53,7 +55,7 @@
             @foreach($categoryTotals as $category => $total)
                 <tr>
                     <td>{{ $category }}</td>
-                    <td>{{ $total }}</td>
+                    <td>{{ $total }} €</td>
                 </tr>
             @endforeach
         </tbody>

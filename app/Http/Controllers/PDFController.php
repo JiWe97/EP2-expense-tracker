@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
 use App\Models\Transaction;
 use App\Models\Category;
 use PDF;
@@ -42,15 +43,56 @@ class PDFController extends Controller
             ];
         })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
 
-        // Data to pass to the PDF view
-        $data = [
+        // Generate chart URLs
+        $chartUrls = $this->generateChartImage($transactionData);
+
+        // Generate PDF using the pdf.blade.php view and return as stream
+        $pdf = PDF::loadView('pdf', [
             'title' => 'Transaction Report',
             'transactions' => $transactionData,
             'categoryTotals' => $categoryTotalsWithName,
+            'transactionChartUrl' => $chartUrls['transactionChartUrl'],
+            // 'categoryChartUrl' => $chartUrls['categoryChartUrl']
+        ]);
+
+        return $pdf->stream('transaction_report.pdf');
+    }
+
+    private function generateChartImage($transactionData) {
+        $transactionDataChartConfig = [
+            'type' => 'line',
+            'data' => [
+                'labels' => array_column($transactionData, 'date'),
+                'datasets' => [
+                    [
+                        'label' => 'Transaction Trend',
+                        'data' => array_column($transactionData, 'amount')
+                    ]
+                ]
+            ]
         ];
 
-        // Generate PDF using the pdf.blade.php view and return as stream
-        $pdf = PDF::loadView('pdf', $data);
-        return $pdf->stream('transaction_report.pdf');
+        // $categoryTotalsArray = $categoryTotals->toArray();
+        
+        // $categoryTotalsChartConfig = [
+        //     'type' => 'pie',
+        //     'data' => [
+        //         'labels' => array_keys($categoryTotalsArray),
+        //         'datasets' => [
+        //             [
+        //                 'label' => 'Expenses by Category',
+        //                 'data' => array_values($categoryTotalsArray)
+        //             ]
+        //         ]
+        //     ]
+        // ];
+
+        $transactionChartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($transactionDataChartConfig));
+        // $categoryChartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($categoryTotalsChartConfig));
+
+        return [
+            'transactionChartUrl' => $transactionChartUrl,
+            // 'categoryChartUrl' => $categoryChartUrl
+        ];
     }
 }

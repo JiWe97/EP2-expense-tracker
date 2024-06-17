@@ -22,6 +22,7 @@ class Transaction extends Model
         'warranty',
         'warranty_date',
         'banking_record_id',
+        'payoff_id',
         'created_at',
         'updated_at',
     ];
@@ -84,5 +85,10 @@ class Transaction extends Model
     public function scopeExpense($query)
     {
         return $query->where('type', 'expense');
+    }
+
+    public function payoff()
+    {
+        return $this->belongsTo(Payoff::class);
     }
 }

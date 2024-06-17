@@ -3,9 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Payoff;
 use App\Models\Category;
-use App\Models\Transaction;
 use App\Models\BankingRecord;
+use App\Models\Transaction;
 use Livewire\WithFileUploads;
 use App\Models\Attachment;
 
@@ -24,6 +25,7 @@ class TransactionForm extends Component
     public $valuta = 'EUR';
     public $exchange_rate = 1.2;
     public $transaction;
+    public $payoff_id;
     public $type;
 
     /**
@@ -42,6 +44,7 @@ class TransactionForm extends Component
             $this->category_id = $transaction->category_id;
             $this->description = $transaction->description;
             $this->banking_record_id = $transaction->banking_record_id;
+            $this->payoff_id = $transaction->payoff_id;
             $this->type = $transaction->type;
         }
     }
@@ -70,6 +73,7 @@ class TransactionForm extends Component
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'banking_record_id' => 'required|exists:banking_records,id',
+            'payoff_id' => 'required|exists:payoffs,id',
             'attachments.*' => 'file|max:1024',
         ]);
 
@@ -86,12 +90,13 @@ class TransactionForm extends Component
             'user_id' => auth()->id(),
             'valuta' => $this->valuta,
             'exchange_rate' => $this->exchange_rate,
+            'payoff_id' => $this->payoff_id,
         ];
 
         if ($this->transaction) {
-            $this->updateTransaction($data, $amount);
+            $this->transaction->update($data);
         } else {
-            $this->createTransaction($data, $amount);
+            Transaction::create($data);
         }
 
         $this->saveAttachments();
@@ -152,7 +157,10 @@ class TransactionForm extends Component
     {
         foreach ($this->attachments as $file) {
             $path = $file->store('attachments', 'public');
-            Attachment::create(['picture' => $path, 'transaction_id' => $this->transaction->id]);
+            Attachment::create([
+                'picture' => $path, 
+                'transaction_id' => $this->transaction->id
+            ]);
         }
     }
 
@@ -161,11 +169,13 @@ class TransactionForm extends Component
      *
      * @return \Illuminate\View\View
      */
+    publ
     public function render()
     {
         $categories = Category::where('is_income', $this->is_income)->get();
         $bankingRecords = BankingRecord::where('user_id', auth()->id())->get();
+        $payoffs = Payoff::all();  // Fetch all payoffs
 
-        return view('livewire.transaction-form', compact('categories', 'bankingRecords'));
+        return view('livewire.transaction-form', compact('categories', 'bankingRecords', 'payoffs'));
     }
 }

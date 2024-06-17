@@ -181,7 +181,7 @@
 <div class="mb-4">
     <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
     @foreach ($bankingRecords as $bankingRecord)
-        <p>{{ $bankingRecord->name }}: € {{ $bankingRecord->balance }}</p>
+        <p>{{ $bankingRecord->name ?: $bankingRecord->bank_name }}: € {{ number_format($bankingRecord->balance, 2) }}</p>
         <p>Total saved: € {{ $totalAmountSaved }}</p>
         <p>Total without savings: € {{ $bankingRecord->balance - $totalAmountSaved }}</p>
     @endforeach
@@ -226,6 +226,7 @@
                             <th>Category</th>
                             <th>Bank</th>
                             <th>Attachment</th>
+                            <th>Payoff</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,6 +239,7 @@
                                 <td>{{ $transaction->type }}</td>
                                 <td>{{ $transaction->category_id ?? '' }}</td>
                                 <td>{{ $transaction->banking_record_id }}</td>
+                                <td>{{ $transaction->payoff_id }}</td>
                                 <td>
                                     @if ($transaction->attachments->isNotEmpty())
                                         @foreach ($transaction->attachments as $attachment)

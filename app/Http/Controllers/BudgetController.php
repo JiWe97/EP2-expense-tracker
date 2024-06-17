@@ -14,9 +14,15 @@ class BudgetController extends Controller
 {
     public function index()
     {
-        $budgets = Budget::all();
+        $budgets = Budget::with('categories')->get();
+        
+        foreach ($budgets as $budget) {
+            $budget->balance = abs(Transaction::whereIn('category_id', $budget->categories->pluck('id'))->sum('amount'));
+        }
+
         return view('budgets.index', compact('budgets'));
     }
+
 
     public function create()
     {

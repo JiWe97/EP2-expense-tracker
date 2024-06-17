@@ -96,24 +96,24 @@
     </style>
 
     <div x-data="{ is_income: @js($is_income) }">
-        <a href="{{ route('transactions.index') }}" class="link">Back</a>
-        <form wire:submit.prevent="saveOrUpdate">
-            @csrf
-            <p>
-                <span x-show="is_income" class="text-green-500">Income</span>
-                <span x-show="!is_income" class="text-red-500">Expense</span>
-                <span class="text-gray-500">Category id: {{ $category_id }}</span>
-                <span class="text-gray-500">Type: {{ $type }}</span>
-            </p>
+            <a href="{{ route('transactions.index') }}" class="link">Back</a>
+            <form wire:submit.prevent="saveOrUpdate">
+                @csrf
+                <p>
+                    <span x-show="is_income" class="text-green-500">Income</span>
+                    <span x-show="!is_income" class="text-red-500">Expense</span>
+                    <span class="text-gray-500">Category id: {{ $category_id }}</span>
+                    <span class="text-gray-500">Type: {{ $type }}</span>
+                </p>
 
-            <div class="form-group">
-                <label for="action" class="text-lg font-medium text-white">Type</label>
-                <div class="flex">
-                    <button type="button" class="btn btn-income btn-full" :class="is_income ? 'bg-green-200' : 'bg-gray-200'" @click="is_income = true; $wire.set('is_income', true)">Income</button>
-                    <button type="button" class="btn btn-expense btn-full ml-2" :class="!is_income ? 'bg-red-200' : 'bg-gray-200'" @click="is_income = false; $wire.set('is_income', false)">Expense</button>
+                <div class="form-group">
+                    <label for="action" class="text-lg font-medium text-white">Type</label>
+                    <div class="flex">
+                        <button type="button" class="btn btn-income btn-full" :class="is_income ? 'bg-green-200' : 'bg-gray-200'" @click="is_income = true; $wire.set('is_income', true)">Income</button>
+                        <button type="button" class="btn btn-expense btn-full ml-2" :class="!is_income ? 'bg-red-200' : 'bg-gray-200'" @click="is_income = false; $wire.set('is_income', false)">Expense</button>
+                    </div>
                 </div>
-            </div>
-
+    
             <div class="form-group">
                 <label for="date">Date</label>
                 <input type="date" wire:model.lazy="date" id="date" class="form-control @error('date') border-red-500 @enderror" />
@@ -125,7 +125,7 @@
             <div class="form-group">
                 <label for="amount">Amount</label>
                 <p class="text-sm">Don't use negative numbers, this happens automatically when needed!</p>
-                <input type="number" wire:model.lazy="amount" min="0" id="amount" class="form-control @error('amount') border-red-500 @enderror">
+                <input type="number" wire:model.lazy="amount" min="0" step="0.01" id="amount" class="form-control @error('amount') border-red-500 @enderror">
                 @error('amount')
                     <p class="error">{{ $message }}</p>
                 @enderror
@@ -164,6 +164,21 @@
                     <p class="error">{{ $message }}</p>
                 @enderror
             </div>
+            
+            @if($payoffs->isNotEmpty())
+                <div class="form-group">
+                    <label for="payoff_id">Payoff</label>
+                    <select wire:model.lazy="payoff_id" id="payoff_id" class="form-control @error('payoff_id') border-red-500 @enderror">
+                        <option value="">Select a payoff</option>
+                        @foreach($payoffs as $payoff)
+                            <option value="{{ $payoff->id }}">{{ $payoff->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('payoff_id')
+                        <p class="error">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
 
             <div class="form-group">
                 <label for="attachments" class="text-lg font-medium text-white">Attachments:</label>

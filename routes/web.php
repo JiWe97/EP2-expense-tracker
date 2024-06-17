@@ -37,6 +37,7 @@ Route::get('/graph', [GraphController::class, 'index']) ->name('graph');;
 
 // Transaction Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::resource('/transactions', TransactionController::class);
     Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 });

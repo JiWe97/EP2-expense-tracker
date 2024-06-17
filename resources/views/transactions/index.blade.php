@@ -276,34 +276,4 @@
 </div>
 @endsection
 
-@section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            e.preventDefault();
-            var query = $('input[name="query"]').val();
 
-            // Check if the search query is empty
-            if (query.trim() === "") {
-                return false;
-            }
-
-            $.ajax({
-                url: '{{ route("transactions.index") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    query: query
-                },
-                success: function(response) {
-                    $('#transactions-container').html(response.transactions);
-                },
-                error: function(response) {
-                    console.log('Error:', response);
-                }
-            });
-        });
-    });
-</script>
-@endsection

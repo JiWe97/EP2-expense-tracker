@@ -29,13 +29,13 @@ class TransactionController extends Controller
 
         if (request()->has('search')) {
             $query = request()->get('search', '');
+            print_r($query);
             $transactions->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('amount', 'LIKE', "%{$query}%")
                     ->orWhere('description', 'LIKE', "%{$query}%")
                     ->orWhere('type', 'LIKE', "%{$query}%")
                     ->orWhere('valuta', 'LIKE', "%{$query}%")
-                    ->orWhere('created_at', 'LIKE', "%{$query}%")
-                    ->orWhere('updated_at', 'LIKE', "%{$query}%")
+                    ->orWhere('date', 'LIKE', "%{$query}%")
                     ->orWhereHas('category', function ($q) use ($query) {
                         $q->where('name', 'LIKE', "%{$query}%");
                     })
@@ -46,33 +46,15 @@ class TransactionController extends Controller
                         $q->where('bank_name', 'LIKE', "%{$query}%");
                     });
             });
-
-            $dateFormats = ['d-m', 'd/m', 'd-m-Y', 'd/m/Y', 'Y-m-d'];
             $monthsOfYear = [
                 'January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
 
-            foreach ($dateFormats as $format) {
-                $date = DateTime::createFromFormat($format, $query);
-                if ($date && $date->format($format) === $query) {
-                    $year = $date->format('Y');
-                    $month = $date->format('m');
-                    $day = $date->format('d');
-                    $transactions->whereYear('created_at', $year)
-                        ->whereMonth('created_at', $month)
-                        ->orWhereYear('updated_at', $year)
-                        ->whereMonth('updated_at', $month)
-                        ->orWhereDay('created_at', $day)
-                        ->orWhereDay('updated_at', $day);
-                    break;
-                }
-            }
-
             if (in_array($query, $monthsOfYear)) {
                 $monthIndex = array_search($query, $monthsOfYear) + 1;
-                $transactions->whereMonth('created_at', $monthIndex)
-                    ->orWhereMonth('updated_at', $monthIndex);
+                $formattedMonth = sprintf('%02d', $monthIndex); // Ensure the month is two digits
+                $transactions->where('date', 'LIKE', "%.{$formattedMonth}.%");
             }
         }
 
@@ -84,7 +66,9 @@ class TransactionController extends Controller
             $transaction->category_id = Category::find($transaction->category_id)->name;
         });
 
+
         return view('transactions.index', [
+            // 'query' => request()->get('search', ''),
             'transactions' => $transactions,
             'categories' => $categories,
             'bankingRecords' => $bankingRecords,

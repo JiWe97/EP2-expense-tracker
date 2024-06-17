@@ -31,7 +31,7 @@ class GraphController extends Controller
 
         // Group filtered transactions by 'category_id' and sum the 'amount'
         $categoryTotals = $expenseTransactions->groupBy('category_id')->map(function ($categoryTransactions) {
-            return $categoryTransactions->sum('amount');
+            return $categoryTransactions->sum('amount')*-1;
         });
 
         // Pre-fetch categories to avoid multiple queries
@@ -53,7 +53,7 @@ class GraphController extends Controller
             return [
                 'type' => $transaction->type,
                 'amount' => $transaction->amount,
-                'date' => $transaction->created_at ? $transaction->created_at->format('d-m-Y') : null,
+                'date' => $transaction->date,
             ];
         })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
         // print_r($transactionData);

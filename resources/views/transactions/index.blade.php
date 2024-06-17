@@ -268,37 +268,14 @@
     <div class="pagination mt-4">
         {{ $transactions->links() }}
     </div>
+
+    <div class="container">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('pdf') }}" class="btn btn-primary">PDF</a>
+            <a href="{{ route('graph') }}" class="btn btn-secondary">See Graph</a>
+        </div>
+    </div>
 </div>
 @endsection
 
-@section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            e.preventDefault();
-            var query = $('input[name="query"]').val();
 
-            // Check if the search query is empty
-            if (query.trim() === "") {
-                return false;
-            }
-
-            $.ajax({
-                url: '{{ route("transactions.index") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    query: query
-                },
-                success: function(response) {
-                    $('#transactions-container').html(response.transactions);
-                },
-                error: function(response) {
-                    console.log('Error:', response);
-                }
-            });
-        });
-    });
-</script>
-@endsection

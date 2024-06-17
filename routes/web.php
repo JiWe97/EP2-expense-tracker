@@ -11,6 +11,9 @@ use App\Http\Controllers\GraphController;
 use App\Http\Controllers\GoalTransactionController;
 use App\Http\Controllers\PayoffController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\DashboardController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,13 +33,14 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 // PDF Generation Route
-Route::get('/pdf', [PDFController::class, 'generatePDF']);
+Route::get('/pdf', [PDFController::class, 'generatePDF']) ->name('pdf');;
 
 // Graph Route
-Route::get('/graph', [GraphController::class, 'index']);
+Route::get('/graph', [GraphController::class, 'index']) ->name('graph');;
 
 // Transaction Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::resource('/transactions', TransactionController::class);
     Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 });
@@ -59,7 +63,9 @@ Route::middleware('auth')->group(function () {
 // Banking Routes
 Route::post('/banking-record', [BankController::class, 'store'])->name('store.banking.record');
 Route::delete('/banking-record/{bankingRecord}', [BankController::class, 'destroy'])->name('delete.banking.record');
-Route::put('/banking-record/{bankingRecord}/add-balance', [BankController::class, 'addBalance'])->name('add.balance');
+Route::get('/banking-record/{bankingRecord}/edit', [BankController::class, 'edit'])->name('edit.banking.record');
+Route::put('/banking-record/{bankingRecord}', [BankController::class, 'update'])->name('update.banking.record.put');
+
 
 // Goal and Goal Transaction Routes
 Route::middleware('auth')->group(function () {
@@ -73,3 +79,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('/payoffs', PayoffController::class);
 });
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');

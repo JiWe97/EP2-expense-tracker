@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    @stack('styles')
+    @yield('styles')
 </head>
 
 <body class="container mx-auto mt-10 mb-10 max-w-lg">

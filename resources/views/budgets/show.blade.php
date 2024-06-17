@@ -1,8 +1,69 @@
 @extends('layouts.custom')
 
-@push('styles')
-    @include('layouts.styles')
-@endpush
+@section('styles')
+    <style>
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 8px;
+        }
+
+        .info-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .info-message i {
+            color: #007bff;
+        }
+
+        .btn-custom {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .link-custom {
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .link-custom:hover {
+            color: #555;
+        }
+    </style>
+@endsection
 
 @section('content')
 <div class="container mx-auto py-8">

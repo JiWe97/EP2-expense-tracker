@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\DashboardController;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,10 +32,10 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 // PDF Generation Route
-Route::get('/pdf', [PDFController::class, 'generatePDF']);
+Route::get('/pdf', [PDFController::class, 'generatePDF']) ->name('pdf');;
 
 // Graph Route
-Route::get('/graph', [GraphController::class, 'index']);
+Route::get('/graph', [GraphController::class, 'index']) ->name('graph');;
 
 // Transaction Routes
 Route::middleware('auth')->group(function () {

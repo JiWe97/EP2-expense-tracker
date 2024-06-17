@@ -1,4 +1,4 @@
-<style>
+{{-- <style>
     /* Base Styles */
     body {
         font-family: Arial, sans-serif;
@@ -61,7 +61,9 @@
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         margin: auto;
     }
 
@@ -486,3 +488,4 @@
         height: 50px;
     }
 </style>
+ --}}

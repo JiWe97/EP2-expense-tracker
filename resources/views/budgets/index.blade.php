@@ -1,9 +1,5 @@
 @extends('layouts.custom')
 
-@push('styles')
-    @include('layouts.styles')
-@endpush
-
 @section('title', 'The list of budgets')
 
 @section('content')

@@ -1,7 +1,22 @@
 <div wire:poll.10s="refreshProgress">
-    @push('styles')
-        @include('layouts.styles')
-    @endpush
+    <style>
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .alert-warning {
+            color: #8a6d3b;
+            background-color: #fcf8e3;
+            border-color: #faebcc;
+        }
+    </style>
 
     @if (session()->has('alert'))
         <div class="alert alert-{{ session('alert')['type'] }}">

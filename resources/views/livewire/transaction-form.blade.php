@@ -1,20 +1,107 @@
 <div>
-    @push('styles')
-        @include('layouts.styles')
-    @endpush
+    <style>
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    <div x-data="{ is_income: @entangle('is_income').defer }">
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: black;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-full {
+            width: 100%;
+            background-color: #f0f0f0;
+        }
+
+        .bg-green-200 {
+            background-color: rgba(144, 238, 144, 0.8); /* LightGreen with 80% opacity */
+        }
+
+        .btn-income:hover {
+            background-color: rgba(144, 238, 144, 1);
+        }
+
+        .bg-red-200 {
+            background-color: rgba(255, 99, 71, 0.8); /* Tomato with 80% opacity */
+        }
+
+        .btn-expense:hover {
+            background-color: rgba(255, 99, 71, 1);
+        }
+
+        .bg-gray-200 {
+            background-color: rgba(211, 211, 211, 0.5); /* LightGray with 50% opacity */
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group textarea {
+            height: 150px;
+        }
+
+        .form-group select {
+            height: 50px;
+        }
+    </style>
+
+    <div x-data="{ is_income: @js($is_income) }">
         <a href="{{ route('transactions.index') }}" class="link">Back</a>
         <form wire:submit.prevent="saveOrUpdate">
             @csrf
-
             <p>
-                @if ($is_income)
-                    <span class="text-green-500">Income</span>
-                @else
-                    <span class="text-red-500">Expense</span>
-                @endif
-                {{-- print category id --}}
+                <span x-show="is_income" class="text-green-500">Income</span>
+                <span x-show="!is_income" class="text-red-500">Expense</span>
                 <span class="text-gray-500">Category id: {{ $category_id }}</span>
                 <span class="text-gray-500">Type: {{ $type }}</span>
             </p>
@@ -22,8 +109,8 @@
             <div class="form-group">
                 <label for="action" class="text-lg font-medium text-white">Type</label>
                 <div class="flex">
-                    <button type="button" class="btn btn-income btn-full {{ $is_income ? 'bg-green-200' : 'bg-gray-200'}}" @click="is_income = true; $wire.is_income = true">Income</button>
-                    <button type="button" class="btn btn-expense btn-full ml-2 {{ $is_income ? 'bg-gray-200' : 'bg-red-200'}}" @click="is_income = false; $wire.is_income = false">Expense</button>
+                    <button type="button" class="btn btn-income btn-full" :class="is_income ? 'bg-green-200' : 'bg-gray-200'" @click="is_income = true; $wire.set('is_income', true)">Income</button>
+                    <button type="button" class="btn btn-expense btn-full ml-2" :class="!is_income ? 'bg-red-200' : 'bg-gray-200'" @click="is_income = false; $wire.set('is_income', false)">Expense</button>
                 </div>
             </div>
 
@@ -94,7 +181,6 @@
                 <a href="{{ route('transactions.index') }}" class="btn">Cancel</a>
             </div>
 
-            {{-- Error messages --}}
             @if ($errors->any())
                 <div class="alert alert-danger mt-4">
                     <ul>
@@ -107,7 +193,7 @@
         </form>
 
         @isset($transaction)
-            <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" class="mt-4">
+            <form action="{{ route('transactions.destroy', ['transaction' => $transaction->id]) }}" method="POST" class="mt-4">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger">Delete</button>

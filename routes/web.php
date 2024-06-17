@@ -9,6 +9,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\GoalTransactionController;
+use App\Http\Controllers\PayoffController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -66,4 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/goal_transactions/create/{goalId}', [GoalTransactionController::class, 'create'])->name('goal_transactions.create');
     Route::post('/goal_transactions', [GoalTransactionController::class, 'store'])->name('goal_transactions.store');
     Route::resource('/goal_transactions', GoalTransactionController::class)->except(['create', 'store']);
+});
+
+// Payoff Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('/payoffs', PayoffController::class);
 });

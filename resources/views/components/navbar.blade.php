@@ -13,6 +13,7 @@
         <a href="{{ route('transactions.index') }}" class="nav-link">Transactions</a>
         <a href="{{ route('budgets.index') }}" class="nav-link">Budgets</a>
         <a href="{{ route('goals.index') }}" class="nav-link">Goals</a>
+        <a href="{{ route('payoffs.index') }}" class="nav-link">Payoffs</a>
     </nav>
 </div>
 

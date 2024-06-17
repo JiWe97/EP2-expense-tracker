@@ -12,6 +12,7 @@ class BankController extends Controller
     {
         //Validate the requested data
         $validated = $request->validate([
+            'name' => 'required',
             'bank_name' => 'required',
             'account_number' => 'required',
             'balance' => 'required|numeric',
@@ -20,6 +21,7 @@ class BankController extends Controller
         //Store the banking record
         $bankingRecord = new BankingRecord([
             'user_id' => auth()->id(),
+            'name' => $validated['name'],
             'bank_name' => $validated['bank_name'],
             'account_number' => $validated['account_number'],
             'balance' => $validated['balance'],
@@ -39,6 +41,7 @@ class BankController extends Controller
     public function update(Request $request, BankingRecord $bankingRecord)
     {
         $validated = $request->validate([
+            'name' => 'required',
             'bank_name' => 'required',
             'account_number' => 'required',
             'balance' => 'required|numeric',

@@ -13,6 +13,13 @@
     <form method="POST" action="{{ route('store.banking.record') }}" class="mt-6 space-y-6">
         @csrf
 
+    <!-- Name -->
+    <div>
+        <x-input-label for="name" value="{{ __('Name') }}" />
+        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required autofocus />
+        <x-input-error class="mt-2" :messages="$errors->get('name')" />
+    </div>
+
     <!-- Bank Name -->
     <div>
         <x-input-label for="bankName" value="{{ __('Bank Name') }}" />

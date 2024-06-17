@@ -25,8 +25,10 @@
                 <button id="toggleAll" class="btn btn-primary">Show All</button>
                 @foreach($bankingRecords as $record)
                     <div class="mb-4">
-                        <a href="#" onclick="toggleDetails({{ $record->id }})"><h4 class="text-lg font-bold mb-2">{{ $record->bank_name }}</h4></a>
-                        <span id="details-{{ $record->id }}" style="display:none;"><p><strong>Account Number:</strong> {{ $record->account_number }}</p>
+                        <a href="#" onclick="toggleDetails({{ $record->id }})"><h4 class="text-lg font-bold mb-2">{{ $record->name }}</h4></a>
+                        <span id="details-{{ $record->id }}" style="display:none;">
+                        <p><strong>Bank Name:</strong> {{ $record->bank_name }}</p>
+                        <p><strong>Account Number:</strong> {{ $record->account_number }}</p>
                         <p><strong>Balance:</strong> {{ $record->balance }}</p></span>
                     </div>
                 @endforeach

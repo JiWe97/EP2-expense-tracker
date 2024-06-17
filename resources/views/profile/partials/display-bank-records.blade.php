@@ -2,7 +2,8 @@
         <h2 class="text-xl font-semibold">{{ __('Banking Information') }}</h2>
         @foreach($user->bankingRecords as $record)
             <div class="bg-white shadow-md rounded-lg p-6 mb-4">
-        <h3 class="text-lg font-semibold">{{ $record->bank_name }}</h3>
+        <h3 class="text-lg font-semibold">{{ $record->name }}</h3>
+        <p>{{ $record->bank_name }}</p>
         <p>{{ $record->account_number }}</p>
         <p>{{ $record->balance }}</p>
 
@@ -17,6 +18,14 @@
                 @csrf
                 @method('PUT')
 
+                <!-- Name -->
+                <div>
+                    <x-input-label for="name" value="{{ __('Name') }}" />
+                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required autofocus />
+                    <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                </div>
+
+                <!-- Bank Name -->
                 <div>
                     <input type="hidden" name="banking_record_id" value="{{ $record->id }}">
                     <x-input-label for="bankName" value="{{ __('Bank Name') }}" />
@@ -24,12 +33,15 @@
                     <x-input-error class="mt-2" :messages="$errors->get('bank_name')" />
                 </div>
 
+
+                <!-- Account Number -->
                 <div>
                     <x-input-label for="accountNumber" value="{{ __('Account Number') }}" />
                     <x-text-input id="accountNumber" name="account_number" type="text" class="mt-1 block w-full" required />
                     <x-input-error class="mt-2" :messages="$errors->get('account_number')" />
                 </div>
 
+                <!-- Balance -->
                 <div>
                     <x-input-label for="balance" value="{{ __('Balance') }}" />
                     <x-text-input id="balance" name="balance" type="text" class="mt-1 block w-full" required />

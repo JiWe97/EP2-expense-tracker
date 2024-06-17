@@ -11,6 +11,7 @@ class BankingRecord extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
         'bank_name',
         'balance',
         'account_number',
@@ -27,5 +28,4 @@ class BankingRecord extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

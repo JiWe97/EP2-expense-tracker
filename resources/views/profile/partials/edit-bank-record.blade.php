@@ -14,6 +14,12 @@
         <x-input-error class="mt-2" :messages="$errors->get('account_number')" />
     </div>
 
+    <div>
+        <x-input-label for="balance" value="{{ __('Balance') }}" />
+        <x-text-input id="balance" name="balance" type="text" class="mt-1 block w-full" required />
+        <x-input-error class="mt-2" :messages="$errors->get('balance')" />
+    </div>
+
     <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
         {{ __('Update') }}
     </button>

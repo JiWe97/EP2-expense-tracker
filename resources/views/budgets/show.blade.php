@@ -21,36 +21,28 @@
         }
 
         .info-message i {
-            color: #007bff;
+            color: #4a4a4a;
         }
 
-        .btn-custom {
+        .btn-custom, .btn-danger {
             padding: 10px 20px;
             border-radius: 5px;
-            background-color: #007bff;
             color: white;
             text-decoration: none;
             border: none;
             cursor: pointer;
             transition: background-color 0.3s;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn-custom:hover {
-            background-color: #0056b3;
+        .btn-custom, .btn-danger {
+            background-color: #4a4a4a;
         }
 
-        .btn-danger {
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
+        .btn-custom:hover, .btn-danger:hover {
+            background-color: #2e2e2e;
         }
 
         .link-custom {
@@ -61,6 +53,22 @@
 
         .link-custom:hover {
             color: #555;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .title {
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 2px;
         }
     </style>
 @endsection

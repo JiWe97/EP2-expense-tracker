@@ -93,6 +93,13 @@
     <div class="pagination mt-4">
         {{ $transactions->links() }}
     </div>
+
+    <div class="container">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('pdf') }}" class="btn btn-primary">PDF</a>
+            <a href="{{ route('graph') }}" class="btn btn-secondary">See Graph</a>
+        </div>
+    </div>
 </div>
 @endsection
 

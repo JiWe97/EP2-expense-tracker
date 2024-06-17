@@ -14,6 +14,7 @@ class BankController extends Controller
         $validated = $request->validate([
             'bank_name' => 'required',
             'account_number' => 'required',
+            'balance' => 'required|numeric',
         ]);
 
         //Store the banking record
@@ -21,7 +22,7 @@ class BankController extends Controller
             'user_id' => auth()->id(),
             'bank_name' => $validated['bank_name'],
             'account_number' => $validated['account_number'],
-            'balance' => 0,
+            'balance' => $validated['balance'],
         ]);
 
         $bankingRecord->save();

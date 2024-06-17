@@ -10,6 +10,7 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\GoalTransactionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 
 Route::get('/', function () {
     return view('welcome');

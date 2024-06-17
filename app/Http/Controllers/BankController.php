@@ -33,22 +33,23 @@ class BankController extends Controller
 
     public function edit(BankingRecord $bankingRecord)
     {
-        return view('edit-bank-record', compact('bankingRecord'));
+        return view('profile.partials.edit-bank-record', compact('bankingRecord'));
     }
 
-    /*public function update(Request $request, BankingRecord $bankingRecord)
+    public function update(Request $request, BankingRecord $bankingRecord)
     {
         $validated = $request->validate([
             'bank_name' => 'required',
             'account_number' => 'required',
-        ]);
-        $bankingRecord->update([
-            'bank_name' => $validated['bank_name'],
-            'account_number' => $validated['account_number'],
+            'balance' => 'required|numeric',
         ]);
 
+        $bankingRecord->update($validated);
+
         return redirect('/profile')->with('success', 'Banking information updated successfully');
-    } */
+    }
+
+
 
     public function destroy(BankingRecord $bankingRecord)
     {

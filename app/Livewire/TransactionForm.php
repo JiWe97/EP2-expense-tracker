@@ -169,7 +169,6 @@ class TransactionForm extends Component
      *
      * @return \Illuminate\View\View
      */
-    publ
     public function render()
     {
         $categories = Category::where('is_income', $this->is_income)->get();

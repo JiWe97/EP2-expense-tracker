@@ -57,7 +57,7 @@ class Transaction extends Model
      */
     public function bankingRecord()
     {
-        return $this->belongsTo(BankingRecord::class);
+        return $this->belongsTo(BankingRecord::class, 'banking_record_id');
     }
 
     /**

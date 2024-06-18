@@ -18,10 +18,11 @@ class BankingRecord extends Model
         'balance',
     ];
 
-    public function transaction()
+    public function transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class, 'banking_record_id');
     }
+
 
 
     public function user()

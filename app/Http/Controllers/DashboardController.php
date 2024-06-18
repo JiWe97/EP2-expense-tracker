@@ -3,17 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\BankingRecord;
+use App\Models\Transaction;
 
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $userId = auth()->id(); // Assuming authentication middleware is applied
+        $userId = auth()->id();
         $bankingRecords = BankingRecord::where('user_id', $userId)->get();
-        $totalBalance = $bankingRecords->sum('balance'); // Calculate the total balance
+        $perPage = 10;
 
-        return view('dashboard', ['bankingRecords' => $bankingRecords, 'totalBalance' => $totalBalance]);
+        $query = Transaction::with(['bankingRecord', 'category'])->where('user_id', $userId);
+
+        if ($request->has('selectedBankName')) {
+            $query->whereHas('bankingRecord', function ($query) use ($request) {
+                $query->where('bank_name', $request->selectedBankName);
+            });
+        }
+
+        $transactions = $query->paginate($perPage);
+        $totalBalance = $bankingRecords->sum('balance');
+
+        return view('dashboard', ['bankingRecords' => $bankingRecords, 'totalBalance' => $totalBalance, 'transactions' => $transactions]);
     }
 }

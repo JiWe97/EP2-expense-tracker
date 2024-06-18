@@ -53,7 +53,7 @@ class Category extends Model
     /**
      * Get the transactions for the category.
      */
-    public function transaction()
+    public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
@@ -67,7 +67,7 @@ class Category extends Model
     public function scopeVisibleToUser($query)
     {
         return $query->where('show', true)
-                     ->where('is_income', false)
-                     ->where('user_id', Auth::id());
+            ->where('is_income', false)
+            ->where('user_id', Auth::id());
     }
 }

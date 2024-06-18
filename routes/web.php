@@ -33,10 +33,10 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 // PDF Generation Route
-Route::get('/pdf', [PDFController::class, 'generatePDF']) ->name('pdf');;
+Route::get('/pdf', [PDFController::class, 'generatePDF'])->name('pdf');;
 
 // Graph Route
-Route::get('/graph', [GraphController::class, 'index']) ->name('graph');;
+Route::get('/graph', [GraphController::class, 'index'])->name('graph');;
 
 // Transaction Routes
 Route::middleware('auth')->group(function () {

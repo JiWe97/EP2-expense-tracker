@@ -3,12 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Payoff;
+use Livewire\WithFileUploads;
+use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\BankingRecord;
-use App\Models\Transaction;
-use Livewire\WithFileUploads;
 use App\Models\Attachment;
+use App\Models\Payoff;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionForm extends Component
 {
@@ -68,7 +69,7 @@ class TransactionForm extends Component
             'category_id' => $this->category_id,
             'description' => $this->description,
             'banking_record_id' => $this->banking_record_id,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'payoff_id' => $this->payoff_id,
         ];
 
@@ -145,9 +146,11 @@ class TransactionForm extends Component
 
     public function render()
     {
-        $categories = Category::where('is_income', $this->is_income)->get();
-        $bankingRecords = BankingRecord::where('user_id', auth()->id())->get();
-        $payoffs = Payoff::all();  // Fetch all payoffs
+        $categories = Category::where('user_id', Auth::id())
+            ->where('is_income', $this->is_income)
+            ->get();
+        $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
+        $payoffs = Payoff::all(); // Fetch all payoffs
 
         return view('livewire.transaction-form', compact('categories', 'bankingRecords', 'payoffs'));
     }

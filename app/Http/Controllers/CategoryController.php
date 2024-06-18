@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Http\Requests\CategoryRequest;
 use App\Models\Transaction;
+use App\Models\Budget;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -73,32 +74,6 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.show', ['category' => $category->id])
             ->with('success', 'Category updated successfully');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request, Category $category)
-    {
-        $newCategoryId = $request->input('new_category_id');
-
-        if ($newCategoryId) {
-            // Validate the new category ID
-            $request->validate([
-                'new_category_id' => 'exists:categories,id',
-            ]);
-
-            // Reassign transactions to the new category
-            Transaction::where('category_id', $category->id)->update(['category_id' => $newCategoryId]);
-            // Ensure the original category is deleted
-            $category->forceDelete();
-        } else {
-            // Perform a soft delete, keeping the category name in transactions
-            $category->delete();
-        }
-
-        return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully and transactions reassigned or category soft deleted.');
     }
 
     /**

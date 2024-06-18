@@ -21,19 +21,10 @@ class TransactionForm extends Component
     public $description;
     public $banking_record_id;
     public $attachments = [];
-    public $user_id;
-    public $valuta = 'EUR';
-    public $exchange_rate = 1.2;
     public $transaction;
     public $payoff_id;
     public $type;
 
-    /**
-     * Mount the component with an optional transaction.
-     *
-     * @param Transaction|null $transaction
-     * @return void
-     */
     public function mount($transaction = null)
     {
         if ($transaction) {
@@ -49,21 +40,11 @@ class TransactionForm extends Component
         }
     }
 
-    /**
-     * Handle changes to the is_income property.
-     *
-     * @return void
-     */
     public function updatedIsIncome()
     {
         $this->category_id = null; // Reset category when type changes
     }
 
-    /**
-     * Save or update the transaction.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function saveOrUpdate()
     {
         $this->validate([
@@ -73,7 +54,7 @@ class TransactionForm extends Component
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'banking_record_id' => 'required|exists:banking_records,id',
-            'payoff_id' => 'required|exists:payoffs,id',
+            'payoff_id' => 'nullable|exists:payoffs,id',
             'attachments.*' => 'file|max:1024',
         ]);
 
@@ -88,15 +69,13 @@ class TransactionForm extends Component
             'description' => $this->description,
             'banking_record_id' => $this->banking_record_id,
             'user_id' => auth()->id(),
-            'valuta' => $this->valuta,
-            'exchange_rate' => $this->exchange_rate,
             'payoff_id' => $this->payoff_id,
         ];
 
         if ($this->transaction) {
-            $this->transaction->update($data);
+            $this->updateTransaction($data, $amount);
         } else {
-            Transaction::create($data);
+            $this->createTransaction($data, $amount);
         }
 
         $this->saveAttachments();
@@ -104,41 +83,30 @@ class TransactionForm extends Component
         return redirect()->route('transactions.index')->with('success', 'Transaction saved successfully.');
     }
 
-    /**
-     * Create a new transaction.
-     *
-     * @param array $data
-     * @param float $amount
-     * @return void
-     */
     private function createTransaction($data, $amount)
     {
-        $this->transaction = Transaction::create($data);
-        $this->updateBankingRecordBalance($this->banking_record_id, $amount);
+        $transaction = Transaction::create($data);
+        $this->updateBankingRecordBalance($data['banking_record_id'], $amount);
+        $this->updatePayoffBalance($data['payoff_id'], $amount, $data['type']);
     }
 
-    /**
-     * Update an existing transaction.
-     *
-     * @param array $data
-     * @param float $amount
-     * @return void
-     */
-    private function updateTransaction($data, $amount)
+    private function updateTransaction($data, $newAmount)
     {
         $transaction = Transaction::find($this->transaction->id);
-        $this->updateBankingRecordBalance($transaction->banking_record_id, -$transaction->amount);
+        $oldAmount = $transaction->amount;
+
+        // Reverse the effect of the old amount
+        $this->updateBankingRecordBalance($transaction->banking_record_id, -$oldAmount);
+        $this->updatePayoffBalance($transaction->payoff_id, -$oldAmount, $transaction->type);
+
+        // Update the transaction
         $transaction->update($data);
-        $this->updateBankingRecordBalance($this->banking_record_id, $amount);
+
+        // Apply the new amount
+        $this->updateBankingRecordBalance($data['banking_record_id'], $newAmount);
+        $this->updatePayoffBalance($data['payoff_id'], $newAmount, $data['type']);
     }
 
-    /**
-     * Update the balance of a banking record.
-     *
-     * @param int $bankingRecordId
-     * @param float $amount
-     * @return void
-     */
     private function updateBankingRecordBalance($bankingRecordId, $amount)
     {
         $bankingRecord = BankingRecord::find($bankingRecordId);
@@ -148,27 +116,33 @@ class TransactionForm extends Component
         }
     }
 
-    /**
-     * Save attachments for the transaction.
-     *
-     * @return void
-     */
+    private function updatePayoffBalance($payoffId, $amount, $type)
+    {
+        if ($payoffId) {
+            $payoff = Payoff::find($payoffId);
+            if ($payoff) {
+                // Switch positive and negative amounts for payoff balance
+                if ($type === 'income') {
+                    $payoff->balance -= abs($amount);
+                } else {
+                    $payoff->balance += abs($amount);
+                }
+                $payoff->save();
+            }
+        }
+    }
+
     private function saveAttachments()
     {
         foreach ($this->attachments as $file) {
             $path = $file->store('attachments', 'public');
             Attachment::create([
-                'picture' => $path, 
+                'picture' => $path,
                 'transaction_id' => $this->transaction->id
             ]);
         }
     }
 
-    /**
-     * Render the component view.
-     *
-     * @return \Illuminate\View\View
-     */
     public function render()
     {
         $categories = Category::where('is_income', $this->is_income)->get();

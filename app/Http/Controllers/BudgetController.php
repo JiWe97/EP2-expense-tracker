@@ -8,21 +8,30 @@ use App\Http\Requests\BudgetRequest;
 use App\Models\BankingRecord;
 use App\Models\Category;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
 {
     public function index()
     {
-        $budgets = Budget::with('categories')->get();
+        $userId = Auth::id();
         
+        $userBankingRecordIds = BankingRecord::where('user_id', $userId)->pluck('id');
+        
+        $budgets = Budget::with(['bankingRecord', 'categories'])
+            ->whereHas('bankingRecord', function ($query) use ($userBankingRecordIds) {
+                $query->whereIn('id', $userBankingRecordIds);
+            })
+            ->get();
+        
+        // Calculate the balance for each budget
         foreach ($budgets as $budget) {
-            $budget->balance = abs(Transaction::whereIn('category_id', $budget->categories->pluck('id'))->sum('amount'));
+            $budget->balance = Transaction::whereIn('category_id', $budget->categories->pluck('id'))->sum('amount');
         }
 
         return view('budgets.index', compact('budgets'));
     }
-
 
     public function create()
     {

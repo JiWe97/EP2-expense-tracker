@@ -176,7 +176,6 @@
     </style>
 @endsection
 
-
 @section('content')
 <div class="mb-4">
     <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
@@ -202,15 +201,11 @@
 </div>
 
 <div class="mb-4">
-    <h2 class="text-2xl pt-5 font-bold">Transaction history</h2>
+    <h2 class="text-2xl pt-5 font-bold">Transaction History</h2>
 
-    @include('search-bar')
+    @livewire('transaction-search')
 
-    <div class="justify-center flex items-center">
-        @if (isset($query))
-            <h3 class="text-2xl font-semibold">Search Results for "{{ $query }}"</h3>
-        @endif
-
+    {{-- <div class="justify-center flex items-center mt-4">
         @if ($transactions->isEmpty())
             <p class="text-center">No transactions found.</p>
         @else
@@ -225,8 +220,8 @@
                             <th>Type</th>
                             <th>Category</th>
                             <th>Bank</th>
-                            <th>Attachment</th>
                             <th>Payoff</th>
+                            <th>Attachment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -237,7 +232,7 @@
                                 <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
                                 <td>{{ $transaction->description }}</td>
                                 <td>{{ $transaction->type }}</td>
-                                <td>{{ $transaction->category_id ?? '' }}</td>
+                                <td>{{ $transaction->category->name ?? 'N/A' }}</td>
                                 <td>{{ $transaction->banking_record_id }}</td>
                                 <td>{{ $transaction->payoff_id }}</td>
                                 <td>
@@ -262,20 +257,11 @@
                     </tbody>
                 </table>
             </div>
-        @endif
+        @endif --}}
     </div>
 
     <div class="pagination mt-4">
         {{ $transactions->links() }}
     </div>
-
-    <div class="container">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{{ route('pdf') }}" class="btn btn-primary">PDF</a>
-            <a href="{{ route('graph') }}" class="btn btn-secondary">See Graph</a>
-        </div>
-    </div>
 </div>
 @endsection
-
-

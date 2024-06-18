@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Attachment;
 use App\Models\Goal;
 use App\Models\GoalTransaction;
+use App\Models\Payoff;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -24,57 +25,27 @@ class TransactionController extends Controller
         $bankingRecords = BankingRecord::where('user_id', Auth::user()->id)->get();
         $goals = Goal::where('user_id', Auth::user()->id)->get();
         $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals->pluck('id')->toArray())->sum('amount');
-        $categories = Category::all();
-        $transactions = Transaction::with(['user', 'bankingRecord']);
+        $transactions = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
+            $query->withTrashed(); // Include soft-deleted categories
+        }]);
 
-        if (request()->has('search')) {
-            $query = request()->get('search', '');
-            print_r($query);
-            $transactions->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('amount', 'LIKE', "%{$query}%")
-                    ->orWhere('description', 'LIKE', "%{$query}%")
-                    ->orWhere('type', 'LIKE', "%{$query}%")
-                    ->orWhere('valuta', 'LIKE', "%{$query}%")
-                    ->orWhere('date', 'LIKE', "%{$query}%")
-                    ->orWhereHas('category', function ($q) use ($query) {
-                        $q->where('name', 'LIKE', "%{$query}%");
-                    })
-                    ->orWhereHas('user', function ($q) use ($query) {
-                        $q->where('name', 'LIKE', "%{$query}%");
-                    })
-                    ->orWhereHas('bankingRecord', function ($q) use ($query) {
-                        $q->where('bank_name', 'LIKE', "%{$query}%");
-                    });
-            });
-            $monthsOfYear = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-
-            if (in_array($query, $monthsOfYear)) {
-                $monthIndex = array_search($query, $monthsOfYear) + 1;
-                $formattedMonth = sprintf('%02d', $monthIndex); // Ensure the month is two digits
-                $transactions->where('date', 'LIKE', "%.{$formattedMonth}.%");
-            }
-        }
 
         $transactions = $transactions->paginate(10);
 
         $transactions->each(function ($transaction) {
             $transaction->user_id = User::find($transaction->user_id)->name;
             $transaction->banking_record_id = BankingRecord::find($transaction->banking_record_id)->bank_name;
-            $transaction->category_id = Category::find($transaction->category_id)->name;
+            $transaction->category_id = Category::withTrashed()->find($transaction->category_id)->name; // Include soft-deleted categories
         });
 
-
         return view('transactions.index', [
-            // 'query' => request()->get('search', ''),
             'transactions' => $transactions,
-            'categories' => $categories,
+            'categories' => Category::all(),
             'bankingRecords' => $bankingRecords,
             'totalAmountSaved' => $totalAmountSaved
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,6 +54,7 @@ class TransactionController extends Controller
     {
         $categories = Category::where('show', true)
             ->where('user_id', Auth::id())
+            ->whereNull('deleted_at') // Exclude soft-deleted categories
             ->get();
         $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
 
@@ -106,12 +78,13 @@ class TransactionController extends Controller
      */
     public function edit(Transaction $transaction)
     {
-        $bankingRecords = BankingRecord::all();
         $categories = Category::where('show', true)
             ->where('user_id', Auth::id())
+            ->whereNull('deleted_at') // Exclude soft-deleted categories
             ->get();
+        $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
 
-        return view('transactions.edit', compact('transaction', 'bankingRecords', 'categories'));
+        return view('transactions.edit', compact('transaction', 'categories', 'bankingRecords'));
     }
 
     /**
@@ -133,9 +106,80 @@ class TransactionController extends Controller
             ]);
         }
 
+        if ($transaction->payoff_id) {
+            $this->updatePayoffBalanceOnDelete($transaction);
+        }
+
         $transaction->delete();
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction deleted successfully.');
     }
+
+    private function updatePayoffBalanceOnDelete(Transaction $transaction)
+    {
+        $payoff = Payoff::find($transaction->payoff_id);
+        if ($payoff) {
+            // Switch the logic for removing the amount from the payoff balance
+            if ($transaction->type === 'income') {
+                $payoff->balance += abs($transaction->amount);
+            } else {
+                $payoff->balance -= abs($transaction->amount);
+            }
+            $payoff->save();
+
+            \Log::info('Payoff balance updated on transaction delete:', [
+                'id' => $payoff->id,
+                'new_balance' => $payoff->balance,
+            ]);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $query = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
+            $query->withTrashed(); // Include soft-deleted categories
+        }]);
+
+        if ($request->filled('start_date')) {
+            $query->where('date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->where('date', '<=', $request->end_date);
+        }
+
+        if ($request->filled('category')) {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->category . '%');
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+
+        if ($request->filled('amount')) {
+            $query->where('amount', $request->amount);
+        }
+
+        if ($request->filled('banking_record')) {
+            $query->whereHas('bankingRecord', function($q) use ($request) {
+                $q->where('bank_name', 'like', '%' . $request->banking_record . '%');
+            });
+        }
+
+        if ($request->filled('payoff')) {
+            $query->whereHas('payoff', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->payoff . '%');
+            });
+        }
+
+        return $query->paginate(10);
+    }
+
 }

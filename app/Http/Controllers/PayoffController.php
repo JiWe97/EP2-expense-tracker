@@ -13,7 +13,7 @@ class PayoffController extends Controller
      */
     public function index()
     {
-        $payoffs = Payoff::all();
+        $payoffs = Payoff::where('user_id', auth()->user()->id)->get();
         
         return view('payoffs.index', compact('payoffs'));
     }

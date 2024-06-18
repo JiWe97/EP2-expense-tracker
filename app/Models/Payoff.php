@@ -12,12 +12,17 @@ class Payoff extends Model
     protected $fillable = [
         'name',
         'total',
-        'balance'
+        'balance',
+        'user_id',
     ];
 
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

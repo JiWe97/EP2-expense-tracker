@@ -49,7 +49,6 @@ class TransactionController extends Controller
     {
         $categories = Category::where('show', true)
             ->where('user_id', Auth::id())
-            ->whereNull('deleted_at') // Exclude soft-deleted categories
             ->get();
         $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
 

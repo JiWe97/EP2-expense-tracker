@@ -12,6 +12,21 @@
     border-bottom: 1px solid #ddd;
     color: white;
 }
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.bank-card {
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 15px;
+    width: 350px;
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid #ddd;
+}
 
 
 </style>
@@ -29,19 +44,17 @@
                 <div class="mb-4">
                     <h2 class="text-lg font-bold mb-2">Total Balance: {{ $totalBalance }}</h2>
                 </div>
-            @foreach($bankingRecords as $record)
-    <div class="mb-4 shadow-md rounded-lg p-6">
-        <a href="{{ route('dashboard', ['selectedBankName' => $record->bank_name]) }}">
-    <h4 class="text-lg font-bold mb-2">{{ $record->name }}</h4>
-</a>
-
-        <span id="details-{{ $record->id }}" style="display:block;">
+                <div class="card-container">
+    @foreach($bankingRecords as $record)
+        <div class="bank-card">
+            <h4><a href="{{ route('dashboard', ['selectedBankName' => $record->bank_name]) }}">{{ $record->name }}</a></h4>
             <p><strong>Bank Name:</strong> {{ $record->bank_name }}</p>
             <p><strong>Account Number:</strong> {{ $record->account_number }}</p>
             <p><strong>Balance:</strong> {{ $record->balance }}</p>
-        </span>
-    </div>
-@endforeach
+        </div>
+    @endforeach
+</div>
+            
             @else
                 <p>No banking information found.</p>
             @endif

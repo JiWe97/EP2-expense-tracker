@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('total', 15, 2);
             $table->decimal('balance', 15, 2);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

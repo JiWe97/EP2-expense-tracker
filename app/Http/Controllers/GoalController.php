@@ -13,7 +13,7 @@ class GoalController extends Controller
      */
     public function index()
     {
-        $goals = Goal::all();
+        $goals = Goal::where('user_id', auth()->user()->id)->get();
         
         return view('goals.index', compact('goals'));
     }
@@ -36,6 +36,7 @@ class GoalController extends Controller
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
             'deadline' => 'required|date',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         Goal::create($request->all());

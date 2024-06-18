@@ -42,15 +42,20 @@
         <div class="w-5/6 p-8 text-white">
             @if($bankingRecords->isNotEmpty())
                 <div class="mb-4">
-                    <h2 class="text-lg font-bold mb-2">Total Balance: {{ $totalBalance }}</h2>
+                    <h2 class="text-lg font-bold mb-2">Total Balance: &#8364; {{ $totalBalance }}</h2>
                 </div>
                 <div class="card-container">
     @foreach($bankingRecords as $record)
         <div class="bank-card">
-            <h4><a href="{{ route('dashboard', ['selectedBankName' => $record->bank_name]) }}">{{ $record->name }}</a></h4>
-            <p><strong>Bank Name:</strong> {{ $record->bank_name }}</p>
-            <p><strong>Account Number:</strong> {{ $record->account_number }}</p>
-            <p><strong>Balance:</strong> {{ $record->balance }}</p>
+            <div>
+                <a href="{{ route('dashboard', ['selectedBankName' => $record->bank_name]) }}">
+                    <h2><strong>{{ $record->name }}</strong></h2> 
+                    <p><strong>Bank Name:</strong> {{ $record->bank_name }}</p>
+                    <p><strong>Account Number:</strong> {{ $record->account_number }}</p>
+                    <p><strong>Balance: &#8364;</strong> {{ $record->balance }}</p>
+                </a>
+            </div>
+            
         </div>
     @endforeach
 </div>

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionSearch extends Component
 {
@@ -44,7 +45,9 @@ class TransactionSearch extends Component
 
     public function render()
     {
+        $userId = Auth::id();
         $transactions = Transaction::query()
+            ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
             ->when($this->start_date, function($query) {
                 $query->where('date', '>=', $this->start_date);
             })
@@ -75,6 +78,7 @@ class TransactionSearch extends Component
                     $q->where('name', 'like', '%' . $this->payoff . '%');
                 });
             })
+            ->orderBy('date', 'desc') // Sort by date, newest on top
             ->paginate(10);
 
         return view('livewire.transaction-search', [

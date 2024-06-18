@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\BankingRecord;
 use App\Models\Transaction;
-
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -17,15 +16,20 @@ class DashboardController extends Controller
 
         $query = Transaction::with(['bankingRecord', 'category'])->where('user_id', $userId);
 
-        if ($request->has('selectedBankName')) {
-            $query->whereHas('bankingRecord', function ($query) use ($request) {
-                $query->where('bank_name', $request->selectedBankName);
+        if ($request->has('selectedBankNames')) {
+            $selectedBankNames = explode(',', $request->selectedBankNames);
+            $query->whereHas('bankingRecord', function ($query) use ($selectedBankNames) {
+                $query->whereIn('bank_name', $selectedBankNames);
             });
         }
 
         $transactions = $query->paginate($perPage);
         $totalBalance = $bankingRecords->sum('balance');
 
-        return view('dashboard', ['bankingRecords' => $bankingRecords, 'totalBalance' => $totalBalance, 'transactions' => $transactions]);
+        return view('dashboard', [
+            'bankingRecords' => $bankingRecords,
+            'totalBalance' => $totalBalance,
+            'transactions' => $transactions
+        ]);
     }
 }

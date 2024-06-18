@@ -9,6 +9,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\GoalTransactionController;
+use App\Http\Controllers\PayoffController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\DashboardController;
@@ -39,6 +40,7 @@ Route::get('/graph', [GraphController::class, 'index'])->name('graph');;
 
 // Transaction Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::resource('/transactions', TransactionController::class);
     Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 });
@@ -73,5 +75,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/goal_transactions', GoalTransactionController::class)->except(['create', 'store']);
 });
 
-//Dashboard Route
+// Payoff Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('/payoffs', PayoffController::class);
+});
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');

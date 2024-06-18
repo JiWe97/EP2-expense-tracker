@@ -176,12 +176,11 @@
     </style>
 @endsection
 
-
 @section('content')
 <div class="mb-4">
     <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
     @foreach ($bankingRecords as $bankingRecord)
-        <p>{{ $bankingRecord->name }}: € {{ $bankingRecord->balance }}</p>
+        <p>{{ $bankingRecord->name ?: $bankingRecord->bank_name }}: € {{ number_format($bankingRecord->balance, 2) }}</p>
         <p>Total saved: € {{ $totalAmountSaved }}</p>
         <p>Total without savings: € {{ $bankingRecord->balance - $totalAmountSaved }}</p>
     @endforeach
@@ -202,15 +201,11 @@
 </div>
 
 <div class="mb-4">
-    <h2 class="text-2xl pt-5 font-bold">Transaction history</h2>
+    <h2 class="text-2xl pt-5 font-bold">Transaction History</h2>
 
-    @include('search-bar')
+    @livewire('transaction-search')
 
-    <div class="justify-center flex items-center">
-        @if (isset($query))
-            <h3 class="text-2xl font-semibold">Search Results for "{{ $query }}"</h3>
-        @endif
-
+    {{-- <div class="justify-center flex items-center mt-4">
         @if ($transactions->isEmpty())
             <p class="text-center">No transactions found.</p>
         @else
@@ -225,6 +220,7 @@
                             <th>Type</th>
                             <th>Category</th>
                             <th>Bank</th>
+                            <th>Payoff</th>
                             <th>Attachment</th>
                         </tr>
                     </thead>
@@ -236,8 +232,9 @@
                                 <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
                                 <td>{{ $transaction->description }}</td>
                                 <td>{{ $transaction->type }}</td>
-                                <td>{{ $transaction->category_id ?? '' }}</td>
+                                <td>{{ $transaction->category->name ?? 'N/A' }}</td>
                                 <td>{{ $transaction->banking_record_id }}</td>
+                                <td>{{ $transaction->payoff_id }}</td>
                                 <td>
                                     @if ($transaction->attachments->isNotEmpty())
                                         @foreach ($transaction->attachments as $attachment)
@@ -260,50 +257,11 @@
                     </tbody>
                 </table>
             </div>
-        @endif
+        @endif --}}
     </div>
 
     <div class="pagination mt-4">
         {{ $transactions->links() }}
     </div>
-
-    <div class="container">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{{ route('pdf') }}" class="btn btn-primary">PDF</a>
-            <a href="{{ route('graph') }}" class="btn btn-secondary">See Graph</a>
-        </div>
-    </div>
 </div>
-@endsection
-
-@section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            e.preventDefault();
-            var query = $('input[name="query"]').val();
-
-            // Check if the search query is empty
-            if (query.trim() === "") {
-                return false;
-            }
-
-            $.ajax({
-                url: '{{ route("transactions.index") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    query: query
-                },
-                success: function(response) {
-                    $('#transactions-container').html(response.transactions);
-                },
-                error: function(response) {
-                    console.log('Error:', response);
-                }
-            });
-        });
-    });
-</script>
 @endsection

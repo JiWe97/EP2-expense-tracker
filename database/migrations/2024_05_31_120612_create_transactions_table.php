@@ -24,6 +24,7 @@ return new class extends Migration
             $table->float('exchange_rate')->nullable();
             $table->boolean('warranty')->nullable();
             $table->date('warranty_date')->nullable();
+            $table->foreignId('payoff_id')->nullable()->constrained('payoffs')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -34,5 +35,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('transactions');
+    }
+
+    public function payoff()
+    {
+        return $this->belongsTo(Payoff::class);
     }
 };

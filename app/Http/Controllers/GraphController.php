@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
+use App\Models\BankingRecord;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class GraphController extends Controller
         //     $name = Category::find($categoryId)->name;
         //     return [$name => $total];
         // });
-
+        
         $expenseTransactions = $transactions->filter(function ($transaction) {
             return $transaction->type === 'expense';
         });
@@ -43,9 +44,20 @@ class GraphController extends Controller
             return [$name => $total];
         });
 
-
-
-        // print_r($categoryTotals);
+        $lastTransaction = Transaction::latest()->first();
+        $balance = BankingRecord::where('user_id', Auth::id())->latest()->first()->balance;
+        $lastHistory = response()->json([
+            'balance' => $balance,
+            'last_transaction' => $lastTransaction->amount,
+        ]);
+        $balanceArr = [];
+        $transactionReverse = $transactions->reverse();
+        foreach ($transactionReverse as $transaction) {
+            $difference = $transaction->amount;  
+            $balanceArr[] = $balance + $difference;
+        }
+        // $balanceArr = array_reverse($balanceArr);
+        // print_r($balanceArr);
 
 
         // Map transaction types
@@ -58,7 +70,7 @@ class GraphController extends Controller
         })->sortBy('date')->values()->toArray(); // Sort by date and reset keys
         // print_r($transactionData);
 
-        return view('graph', ['categoryTotals' => $categoryTotalsWithName, 'transactionData' => $transactionData]);
+        return view('graph', ['categoryTotals' => $categoryTotalsWithName, 'transactionData' => $transactionData, 'balanceArr' => $balanceArr]);
     }
 
     /**

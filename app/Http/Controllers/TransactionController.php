@@ -22,21 +22,16 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $bankingRecords = BankingRecord::where('user_id', Auth::user()->id)->get();
-        $goals = Goal::where('user_id', Auth::user()->id)->get();
+        $userId = Auth::id();
+        $bankingRecords = BankingRecord::where('user_id', $userId)->get();
+        $goals = Goal::where('user_id', $userId)->get();
         $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals->pluck('id')->toArray())->sum('amount');
+
         $transactions = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
             $query->withTrashed(); // Include soft-deleted categories
-        }]);
-
-
-        $transactions = $transactions->paginate(10);
-
-        $transactions->each(function ($transaction) {
-            $transaction->user_id = User::find($transaction->user_id)->name;
-            $transaction->banking_record_id = BankingRecord::find($transaction->banking_record_id)->bank_name;
-            $transaction->category_id = Category::withTrashed()->find($transaction->category_id)->name; // Include soft-deleted categories
-        });
+        }])
+        ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
+        ->paginate(10);
 
         return view('transactions.index', [
             'transactions' => $transactions,
@@ -66,7 +61,8 @@ class TransactionController extends Controller
      */
     public function show()
     {
-        $transactions = Transaction::paginate(10); // Add pagination
+        $userId = Auth::id();
+        $transactions = Transaction::where('user_id', $userId)->paginate(10); // Add pagination and filter by user_id
         return view('transactions.show', compact('transactions'));
     }
 
@@ -137,9 +133,11 @@ class TransactionController extends Controller
 
     public function search(Request $request)
     {
+        $userId = Auth::id();
         $query = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
             $query->withTrashed(); // Include soft-deleted categories
-        }]);
+        }])
+        ->where('user_id', $userId); // Filter transactions by the authenticated user's ID
 
         if ($request->filled('start_date')) {
             $query->where('date', '>=', $request->start_date);

@@ -205,60 +205,6 @@
 
     @livewire('transaction-search')
 
-    {{-- <div class="justify-center flex items-center mt-4">
-        @if ($transactions->isEmpty())
-            <p class="text-center">No transactions found.</p>
-        @else
-            <div class="table-responsive">
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Type</th>
-                            <th>Category</th>
-                            <th>Bank</th>
-                            <th>Payoff</th>
-                            <th>Attachment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($transactions as $transaction)
-                            <tr>
-                                <td>{{ $transaction->user_id }}</td>
-                                <td>{{ $transaction->date }}</td>
-                                <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
-                                <td>{{ $transaction->description }}</td>
-                                <td>{{ $transaction->type }}</td>
-                                <td>{{ $transaction->category->name ?? 'N/A' }}</td>
-                                <td>{{ $transaction->banking_record_id }}</td>
-                                <td>{{ $transaction->payoff_id }}</td>
-                                <td>
-                                    @if ($transaction->attachments->isNotEmpty())
-                                        @foreach ($transaction->attachments as $attachment)
-                                            <a href="#modal-{{ $attachment->id }}">View Attachment</a>
-
-                                            <!-- Modal Structure -->
-                                            <div id="modal-{{ $attachment->id }}" class="modal">
-                                                <div class="modal-content">
-                                                    <a href="#" class="close">&times;</a>
-                                                    <img src="{{ asset('storage/' . $attachment->picture) }}" alt="Attachment">
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        No Attachment
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif --}}
-    </div>
 
     <div class="pagination mt-4">
         {{ $transactions->links() }}

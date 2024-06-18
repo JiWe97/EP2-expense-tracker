@@ -23,7 +23,7 @@ class GoalController extends Controller
      */
     public function create()
     {
-        return view('goals.create');
+        return view('goals.form');
     }
 
     /**
@@ -60,7 +60,7 @@ class GoalController extends Controller
      */
     public function edit(Goal $goal)
     {
-        return view('goals.edit', ['goal' => $goal]);
+        return view('goals.form', ['goal' => $goal]);
     }
 
     /**

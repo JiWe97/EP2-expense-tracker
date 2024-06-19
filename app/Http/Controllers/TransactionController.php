@@ -18,31 +18,6 @@ use Illuminate\Support\Facades\Storage;
 class TransactionController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $userId = Auth::id();
-        $bankingRecords = BankingRecord::where('user_id', $userId)->get();
-        $goals = Goal::where('user_id', $userId)->get();
-        $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goals->pluck('id')->toArray())->sum('amount');
-
-        $transactions = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
-            $query->withTrashed(); // Include soft-deleted categories
-        }])
-        ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
-        ->paginate(10);
-
-        return view('transactions.index', [
-            'transactions' => $transactions,
-            'categories' => Category::all(),
-            'bankingRecords' => $bankingRecords,
-            'totalAmountSaved' => $totalAmountSaved
-        ]);
-    }
-
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -107,7 +82,7 @@ class TransactionController extends Controller
 
         $transaction->delete();
 
-        return redirect()->route('transactions.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Transaction deleted successfully.');
     }
 

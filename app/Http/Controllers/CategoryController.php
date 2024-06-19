@@ -28,7 +28,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('settings.categories.create');
+        return view('settings.categories.form');
     }
 
     /**
@@ -62,7 +62,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('settings.categories.edit', ['category' => $category]);
+        return view('settings.categories.form', ['category' => $category]);
     }
 
     /**

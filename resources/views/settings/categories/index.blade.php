@@ -1,4 +1,4 @@
-@extends('layouts.custom')
+@extends('layouts.app')
 
 @section('title', 'The List of Categories')
 

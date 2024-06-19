@@ -5,7 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Transaction;
+use App\Models\BankingRecord;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TransactionSearch extends Component
 {
@@ -19,6 +21,9 @@ class TransactionSearch extends Component
     public $amount;
     public $banking_record;
     public $payoff;
+    public $selectedBankIds = [];
+
+    protected $listeners = ['toggleBankSelection'];
 
     protected $queryString = [
         'start_date' => ['except' => ''],
@@ -28,8 +33,30 @@ class TransactionSearch extends Component
         'description' => ['except' => ''],
         'amount' => ['except' => ''],
         'banking_record' => ['except' => ''],
-        'payoff' => ['except' => '']
+        'payoff' => ['except' => ''],
+        'selectedBankIds' => ['except' => []]
     ];
+
+    public function mount()
+    {
+        $this->selectedBankIds = [];
+        Log::info('Mounting component with initial selectedBankIds', ['selectedBankIds' => $this->selectedBankIds]);
+    }
+
+    public function toggleBankSelection($bankId)
+    {
+        Log::info('Received toggleBankSelection event', ['bankId' => $bankId]);
+
+        if (in_array($bankId, $this->selectedBankIds)) {
+            $this->selectedBankIds = array_diff($this->selectedBankIds, [$bankId]);
+        } else {
+            $this->selectedBankIds[] = $bankId;
+        }
+
+        Log::info('Toggled bank selection', ['bankId' => $bankId, 'selectedBankIds' => $this->selectedBankIds]);
+
+        $this->resetPage();
+    }
 
     public function search()
     {
@@ -38,7 +65,17 @@ class TransactionSearch extends Component
 
     public function clear()
     {
-        $this->reset(['start_date', 'end_date', 'category', 'type', 'description', 'amount', 'banking_record', 'payoff']);
+        $this->reset([
+            'start_date', 
+            'end_date', 
+            'category', 
+            'type', 
+            'description', 
+            'amount', 
+            'banking_record', 
+            'payoff', 
+            'selectedBankIds'
+        ]);
         $this->dispatch('reset-search-form');
         $this->search();
     }
@@ -47,7 +84,7 @@ class TransactionSearch extends Component
     {
         $userId = Auth::id();
         $transactions = Transaction::query()
-            ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
+            ->where('user_id', $userId)
             ->when($this->start_date, function($query) {
                 $query->where('date', '>=', $this->start_date);
             })
@@ -68,21 +105,27 @@ class TransactionSearch extends Component
             ->when($this->amount, function($query) {
                 $query->where('amount', $this->amount);
             })
-            ->when($this->banking_record, function($query) {
-                $query->whereHas('bankingRecord', function($q) {
-                    $q->where('bank_name', 'like', '%' . $this->banking_record . '%');
-                });
+            ->when(!empty($this->selectedBankIds), function($query) {
+                $query->whereIn('banking_record_id', $this->selectedBankIds);
             })
-            ->when($this->payoff, function($query) {
-                $query->whereHas('payoff', function($q) {
-                    $q->where('name', 'like', '%' . $this->payoff . '%');
-                });
-            })
-            ->orderBy('date', 'desc') // Sort by date, newest on top
+            ->orderBy('date', 'desc')
             ->paginate(10);
+
+        $bankingRecords = BankingRecord::where('user_id', $userId)->get();
+
+        if (!empty($this->selectedBankIds)) {
+            $totalBalance = $bankingRecords->whereIn('id', $this->selectedBankIds)->sum('balance');
+        } else {
+            $totalBalance = $bankingRecords->sum('balance');
+        }
+
+        Log::info('Rendering component with transactions', ['transactions' => $transactions->items(), 'selectedBankIds' => $this->selectedBankIds]);
 
         return view('livewire.transaction-search', [
             'transactions' => $transactions,
+            'selectedBankIds' => $this->selectedBankIds,
+            'bankingRecords' => $bankingRecords,
+            'totalBalance' => $totalBalance,
         ]);
     }
 }

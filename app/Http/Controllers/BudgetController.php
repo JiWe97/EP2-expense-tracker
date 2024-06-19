@@ -28,6 +28,7 @@ class BudgetController extends Controller
         // Calculate the balance for each budget
         foreach ($budgets as $budget) {
             $budget->balance = Transaction::whereIn('category_id', $budget->categories->pluck('id'))->sum('amount');
+            $budget->balance = abs($budget->balance);  // Ensure balance is treated as positive
         }
 
         return view('budgets.index', compact('budgets'));
@@ -38,7 +39,7 @@ class BudgetController extends Controller
         $categories = Category::visibleToUser()->get();
         $banking_records = BankingRecord::all();
 
-        return view('budgets.create', compact('categories', 'banking_records'));
+        return view('budgets.form', compact('categories', 'banking_records'));
     }
 
     public function store(BudgetRequest $request)
@@ -73,7 +74,7 @@ class BudgetController extends Controller
         $categories = Category::visibleToUser()->get();
         $banking_records = BankingRecord::all();
 
-        return view('budgets.edit', compact('budget', 'categories', 'banking_records'));
+        return view('budgets.form', compact('budget', 'categories', 'banking_records'));
     }
 
     public function update(BudgetRequest $request, Budget $budget)
@@ -102,7 +103,7 @@ class BudgetController extends Controller
         // Build the query to aggregate transactions by year and month
         $query = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(ABS(amount)) as total_amount')
             ->whereIn('category_id', $categoryIds)
-            ->groupBy('year', 'month');
+            ->groupBy('year, month');
     
         // Apply year filter if provided
         if ($year = $request->input('year')) {
@@ -135,7 +136,6 @@ class BudgetController extends Controller
         \Log::info('Transactions retrieved for history:', $transactions->toArray());
     
         // Render the view with the budget and transactions
-        return view('budgets.history', compact('budget', 'transactions', 'year', 'month', 'sortSpent', 'sortRemaining'));
+        return view('budgets.history', compact('budget', 'transactions', 'year, month', 'sortSpent', 'sortRemaining'));
     }
-    
 }

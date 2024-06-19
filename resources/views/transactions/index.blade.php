@@ -173,41 +173,41 @@
             cursor: pointer;
             text-decoration: none;
         }
+
+        .selected {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
     </style>
 @endsection
 
 @section('content')
-<div class="mb-4">
-    <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
-    @foreach ($bankingRecords as $bankingRecord)
-        <p>{{ $bankingRecord->name ?: $bankingRecord->bank_name }}: € {{ number_format($bankingRecord->balance, 2) }}</p>
-        <p>Total saved: € {{ $totalAmountSaved }}</p>
-        <p>Total without savings: € {{ $bankingRecord->balance - $totalAmountSaved }}</p>
-    @endforeach
-</div>
-
-<div class="mb-4">
-    <h1 class="text-2xl pt-5 font-bold">Manual Entry</h1>
-    <a href="{{ route('transactions.create') }}" class="btn btn-primary mb-5">Add Transaction</a>
-</div>
-
-<div class="mb-4">
-    <h1 class="text-2xl pt-5 font-bold">Upload Bank Statement</h1>
-    <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <input type="file" name="file" accept=".csv" class="form-control">
-        <button class="btn btn-primary mt-2" type="submit">Upload</button>
-    </form>
-</div>
-
-<div class="mb-4">
-    <h2 class="text-2xl pt-5 font-bold">Transaction History</h2>
-
-    @livewire('transaction-search')
-
-
-    <div class="pagination mt-4">
-        {{ $transactions->links() }}
+    
+    <div class="mb-4">
+        <h1 class="text-2xl pt-5 font-bold">Current balance</h1>
+        @foreach ($bankingRecords as $bankingRecord)
+            <p>{{ $bankingRecord->name ?: $bankingRecord->bank_name }}: € {{ number_format($bankingRecord->balance, 2) }}</p>
+            <p>Total saved: € {{ $totalAmountSaved }}</p>
+            <p>Total without savings: € {{ $bankingRecord->balance - $totalAmountSaved }}</p>
+        @endforeach
     </div>
-</div>
+
+    <div class="mb-4">
+        <h1 class="text-2xl pt-5 font-bold">Manual Entry</h1>
+        <a href="{{ route('transactions.create') }}" class="btn btn-primary mb-5">Add Transaction</a>
+    </div>
+
+    <div class="mb-4">
+        <h1 class="text-2xl pt-5 font-bold">Upload Bank Statement</h1>
+        <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file" accept=".csv" class="form-control">
+            <button class="btn btn-primary mt-2" type="submit">Upload</button>
+        </form>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="text-2xl pt-5 font-bold">Transaction History</h2>
+        @livewire('transaction-search')
+    </div>
 @endsection

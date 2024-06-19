@@ -13,7 +13,9 @@
 </head>
 
 <body class="container mx-auto mt-10 mb-10 max-w-lg">
-    @include('components.navbar')
+    <div class="min-h-screen">
+        @include('layouts.navigation')
+        
     <div class="flex justify-between mb-4">
         <h1 class="text-2xl mb-4">@yield('title')</h1>
     </div>
@@ -34,6 +36,7 @@
     </div>
     <div>@yield('content')</div>
     @livewireScripts
+           <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
         document.addEventListener('livewire:init', function () {
             window.addEventListener('alert', event => { 

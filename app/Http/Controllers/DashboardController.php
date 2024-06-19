@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\BankingRecord;
 use App\Models\Transaction;
 use App\Models\Goal;
-use App\Models\GoalTransaction;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -27,9 +26,10 @@ class DashboardController extends Controller
 
         $query = Transaction::with(['bankingRecord', 'category'])->where('user_id', $userId);
 
-        if ($request->has('selectedBankName')) {
-            $query->whereHas('bankingRecord', function ($query) use ($request) {
-                $query->where('bank_name', $request->selectedBankName);
+        if ($request->has('selectedBankNames')) {
+            $selectedBankNames = explode(',', $request->selectedBankNames);
+            $query->whereHas('bankingRecord', function ($query) use ($selectedBankNames) {
+                $query->whereIn('bank_name', $selectedBankNames);
             });
         }
 
@@ -42,5 +42,4 @@ class DashboardController extends Controller
             'totalAmountSaved' => $totalAmountSaved,
             'totalBalance' => $totalBalance
         ]);}
-   
 }

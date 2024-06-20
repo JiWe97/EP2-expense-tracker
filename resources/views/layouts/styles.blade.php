@@ -166,6 +166,8 @@
 
     .dashboard-pagination {
         display: flex;
+        background-color: #ffffff;
+        color: #333;
         justify-content: center;
         padding: 1rem 0;
     }

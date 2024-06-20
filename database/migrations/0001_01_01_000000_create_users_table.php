@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('profilepicture')->nullable();
-            $table->boolean('darkmode')->default(false);
             $table->datetime('birthdate');
             $table->timestamps();
         });

@@ -6,29 +6,31 @@
 
 @section('title', 'The list of goals')
 
+@section('styles')
+    @include('layouts.styles')
+@endsection
+
 @section('content')
-    <nav class="mb-4">
-        <a href="{{ route('goals.create') }}" class="link">Add Goal</a>
-    </nav>
+    <div class="goal-container-wrapper">
+        <nav class="mb-4">
+            <a href="{{ route('goals.create') }}" class="add-goal-link">Add Goal</a>
+        </nav>
 
-    {{-- 'No goal' when there aren't any goals --}}
-    @if (count($goals) == 0)
-        <div class="flex justify-center items-center">
-            <p class="font-bold">No goals</p>
-        </div>
-    @endif
-
-    <div class="flex flex-col gap-2">
-        @foreach ($goals as $goal)
-            <div class="p-2">
-                <ul class="list-none p-0">
-                    <li class="flex items-center space-x-2">
-                        <a href="{{ route('goals.show', ['goal' => $goal->id]) }}" class="text-sm font-medium">
-                            <span>{{ $goal->name }} - € {{ $goal->amount }}</span>
-                        </a>
-                    </li>
-                </ul>
+        @if (count($goals) == 0)
+            <div class="no-goals">
+                <p>No goals</p>
             </div>
-        @endforeach
+        @endif
+
+        <div class="goal-container">
+            @foreach ($goals as $goal)
+                <div class="goal-header">
+                    <a href="{{ route('goals.show', ['goal' => $goal->id]) }}" class="goal-link">
+                        <span class="goal-title">{{ $goal->name }}</span>
+                    </a>
+                    <span class="goal-amount">€ {{ $goal->amount }}</span>
+                </div>
+            @endforeach
+        </div>
     </div>
 @endsection

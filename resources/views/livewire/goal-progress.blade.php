@@ -1,17 +1,12 @@
 <div>
-    <div class="mb-4">
-        <div class="mb-4">
-            <p>Total Saved: € {{ $totalSaved }}</p>
-            <p>Remaining: € {{ $remaining }}</p>
-        </div>
-        <div class="mb-4">
-            <h1 class="text-black pr-10 pt-2 sm:pt-5">
-                <span class="text-xs text-grey-400">{{ round($progress) }}%</span>
-            </h1>
-            <div class="flex mt-2 mr-10 sm:mr-80 h-4 relative w-60 rounded-full overflow-hidden">
-                <div class="w-full h-full bg-gray-200 absolute"></div>
-                <div class="h-full absolute {{ $colorClass }}" style="width: {{ $progress }}%"></div>
+    <h2 class="text-lg font-medium text-gray-450">Progress</h2>
+    <p class="progress-info flex justify-end mr-4">Saved € {{$totalSaved}} / € {{$goal->amount}}</p>
+    <div class="flex justify-between items-center">
+        <div class="flex-grow mr-4">
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: {{ $progress }}%"></div>
             </div>
         </div>
     </div>
+    <p class="progress-text mt-2">{{ round($progress) }}%</p>
 </div>

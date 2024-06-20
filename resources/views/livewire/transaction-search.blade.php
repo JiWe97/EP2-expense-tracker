@@ -1,3 +1,4 @@
+{{-- transaction-search.blade.php --}}
 <div class="dashboard-mb-4">
     <div class="dashboard-container">
         <h1 class="text-2xl font-bold">Total Balance: € {{ $totalBalance }}</h1>
@@ -17,6 +18,10 @@
             @else
                 <p>No banking information found.</p>
             @endif
+        </div>
+        <div>
+            <div id="pieChart"></div>
+            <div id="chart_div" style="width: 50%; height: 400px;"></div>
         </div>
         <div class="dashboard-mb-4" x-data="{ open: false }" @reset-search-form.window="clearFields()">
             <button class="search-btn" @click="open = !open">
@@ -83,7 +88,7 @@
                                         <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
                                         <td>{{ $transaction->description }}</td>
                                         <td>{{ $transaction->type }}</td>
-                                        <td>{{ $transaction->banking_record_id }}</td>
+                                        <td>{{ $transaction->category_id }}</td>
                                         <td>{{ $transaction->payoff_id }}</td>
                                         <td>
                                             @if ($transaction->attachments->isNotEmpty())
@@ -98,8 +103,6 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
-                                            @else
-                                                No Attachment
                                             @endif
                                         </td>
                                     </tr>
@@ -118,10 +121,65 @@
 </div>
 
 <script>
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('renderGraph', function (categoryTotals, transactionData, balanceArr) {
+            drawPie(categoryTotals);
+            drawChart(transactionData, balanceArr);
+        });
+    });
+
     function clearFields() {
         const searchForm = document.querySelector('[x-ref=searchForm]');
         if (searchForm) {
             searchForm.reset();
         }
+    }
+
+    function drawPie(categoryTotals) {
+        let data = new google.visualization.DataTable();
+        data.addColumn('string', 'Category');
+        data.addColumn('number', 'Amount');
+        data.addRows(Object.entries(categoryTotals));
+
+        let options = {
+            title: 'Expenses by Category',
+            pieHole: 0.2
+        };
+
+        let chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+        chart.draw(data, options);
+    }
+
+    function drawChart(transactionData, balanceArr) {
+        let data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Single transaction');
+        data.addColumn('number', 'Balance');
+
+        let rows = [];
+        let maxLength = Math.max(transactionData.length, balanceArr.length);
+
+        for (let i = 0; i < maxLength; i++) {
+            let transaction = transactionData[i] || {};
+            let date = transaction.date || null;
+            let transactionAmount = parseFloat(transaction.amount) || null;
+            let balanceValue = parseFloat(balanceArr[i]) || null;
+            rows.push([date, transactionAmount, balanceValue]);
+        }
+
+        data.addRows(rows);
+
+        let options = {
+            title: 'Transaction Trend and Balance',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            series: {
+                0: { color: '#1b9e77' },
+                1: { color: '#d95f02' },
+            }
+        };
+
+        let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
     }
 </script>

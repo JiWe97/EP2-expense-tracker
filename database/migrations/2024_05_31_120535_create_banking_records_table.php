@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('balance', 15, 2)->default(0);
             $table->enum('valuta', ['EUR', 'USD'])->default('EUR')->nullable();
-            $table->float('exchange_rate')->nullable(); // TODO: Implement exchange rate functionality
             $table->timestamps();
         });
     }

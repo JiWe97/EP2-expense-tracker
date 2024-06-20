@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BankingRecord;
 use App\Models\Transaction;
 use App\Models\Goal;
+use App\Models\GoalTransaction;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;

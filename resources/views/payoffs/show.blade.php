@@ -3,43 +3,19 @@
 @section('title', $payoff->name)
 
 @section('styles')
-<style>
-    .display-4 {
-        font-size: 2.5rem;
-        font-weight: 300;
-        line-height: 1.2;
-    }
-    .table-hover tbody tr:hover {
-        background-color: #f5f5f5;
-    }
-    .table-bordered th,
-    .table-bordered td {
-        border: 1px solid #dee2e6;
-    }
-    .font-weight-bold {
-        font-weight: bold;
-    }
-    .container {
-        max-width: 1200px;
-    }
-    .form-container {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-</style>
+    @include('layouts.styles')
 @endsection
 
 @section('content')
-<div class="container form-container">
-    <div class="mb-4">
-        <a href="{{ route('payoffs.index') }}" class="btn btn-secondary btn-lg">Back</a>
-        <div class="d-flex justify-content-between align-items-center">
-            <a href="{{ route('payoffs.edit', $payoff) }}" class="btn btn-primary btn-lg">Edit</a>
-        </div>
-        <div class="d-flex justify-content-between mt-3">
-            <h4>Total: <span class="font-weight-bold">€ {{ $payoff->total }}</span></h4>
-            <h4>Balance: <span class="font-weight-bold">€ {{ $payoff->balance }}</span></h4>
-        </div>
+<div class="payoff-container">
+    <div class="payoff-header">
+        <a href="{{ route('payoffs.index') }}" class="btn-custom-payoff">Back</a>
+        <h1>{{ $payoff->name }}</h1>
+        <a href="{{ route('payoffs.edit', $payoff) }}" class="btn-custom-payoff">Edit</a>
+    </div>
+
+    <div class="payoff-stats">
+        <h4>Payed off € {{ number_format($payoff->balance, 2) }} of € {{ number_format($payoff->total, 2) }}</h4>
     </div>
 
     <div class="mb-4">
@@ -48,8 +24,8 @@
             <p>No transactions found for this payoff.</p>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="thead-dark">
+                <table class="transactions-table">
+                    <thead>
                         <tr>
                             <th>Date</th>
                             <th>Amount</th>
@@ -62,7 +38,7 @@
                         @foreach ($payoff->transaction as $transaction)
                             <tr>
                                 <td>{{ $transaction->created_at->format('d M Y') }}</td>
-                                <td>{{ $transaction->amount }}</td>
+                                <td>€ {{ number_format($transaction->amount, 2) }}</td>
                                 <td>{{ $transaction->description }}</td>
                                 <td>{{ ucfirst($transaction->type) }}</td>
                                 <td>{{ $transaction->category->name ?? 'N/A' }}</td>
@@ -73,11 +49,10 @@
             </div>
         @endif
     </div>
-    {{-- delete form --}}
     <form action="{{ route('payoffs.destroy', $payoff) }}" method="POST">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+        <button type="submit" class="btn-custom-payoff">Delete</button>
     </form>
 </div>
 @endsection

@@ -15,6 +15,9 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
+        colors: {
+            'sage-green': 'rgb(163, 190, 132)',
+        }
     },
 
     plugins: [forms],

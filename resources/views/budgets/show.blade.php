@@ -1,91 +1,22 @@
 @extends('layouts.custom')
 
 @section('styles')
-    <style>
-        .category-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 8px;
-        }
-
-        .info-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .info-message i {
-            color: #4a4a4a;
-        }
-
-        .btn-custom, .btn-danger {
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: white;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-custom, .btn-danger {
-            background-color: #4a4a4a;
-        }
-
-        .btn-custom:hover, .btn-danger:hover {
-            background-color: #2e2e2e;
-        }
-
-        .link-custom {
-            color: #333;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .link-custom:hover {
-            color: #555;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .title {
-            margin: 0;
-        }
-
-        .actions {
-            display: flex;
-            gap: 2px;
-        }
-    </style>
+    @include('layouts.styles')
 @endsection
 
 @section('content')
-<div class="container mx-auto py-8">
-    <div class="header">
-        <a href="{{ route('budgets.index') }}" class="link-custom">Back</a>
-        <h1 class="text-3xl font-bold title">{{ $budget->name }}</h1>
-        <a href="{{ route('budgets.history', ['budgetId' => $budget->id]) }}" class="btn-custom">View History</a>
+<div class="budget-show-container">
+    <div class="header-show">
+        <a href="{{ route('budgets.index') }}" class="link-custom-show">Back</a>
+        <h1 class="text-3xl font-bold title-show">{{ $budget->name }}</h1>
+        <a href="{{ route('budgets.history', ['budgetId' => $budget->id]) }}" class="btn-custom-show">View History</a>
     </div>
 
     <div class="flex items-center mb-6">
         <p class="font-bold text-xl">€ {{ $budget->amount }}</p>
         <div class="flex items-center ml-4">
             @foreach ($budget->categories as $category)
-                <div class="category-icon" style="background-color: {{ $category->color }}">
+                <div class="category-icon-show" style="background-color: {{ $category->color }}">
                     <i class="{{ $category->icon }}" style="color: #fff;"></i>
                 </div>
             @endforeach
@@ -94,13 +25,13 @@
 
     <div class="mb-6">
         @if ($budget->mail_when_completely_spent)
-            <div class="info-message">
+            <div class="info-message-show">
                 <i class="fa fa-envelope"></i>
                 <p>You will receive an email when your budget is completely spent.</p>
             </div>
         @endif
         @if ($budget->mail_when_partially_spent)
-            <div class="info-message">
+            <div class="info-message-show">
                 <i class="fa fa-envelope"></i>
                 <p>You will receive an email when your budget is 80% spent.</p>
             </div>
@@ -111,12 +42,12 @@
         @livewire('progressbar', ['budget' => $budget, 'budgetId' => $budget->id, 'transactions' => \App\Models\Transaction::whereIn('category_id', $budget->categories->pluck('id'))->get()])
     </div>
 
-    <div class="actions mb-6">
-        <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="btn-custom">Edit</a>
+    <div class="actions-show mb-6">
+        <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="btn-custom-show">Edit</a>
         <form method="POST" action="{{ route('budgets.destroy', ['budget' => $budget->id]) }}">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-danger">Delete</button>
+            <button type="submit" class="btn-danger-show">Delete</button>
         </form>
     </div>
 </div>

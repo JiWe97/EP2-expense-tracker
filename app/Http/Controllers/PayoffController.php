@@ -35,6 +35,7 @@ class PayoffController extends Controller
             'name' => 'required|string|max:255',
             'total' => 'required|numeric',
             'balance' => 'required|numeric',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         Payoff::create($validatedData);
@@ -69,6 +70,7 @@ class PayoffController extends Controller
             'name' => 'required|string|max:255',
             'total' => 'required|numeric',
             'balance' => 'required|numeric',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         $payoff->update($validatedData);

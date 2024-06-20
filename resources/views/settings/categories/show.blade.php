@@ -15,7 +15,7 @@
     .btn-custom {
         padding: 10px 20px;
         border-radius: 5px;
-        background-color: #4a4a4a;
+        background-color: #A3BE84;
         color: white;
         text-decoration: none;
         border: none;

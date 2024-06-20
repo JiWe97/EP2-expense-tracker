@@ -5,7 +5,7 @@
             @foreach($icons as $iconClass => $iconName)
                 <div 
                     class="flex items-center justify-center border cursor-pointer m-2
-                    @if($selectedIcon === $iconClass) border-4 border-blue-500 @else border-gray-300 @endif" 
+                    @if($selectedIcon === $iconClass) border-4 border-sage-green @else border-gray-300 @endif" 
                     wire:click="selectIcon('{{ $iconClass }}')" 
                     style="height: 65px; width: 65px; border-radius: 50%; margin: 5px">
                     <i class="{{ $iconClass }} fa-2x"></i>

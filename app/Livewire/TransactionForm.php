@@ -81,12 +81,13 @@ class TransactionForm extends Component
 
         $this->saveAttachments();
 
-        return redirect()->route('transactions.index')->with('success', 'Transaction saved successfully.');
+        return redirect()->route('dashboard')->with('success', 'Transaction saved successfully.');
     }
 
     private function createTransaction($data, $amount)
     {
         $transaction = Transaction::create($data);
+        $this->transaction = $transaction; // Make sure $this->transaction is set
         $this->updateBankingRecordBalance($data['banking_record_id'], $amount);
         $this->updatePayoffBalance($data['payoff_id'], $amount, $data['type']);
     }
@@ -135,12 +136,14 @@ class TransactionForm extends Component
 
     private function saveAttachments()
     {
-        foreach ($this->attachments as $file) {
-            $path = $file->store('attachments', 'public');
-            Attachment::create([
-                'picture' => $path,
-                'transaction_id' => $this->transaction->id
-            ]);
+        if ($this->transaction) { // Check if transaction is not null
+            foreach ($this->attachments as $file) {
+                $path = $file->store('attachments', 'public');
+                Attachment::create([
+                    'picture' => $path,
+                    'transaction_id' => $this->transaction->id
+                ]);
+            }
         }
     }
 
@@ -148,6 +151,7 @@ class TransactionForm extends Component
     {
         $categories = Category::where('user_id', Auth::id())
             ->where('is_income', $this->is_income)
+            ->where('show', true) // Ensure only categories with show=true are selectable
             ->get();
         $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
         $payoffs = Payoff::all(); // Fetch all payoffs

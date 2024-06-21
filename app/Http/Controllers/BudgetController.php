@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Budget;
-use App\Http\Requests\BudgetRequest;
 use App\Models\BankingRecord;
 use App\Models\Category;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class BudgetController extends Controller
 {
@@ -24,11 +23,20 @@ class BudgetController extends Controller
                 $query->whereIn('id', $userBankingRecordIds);
             })
             ->get();
-        
+
         // Calculate the balance for each budget
         foreach ($budgets as $budget) {
-            $budget->balance = Transaction::whereIn('category_id', $budget->categories->pluck('id'))->sum('amount');
-            $budget->balance = abs($budget->balance);  // Ensure balance is treated as positive
+            // Filter transactions for the current month and year, and sum their absolute amounts
+            $transactions = Transaction::whereIn('category_id', $budget->categories->pluck('id'))
+                ->whereMonth('date', Carbon::now()->month)
+                ->whereYear('date', Carbon::now()->year)
+                ->get()
+                ->map(function ($transaction) {
+                    $transaction->amount = abs($transaction->amount);
+                    return $transaction;
+                });
+
+            $budget->balance = $transactions->sum('amount');
         }
 
         return view('budgets.index', compact('budgets'));
@@ -103,7 +111,7 @@ class BudgetController extends Controller
         // Build the query to aggregate transactions by year and month
         $query = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(ABS(amount)) as total_amount')
             ->whereIn('category_id', $categoryIds)
-            ->groupBy('year, month');
+            ->groupByRaw('YEAR(date), MONTH(date)');
     
         // Apply year filter if provided
         if ($year = $request->input('year')) {
@@ -111,8 +119,9 @@ class BudgetController extends Controller
         }
     
         // Apply month filter if provided
-        if ($month = $request->input('month')) {
-            $query->whereMonth('date', $month);
+        if ($monthName = $request->input('month')) {
+            $monthNumber = Carbon::parse($monthName)->month;
+            $query->whereMonth('date', $monthNumber);
         }
     
         // Execute the query and map the results
@@ -136,6 +145,6 @@ class BudgetController extends Controller
         \Log::info('Transactions retrieved for history:', $transactions->toArray());
     
         // Render the view with the budget and transactions
-        return view('budgets.history', compact('budget', 'transactions', 'year, month', 'sortSpent', 'sortRemaining'));
+        return view('budgets.history', compact('budget', 'transactions', 'year', 'monthName', 'sortSpent', 'sortRemaining'));
     }
 }

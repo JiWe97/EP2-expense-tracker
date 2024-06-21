@@ -17,7 +17,7 @@
             </div>
             <div>
                 <label for="month" class="block text-xs font-medium text-gray-600">Month</label>
-                <input type="number" name="month" id="month" value="{{ request('month') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-xs">
+                <input type="text" name="month" id="month" value="{{ request('month') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-xs">
             </div>
             <div>
                 <label for="sort_spent" class="block text-xs font-medium text-gray-600">Sort by Amount Spent</label>

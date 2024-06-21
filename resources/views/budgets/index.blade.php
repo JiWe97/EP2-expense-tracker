@@ -44,7 +44,7 @@
                         <div class="budget-details-custom">
                             <div class="progress-bar-container-custom">
                                 @php
-                                    $progress = $budget->amount > 0 ? abs($budget->balance / $budget->amount) * 100 : 0;
+                                    $progress = $budget->amount > 0 ? ($budget->balance / $budget->amount) * 100 : 0;
                                     $remaining = $budget->amount - $budget->balance;
                                 @endphp
                                 <div class="progress-bar-custom" style="width: {{ $progress }}%;">

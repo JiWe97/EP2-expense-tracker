@@ -23,14 +23,14 @@
         </div>
         <div class="form-group-custom">
             <label for="total">Total</label>
-            <input type="number" id="total" name="total" value="{{ old('total', $payoff->total ?? '') }}" required>
+            <input type="number" id="total" name="total" step="0.01" value="{{ old('total', $payoff->total ?? '') }}" required>
             @error('total')
                 <div class="error-custom">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group-custom">
             <label for="balance">Balance</label>
-            <input type="number" id="balance" name="balance" value="{{ old('balance', $payoff->balance ?? '') }}" required>
+            <input type="number" id="balance" name="balance" step="0.01" value="{{ old('balance', $payoff->balance ?? '') }}" required>
             @error('balance')
                 <div class="error-custom">{{ $message }}</div>
             @enderror

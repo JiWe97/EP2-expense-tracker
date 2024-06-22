@@ -8,7 +8,7 @@ use App\Models\Transaction;
 use App\Models\Budget;
 use Illuminate\Support\Facades\Auth;
 
-class DeleteCategory extends Component
+class Deletecategory extends Component
 {
     public $category;
     public $newCategoryId;

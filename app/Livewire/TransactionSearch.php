@@ -143,7 +143,8 @@ class TransactionSearch extends Component
         });
 
         // Calculate balance and transaction history
-        $balance = BankingRecord::where('user_id', $userId)->latest()->first()->balance;
+        $latestBankingRecord = BankingRecord::where('user_id', $userId)->latest()->first();
+        $balance = $latestBankingRecord ? $latestBankingRecord->balance : 0;
         $balanceArr = [];
         $transactionReverse = $transactions->reverse();
         foreach ($transactionReverse as $transaction) {

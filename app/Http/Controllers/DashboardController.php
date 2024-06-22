@@ -66,7 +66,8 @@ class DashboardController extends Controller
 
         // Balance and transaction history
         $lastTransaction = Transaction::where('user_id', $userId)->latest()->first();
-        $balance = BankingRecord::where('user_id', $userId)->latest()->first()->balance;
+        $latestBankingRecord = BankingRecord::where('user_id', $userId)->latest()->first();
+        $balance = $latestBankingRecord ? $latestBankingRecord->balance : 0;
         $balanceArr = [];
         $transactionReverse = $allTransactions->reverse();
         foreach ($transactionReverse as $transaction) {

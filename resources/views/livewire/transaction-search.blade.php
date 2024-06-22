@@ -120,6 +120,7 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></scrip
 <script>
     document.addEventListener('livewire:load', function () {
         Livewire.on('renderGraph', function (categoryTotals, transactionData, balanceArr) {

@@ -39,14 +39,13 @@ Route::middleware('auth')->group(function () {
 // PDF Generation Route
 Route::get('/pdf', [PDFController::class, 'generatePDF'])->name('pdf');;
 
-// Graph Route
-Route::get('/graph', [GraphController::class, 'index'])->name('graph');;
-
 // Transaction Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/transactions/import', [TransactionController::class, 'showImportForm'])->name('transactions.import');
+    Route::post('/transactions/preview', [TransactionController::class, 'preview'])->name('transactions.preview');
+    Route::post('/transactions/import', [TransactionController::class, 'import'])->name('transactions.import');
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     Route::resource('/transactions', TransactionController::class);
-    Route::post('/csv', [TransactionController::class, 'import'])->name('transactions.import');
 });
 
 // File Upload Routes

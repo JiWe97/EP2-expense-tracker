@@ -14,12 +14,15 @@ use App\Models\Payoff;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\TransactionRequest;
+use App\Imports\TransactionsImport;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BankStatementsImport;
+use Exception;
 
 class TransactionController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $categories = Category::where('show', true)
@@ -30,22 +33,13 @@ class TransactionController extends Controller
         return view('transactions.create', compact('categories', 'bankingRecords'));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show()
     {
         $userId = Auth::id();
         $transactions = Transaction::where('user_id', $userId)->paginate(10); // Add pagination and filter by user_id
-        return view('transactions.show', compact('transactions'));
+        return view('dashboard', compact('transactions'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Transaction $transaction
-     * @return \Illuminate\View\View
-     */
     public function edit(Transaction $transaction)
     {
         $categories = Category::where('show', true)
@@ -57,12 +51,6 @@ class TransactionController extends Controller
         return view('transactions.edit', compact('transaction', 'categories', 'bankingRecords'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Transaction $transaction
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy(Transaction $transaction)
     {
         $bankingRecord = BankingRecord::find($transaction->banking_record_id);
@@ -70,7 +58,7 @@ class TransactionController extends Controller
             $bankingRecord->balance -= $transaction->amount;
             $bankingRecord->save();
 
-            \Log::info('Transaction amount reverted:', [
+            Log::info('Transaction amount reverted:', [
                 'id' => $bankingRecord->id,
                 'new_balance' => $bankingRecord->balance,
             ]);
@@ -98,7 +86,7 @@ class TransactionController extends Controller
             }
             $payoff->save();
 
-            \Log::info('Payoff balance updated on transaction delete:', [
+            Log::info('Payoff balance updated on transaction delete:', [
                 'id' => $payoff->id,
                 'new_balance' => $payoff->balance,
             ]);
@@ -154,4 +142,66 @@ class TransactionController extends Controller
         return $query->paginate(10);
     }
 
+    public function showImportForm()
+    {
+        return view('transactions.import');
+    }
+
+    // Method to handle the file preview
+    public function preview(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = $file->store('uploads');
+
+            // Read the file content
+            $fileContent = array_map('str_getcsv', file(Storage::path($path)));
+
+            return back()->with([
+                'fileContent' => $fileContent,
+                'filePath' => $path,
+            ]);
+        } else {
+            return back()->withErrors(['file' => 'No file uploaded.']);
+        }
+    }
+
+    // Method to handle the file import
+    public function import(Request $request)
+    {
+        $filePath = $request->input('file_path');
+
+        if ($filePath) {
+            try {
+                // Log file upload start
+                Log::info('File import started');
+
+                $userId = Auth::id(); // Get the current user's ID
+                Excel::import(new BankStatementsImport($userId), Storage::path($filePath));
+
+                // Log file upload success
+                Log::info('File import completed successfully');
+
+                // Delete the temporary file
+                Storage::delete($filePath);
+
+                return redirect()->route('dashboard')->with('success', 'Transactions imported successfully.');
+            } catch (Exception $ex) {
+                // Log exception
+                Log::error('File import error: ' . $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+
+                return redirect()->route('transactions.import')->withErrors(['file' => 'Some error has occurred. Please try again.']);
+            }
+        } else {
+            // Log no file error
+            Log::error('No file path provided');
+
+            return redirect()->route('transactions.import')->withErrors(['file' => 'No file uploaded.']);
+        }
+    }
 }

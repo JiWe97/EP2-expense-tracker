@@ -1,16 +1,73 @@
-<div class="bg-white shadow-md rounded-lg p-6 m-8">
-        <h2 class="text-xl font-semibold">{{ __('Banking Information') }}</h2>
+<style>
+.delete-btn {
+    padding: 8px 16px;
+        background-color: #b87a9a;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #ffffff;
+    color: #b87a9a;
+}
+
+.edit-btn {
+    display: inline-block;
+        padding: 8px 16px;
+        background-color: #A3BE84;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+}
+
+.edit-btn:hover {
+    background-color: #ffffff;
+    color: #A3BE84;
+}
+
+.update-btn {
+     display: inline-block;
+        padding: 8px 16px;
+        background-color: #7a9ab8;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+}
+
+.update-btn:hover {
+    background-color: #ffffff;
+    color: #7a9ab8;
+}
+
+</style>
+
+<div class="bg-white  p-6 m-8">
+        <h2 class="text-xl font-semibold mb-4">{{ __('Banking Information') }}</h2>
         @foreach($user->bankingRecords as $record)
             <div class="bg-white shadow-md rounded-lg p-6 mb-4">
         <h3 class="text-lg font-semibold">{{ $record->name }}</h3>
         <p>{{ $record->bank_name }}</p>
         <p>{{ $record->account_number }}</p>
-        <p>{{ $record->balance }}</p>
+        <p>&#8364; {{ $record->balance }}</p>
 
         <!-- Edit Button -->
-        <a href="#" onclick="event.preventDefault(); editForm('{{ $record->id }}');" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <div class="m-2 flex">
+<a href="#" onclick="event.preventDefault(); editForm('{{ $record->id }}');" class="mb-2 mr-2 edit-btn">
             {{ __('Edit') }}
         </a>
+        <form method="POST" action="{{ route('delete.banking.record', $record) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="delete-btn">
+                {{ __('Delete') }}
+            </button>
+        </form>
+        </div>
+        
 
         <!-- Hidden Edit Form -->
         <div id="edit-form-{{ $record->id }}" style="display:none;" class="m-4">
@@ -48,19 +105,13 @@
                     <x-input-error class="mt-2" :messages="$errors->get('balance')" />
                 </div>
 
-                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" class="mt-2 update-btn">
                     {{ __('Update') }}
                 </button>
             </form>
         </div>
         <!-- Delete Button -->
-        <form method="POST" action="{{ route('delete.banking.record', $record) }}">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                {{ __('Delete') }}
-            </button>
-        </form>
+        
     </div>
         @endforeach
     </div>

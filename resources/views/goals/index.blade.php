@@ -11,11 +11,11 @@
 @endsection
 
 @section('content')
-    <div class="goal-container-wrapper">
+    
         <nav class="mb-4">
             <a href="{{ route('goals.create') }}" class="add-goal-link">Add Goal</a>
         </nav>
-
+<div class="goal-container-wrapper">
         @if (count($goals) == 0)
             <div class="no-goals">
                 <p>No goals</p>

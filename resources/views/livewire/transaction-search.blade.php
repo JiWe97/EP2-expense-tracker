@@ -1,7 +1,7 @@
 {{-- transaction-search.blade.php --}}
 <div class="dashboard-mb-4">
     <div class="dashboard-container">
-        <h1 class="text-2xl font-bold">Total Balance: € {{ $totalBalance }}</h1>
+        
         <div class="dashboard-w-5/6 dashboard-p-8 dashboard-text-grey-800">
             @if($bankingRecords->isNotEmpty())
                 <div class="dashboard-card-container">
@@ -11,7 +11,7 @@
                             class="dashboard-btn {{ in_array($record->id, $selectedBankIds) ? 'dashboard-selected' : '' }}">
                             <h2><strong>{{ $record->name }}</strong></h2> 
                             <p>Bank Name: {{ $record->bank_name }}</p>
-                            <p>Balance: &#8364; {{ $record->balance }}</p>
+                            <p>Balance: &#8364; {{ $record->balance, 2 }}</p>
                         </a>
                     @endforeach
                 </div>
@@ -57,8 +57,8 @@
                     <div class="dashboard-form-group dashboard-mb-2">
                         <input type="text" wire:model.defer="payoff" class="dashboard-form-control" placeholder="Payoff">
                     </div>
-                    <button type="submit" class="dashboard-btn dashboard-btn-primary dashboard-mb-2">Search</button>
-                    <button type="button" wire:click="clear" class="dashboard-btn dashboard-btn-secondary dashboard-mb-2 dashboard-ml-2">Clear</button>
+                    <button type="submit" class=" search-custom-btn">Search</button>
+                    <button type="button" wire:click="clear" class=" clear-custom-btn">Clear</button>
                 </form>
             </div>
 
@@ -70,7 +70,6 @@
                         <table class="dashboard-transaction-table">
                             <thead>
                                 <tr>
-                                    <th>User</th>
                                     <th>Date</th>
                                     <th>Amount</th>
                                     <th>Description</th>
@@ -83,12 +82,12 @@
                             <tbody>
                                 @foreach ($transactions as $transaction)
                                     <tr>
-                                        <td>{{ $transaction->user_id }}</td>
+                                        
                                         <td>{{ $transaction->date }}</td>
                                         <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
                                         <td>{{ $transaction->description }}</td>
                                         <td>{{ $transaction->type }}</td>
-                                        <td>{{ $transaction->category_id }}</td>
+                                        <td>{{ $transaction->category->name?? 'N/A' }}</td>
                                         <td>{{ $transaction->payoff_id }}</td>
                                         <td>
                                             @if ($transaction->attachments->isNotEmpty())

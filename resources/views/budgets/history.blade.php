@@ -1,13 +1,13 @@
 @extends('layouts.custom')
 
-@push('styles')
+@section('styles')
     @include('layouts.styles')
-@endpush
+@endsection
 
 @section('content')
 <div class="container mx-auto py-8">
-    <a href="{{ route('budgets.show', ['budget' => $budget->id]) }}" class="text-gray-600 hover:text-gray-900 mb-5 inline-block">Back</a>
-    <h1 class="text-3xl font-bold mb-8">History for {{ $budget->name }}</h1>
+    <a href="{{ route('budgets.show', ['budget' => $budget->id]) }}" class="back-link mb-2 ">Back</a>
+    <h1 class="text-3xl font-bold mb-8 text-center">History for <strong>{{ $budget->name }}</strong></h1>
 
     <form method="GET" action="{{ route('budgets.history', ['budgetId' => $budget->id]) }}" class="mb-8 bg-gray-100 p-4 rounded-lg shadow-sm text-sm">
         <div class="grid grid-cols-2 gap-4">
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="mt-2 text-right">
-            <button type="submit" class="bg-gray-800 text-white py-1 px-3 rounded-md shadow hover:bg-gray-700 text-xs">Apply Filters</button>
+            <button type="submit" class="apply-filter-btn">Apply Filters</button>
         </div>
     </form>
 
@@ -45,7 +45,7 @@
         <div class="overflow-x-auto">
             <table class="w-full border-collapse table-auto">
                 <thead>
-                    <tr class="bg-gray-200">
+                    <tr class="bg-gray-200 history-table">
                         <th class="border-b border-gray-300 px-4 py-2 text-left text-sm">Year</th>
                         <th class="border-b border-gray-300 px-4 py-2 text-left text-sm">Month</th>
                         <th class="border-b border-gray-300 px-4 py-2 text-left text-sm">Total Amount Spent</th>

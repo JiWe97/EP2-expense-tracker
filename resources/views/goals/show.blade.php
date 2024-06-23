@@ -7,9 +7,9 @@
 @section('content')
     <div class="goal-detail-container">
        <div class="goal-detail-header">
-            <a href="{{ route('goals.index') }}" class="goal-detail-link">Back</a>
+            <a href="{{ route('goals.index') }}" class="back-link">Back</a>
             <h1 class="goal-detail-title">{{ $goal->name }}</h1>
-            <a href="{{ route('goal_transactions.create', ['goalId' => $goal->id]) }}" class="goal-detail-button">Add Transaction</a>
+            <a href="{{ route('goal_transactions.create', ['goalId' => $goal->id]) }}" class="add-custom-btn">Add Transaction</a>
         </div>
 
         <div class="goal-detail-info">

@@ -37,14 +37,14 @@
         <input type="hidden" name="goal_id" value="{{ $goal->id ?? '' }}">
 
         <div class="flex justify-center items-center">
-            <button type="submit" class="btn">
+            <button type="submit" class="add-custom-btn m-2">
                 @isset($goal_transaction)
                     Update Transaction
                 @else
                     Add Transaction
                 @endisset
             </button>
-            <a href="{{ isset($goal) ? route('goals.show', $goal->id) : route('goals.index') }}" class="btn ml-2">Cancel</a>
+            <a href="{{ isset($goal) ? route('goals.show', $goal->id) : route('goals.index') }}" class="cancel-custom-btn">Cancel</a>
         </div>
     </form>
 
@@ -52,7 +52,7 @@
         <form action="{{ route('goal_transactions.destroy', $goal_transaction->id) }}" method="POST" class="mt-4">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="delete-custom-btn">Delete</button>
         </form>
     @endisset
 </div>

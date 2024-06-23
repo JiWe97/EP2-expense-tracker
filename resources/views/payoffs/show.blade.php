@@ -7,14 +7,20 @@
 @endsection
 
 @section('content')
-<div class="payoff-container">
-    <div class="payoff-header">
-        <a href="{{ route('payoffs.index') }}" class="btn-custom-payoff">Back</a>
-        <h1>{{ $payoff->name }}</h1>
-        <a href="{{ route('payoffs.edit', $payoff) }}" class="btn-custom-payoff">Edit</a>
+
+
+<div class="mb-4">
+        <a href="{{ route('payoffs.index') }}" class="back-link">Back</a>
     </div>
 
-    <div class="payoff-stats">
+<div class="payoff-container">
+    <div class="payoff-header">
+        
+        <h1>{{ $payoff->name }}</h1>
+        
+    </div>
+
+    <div class="payoff-stats ">
         <h4>Payed off € {{ number_format($payoff->balance, 2) }} of € {{ number_format($payoff->total, 2) }}</h4>
     </div>
 
@@ -49,10 +55,13 @@
             </div>
         @endif
     </div>
-    <form action="{{ route('payoffs.destroy', $payoff) }}" method="POST">
+    <div class="actions-show mb-6">
+        <a href="{{ route('payoffs.edit', $payoff) }}" class="edit-custom-btn">Edit</a>
+        <form action="{{ route('payoffs.destroy', $payoff) }}" method="POST">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn-custom-payoff">Delete</button>
+        <button type="submit" class="delete-custom-btn">Delete</button>
     </form>
+    </div>
 </div>
 @endsection

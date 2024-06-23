@@ -1,3 +1,19 @@
+<style>
+.delete-btn {
+    display: inline-block;
+        padding: 8px 16px;
+        background-color: #b87a9a;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #ffffff;
+    color: #b87a9a;
+}
+</style>
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900 light:text-gray-100">
@@ -42,11 +58,11 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+                <x-secondary-button x-on:click="$dispatch('close') delete-btn">
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
+                <x-danger-button class="ms-3 delete-btn">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </div>

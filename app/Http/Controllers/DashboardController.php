@@ -19,20 +19,20 @@ class DashboardController extends Controller
         $totalBalance = $bankingRecords->sum('balance');
         $goals = Goal::where('user_id', $userId)->get();
         $goalIds = $goals->pluck('id')->toArray();
-        
+
         // Calculate total amount saved
         $totalAmountSaved = GoalTransaction::whereIn('goal_id', $goalIds)->sum('amount');
-        
+
         // If there are no goals, set totalAmountSaved to 0
         if (empty($totalAmountSaved)) {
             $totalAmountSaved = 0;
         }
 
-        $transactions = Transaction::with(['user', 'bankingRecord', 'category' => function($query) {
+        $transactions = Transaction::with(['user', 'bankingRecord', 'category' => function ($query) {
             $query->withTrashed(); // Include soft-deleted categories
         }])
-        ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
-        ->paginate(10);
+            ->where('user_id', $userId) // Filter transactions by the authenticated user's ID
+            ->paginate(10);
 
         $query = Transaction::with(['bankingRecord', 'category'])->where('user_id', $userId);
 

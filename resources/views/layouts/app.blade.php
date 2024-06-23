@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Expense Tracker</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS Styles -->
     <style type="text/tailwindcss">
         label {
             @apply block uppercase text-slate-700 mb-2;
@@ -20,6 +31,7 @@
             @apply shadow-sm appearance-none border w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none;
         }
     </style>
+    
     @yield('styles')
 </head>
 <body class="font-sans antialiased bg-gray-100 light:bg-gray-900">
@@ -55,6 +67,7 @@
             {{ $slot }}
         </main>
     </div>
+    
     @yield('scripts')
 </body>
 </html>

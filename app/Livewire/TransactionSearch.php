@@ -6,7 +6,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Transaction;
 use App\Models\BankingRecord;
-use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -25,11 +24,8 @@ class TransactionSearch extends Component
     public $payoff;
     public $selectedBankIds = [];
     public $totalBalance;
-    public $categoryTotals;
-    public $transactionData;
-    public $balanceArr;
 
-    protected $listeners = ['toggleBankSelection'];
+    protected $listeners = ['toggleBankSelection', 'search'];
 
     protected $queryString = [
         'start_date' => ['except' => ''],
@@ -45,9 +41,10 @@ class TransactionSearch extends Component
 
     public function mount()
     {
+        $this->start_date = Carbon::now()->startOfMonth()->toDateString();
+        $this->end_date = Carbon::now()->toDateString();
         $this->selectedBankIds = [];
         Log::info('Mounting component with initial selectedBankIds', ['selectedBankIds' => $this->selectedBankIds]);
-        $this->recalculateData();
     }
 
     public function toggleBankSelection($bankId)
@@ -63,13 +60,71 @@ class TransactionSearch extends Component
         Log::info('Toggled bank selection', ['bankId' => $bankId, 'selectedBankIds' => $this->selectedBankIds]);
 
         $this->resetPage();
-        $this->recalculateData();
+        $this->search(); // Call search method to update charts
     }
 
     public function search()
     {
         $this->resetPage();
-        $this->recalculateData();
+
+        // Fetch transactions based on filters
+        $transactions = Transaction::where('user_id', Auth::id())
+            ->when($this->start_date, function($query) {
+                $query->where('date', '>=', $this->start_date);
+            })
+            ->when($this->end_date, function($query) {
+                $query->where('date', '<=', $this->end_date);
+            })
+            ->when(!empty($this->selectedBankIds), function($query) {
+                $query->whereIn('banking_record_id', $this->selectedBankIds);
+            })
+            ->get();
+
+        // Prepare chart data
+        $labels = [];
+        $income = [];
+        $expense = [];
+        $categoryData = [];
+        $balance = [];
+
+        $startDate = Carbon::parse($this->start_date);
+        $endDate = Carbon::parse($this->end_date);
+        $dateRange = [];
+
+        // Create date range array
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            $dateRange[] = $date->format('Y-m-d');
+        }
+
+        $cumulativeBalance = 0;
+        foreach ($dateRange as $date) {
+            $labels[] = $date;
+            $dailyIncome = $transactions->where('date', $date)->where('type', 'income')->sum('amount');
+            $dailyExpense = $transactions->where('date', $date)->where('type', 'expense')->sum('amount');
+            $income[] = $dailyIncome;
+            $expense[] = $dailyExpense;
+            $cumulativeBalance += $dailyIncome - $dailyExpense;
+            $balance[] = $cumulativeBalance;
+
+            foreach ($transactions->where('date', $date)->where('type', 'expense') as $transaction) {
+                if (isset($categoryData[$transaction->category->name])) {
+                    $categoryData[$transaction->category->name] += $transaction->amount;
+                } else {
+                    $categoryData[$transaction->category->name] = $transaction->amount;
+                }
+            }
+        }
+
+        // Dispatch new data for charts
+        $chartData = [
+            'labels' => $labels,
+            'income' => $income,
+            'expense' => $expense,
+            'balance' => $balance,
+            'categories' => $categoryData,
+        ];
+
+        $this->dispatch('searchUpdated', $chartData);
     }
 
     public function clear()
@@ -87,88 +142,6 @@ class TransactionSearch extends Component
         ]);
         $this->dispatch('reset-search-form');
         $this->search();
-    }
-
-    public function recalculateData()
-    {
-        $userId = Auth::id();
-        $currentMonthStart = Carbon::now()->startOfMonth();
-        $currentMonthEnd = Carbon::now()->endOfMonth();
-
-        $query = Transaction::query()
-            ->where('user_id', $userId)
-            ->whereBetween('date', [$currentMonthStart, $currentMonthEnd]) // Only include transactions from the current month
-            ->when($this->start_date, function($query) {
-                $query->where('date', '>=', $this->start_date);
-            })
-            ->when($this->end_date, function($query) {
-                $query->where('date', '<=', $this->end_date);
-            })
-            ->when($this->category, function($query) {
-                $query->whereHas('category', function($q) {
-                    $q->where('name', 'like', '%' . $this->category . '%');
-                });
-            })
-            ->when($this->type, function($query) {
-                $query->where('type', $this->type);
-            })
-            ->when($this->description, function($query) {
-                $query->where('description', 'like', '%' . $this->description . '%');
-            })
-            ->when($this->amount, function($query) {
-                $query->where('amount', $this->amount);
-            })
-            ->when(!empty($this->selectedBankIds), function($query) {
-                $query->whereIn('banking_record_id', $this->selectedBankIds);
-            });
-
-        $transactions = $query->get();
-
-        // Calculate category totals
-        $expenseTransactions = $transactions->filter(function ($transaction) {
-            return $transaction->type === 'expense';
-        });
-
-        $this->categoryTotals = $expenseTransactions->groupBy('category_id')->map(function ($categoryTransactions) {
-            return $categoryTransactions->sum('amount') * -1;
-        });
-
-        // Pre-fetch categories to avoid multiple queries
-        $categories = Category::whereIn('id', $this->categoryTotals->keys())->pluck('name', 'id');
-
-        // Map category IDs to category names and keep the totals
-        $this->categoryTotals = $this->categoryTotals->mapWithKeys(function ($total, $categoryId) use ($categories) {
-            $name = $categories->get($categoryId, 'Unknown Category');
-            return [$name => $total];
-        });
-
-        // Calculate balance and transaction history
-        $latestBankingRecord = BankingRecord::where('user_id', $userId)->latest()->first();
-        $balance = $latestBankingRecord ? $latestBankingRecord->balance : 0;
-        $balanceArr = [];
-        $transactionReverse = $transactions->reverse();
-        foreach ($transactionReverse as $transaction) {
-            $difference = $transaction->amount;
-            $balance += $difference;
-            $balanceArr[] = $balance;
-        }
-        $this->balanceArr = array_reverse($balanceArr);
-
-        // Map transaction types for graph
-        $this->transactionData = $transactions->map(function ($transaction) {
-            return [
-                'type' => $transaction->type,
-                'amount' => $transaction->amount,
-                'date' => $transaction->date,
-            ];
-        })->sortBy('date')->values()->toArray();
-
-        // Dispatch event to render graphs
-        $this->dispatch('renderGraph', [
-            'categoryTotals' => $this->categoryTotals,
-            'transactionData' => $this->transactionData,
-            'balanceArr' => $this->balanceArr
-        ]);
     }
 
     public function render()
@@ -210,16 +183,57 @@ class TransactionSearch extends Component
             $this->totalBalance = $bankingRecords->sum('balance');
         }
 
+        // Prepare chart data for initial load
+        $labels = [];
+        $income = [];
+        $expense = [];
+        $categoryData = [];
+        $balance = [];
+
+        $startDate = Carbon::parse($this->start_date);
+        $endDate = Carbon::parse($this->end_date);
+        $dateRange = [];
+
+        // Create date range array
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+            $dateRange[] = $date->format('Y-m-d');
+        }
+
+        $cumulativeBalance = 0;
+        foreach ($dateRange as $date) {
+            $labels[] = $date;
+            $dailyIncome = $transactions->where('date', $date)->where('type', 'income')->sum('amount');
+            $dailyExpense = $transactions->where('date', $date)->where('type', 'expense')->sum('amount');
+            $income[] = $dailyIncome;
+            $expense[] = $dailyExpense;
+            $cumulativeBalance += $dailyIncome - $dailyExpense;
+            $balance[] = $cumulativeBalance;
+
+            foreach ($transactions->where('date', $date)->where('type', 'expense') as $transaction) {
+                if (isset($categoryData[$transaction->category->name])) {
+                    $categoryData[$transaction->category->name] += $transaction->amount;
+                } else {
+                    $categoryData[$transaction->category->name] = $transaction->amount;
+                }
+            }
+        }
+
+        $chartData = [
+            'labels' => $labels,
+            'income' => $income,
+            'expense' => $expense,
+            'balance' => $balance,
+            'categories' => $categoryData,
+        ];
+
         Log::info('Rendering component with transactions', ['transactions' => $transactions->items(), 'selectedBankIds' => $this->selectedBankIds]);
 
         return view('livewire.transaction-search', [
             'totalBalance' => $this->totalBalance,
-            'categoryTotals' => $this->categoryTotals,
-            'transactionData' => $this->transactionData,
-            'balanceArr' => $this->balanceArr,
             'transactions' => $transactions,
             'selectedBankIds' => $this->selectedBankIds,
             'bankingRecords' => $bankingRecords,
+            'chartData' => $chartData,
         ]);
     }
 }

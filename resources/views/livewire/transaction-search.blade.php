@@ -1,4 +1,3 @@
-{{-- transaction-search.blade.php --}}
 <div class="dashboard-mb-4">
     <div class="dashboard-container">
         <h1 class="text-2xl font-bold">Total Balance: € {{ $totalBalance }}</h1>
@@ -19,16 +18,21 @@
                 <p>No banking information found.</p>
             @endif
         </div>
-        <div>
-            <div id="pieChart"></div>
-            <div id="chart_div" style="width: 50%; height: 400px;"></div>
-        </div>
+
+        <!-- Chart components -->
+            <div class="dashboard-mt-4">
+                @livewire('line-chart', ['labels' => $chartData['labels'], 'income' => $chartData['income'], 'expense' => $chartData['expense'], 'balance' => $chartData['balance']])
+            </div>
+            <div class="dashboard-mt-4">
+                @livewire('pie-chart', ['categoryData' => $chartData['categories']])
+            </div>
+        
         <div class="dashboard-mb-4" x-data="{ open: false }" @reset-search-form.window="clearFields()">
             <button class="search-btn" @click="open = !open">
                 <i class="fas fa-search"></i>
             </button>
             <div x-show="open" class="dashboard-mt-2">
-                <form wire:submit.prevent="search" class="dashboard-form-inline" x-ref="searchForm">
+                <form wire:submit.prevent="search" x-ref="searchForm">
                     <div class="dashboard-form-group dashboard-mb-2">
                         <input type="date" wire:model.defer="start_date" class="dashboard-form-control" placeholder="Start Date">
                     </div>
@@ -120,15 +124,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></scrip
 <script>
-    document.addEventListener('livewire:load', function () {
-        Livewire.on('renderGraph', function (categoryTotals, transactionData, balanceArr) {
-            drawPie(categoryTotals);
-            drawChart(transactionData, balanceArr);
-        });
-    });
-
     function clearFields() {
         const searchForm = document.querySelector('[x-ref=searchForm]');
         if (searchForm) {
@@ -136,51 +132,9 @@
         }
     }
 
-    function drawPie(categoryTotals) {
-        let data = new google.visualization.DataTable();
-        data.addColumn('string', 'Category');
-        data.addColumn('number', 'Amount');
-        data.addRows(Object.entries(categoryTotals));
-
-        let options = {
-            title: 'Expenses by Category',
-            pieHole: 0.2
-        };
-
-        let chart = new google.visualization.PieChart(document.getElementById('pieChart'));
-        chart.draw(data, options);
-    }
-
-    function drawChart(transactionData, balanceArr) {
-        let data = new google.visualization.DataTable();
-        data.addColumn('string', 'Date');
-        data.addColumn('number', 'Single transaction');
-        data.addColumn('number', 'Balance');
-
-        let rows = [];
-        let maxLength = Math.max(transactionData.length, balanceArr.length);
-
-        for (let i = 0; i < maxLength; i++) {
-            let transaction = transactionData[i] || {};
-            let date = transaction.date || null;
-            let transactionAmount = parseFloat(transaction.amount) || null;
-            let balanceValue = parseFloat(balanceArr[i]) || null;
-            rows.push([date, transactionAmount, balanceValue]);
-        }
-
-        data.addRows(rows);
-
-        let options = {
-            title: 'Transaction Trend and Balance',
-            curveType: 'function',
-            legend: { position: 'bottom' },
-            series: {
-                0: { color: '#1b9e77' },
-                1: { color: '#d95f02' },
-            }
-        };
-
-        let chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-    }
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('searchUpdated', (chartData) => {
+            Livewire.dispatch('refresh-chart', chartData);
+        });
+    });
 </script>

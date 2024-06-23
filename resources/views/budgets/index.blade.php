@@ -7,11 +7,11 @@
 @endsection
 
 @section('content')
-    <div class="budget-container-wrapper-custom">
-        <nav class="add-budget-link-custom">
-            <a href="{{ route('budgets.create') }}" class="link">Add Budget</a>
+    
+        <nav class="mb-4">
+            <a href="{{ route('budgets.create') }}" class="add-budget-link-custom">Add Budget</a>
         </nav>
-
+<div class="budget-container-wrapper-custom">
         @if ($budgets->isEmpty())
             <div class="flex justify-center items-center">
                 <p class="font-bold">No Budgets</p>

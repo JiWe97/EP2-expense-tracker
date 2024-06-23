@@ -7,9 +7,9 @@
 @section('content')
 <div class="budget-show-container">
     <div class="header-show">
-        <a href="{{ route('budgets.index') }}" class="link-custom-show">Back</a>
+        <a href="{{ route('budgets.index') }}" class="back-link">Back</a>
         <h1 class="text-3xl font-bold title-show">{{ $budget->name }}</h1>
-        <a href="{{ route('budgets.history', ['budgetId' => $budget->id]) }}" class="btn-custom-show">View History</a>
+        <a href="{{ route('budgets.history', ['budgetId' => $budget->id]) }}" class="budget-history-link-custom">View History</a>
     </div>
 
     <div class="flex items-center mb-6">
@@ -43,11 +43,11 @@
     </div>
 
     <div class="actions-show mb-6">
-        <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="btn-custom-show">Edit</a>
+        <a href="{{ route('budgets.edit', ['budget' => $budget->id]) }}" class="edit-custom-btn">Edit</a>
         <form method="POST" action="{{ route('budgets.destroy', ['budget' => $budget->id]) }}">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-danger-show">Delete</button>
+            <button type="submit" class="delete-custom-btn">Delete</button>
         </form>
     </div>
 </div>

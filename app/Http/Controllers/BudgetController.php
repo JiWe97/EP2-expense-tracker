@@ -9,15 +9,16 @@ use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Http\Requests\BudgetRequest;
 
 class BudgetController extends Controller
 {
     public function index()
     {
         $userId = Auth::id();
-        
+
         $userBankingRecordIds = BankingRecord::where('user_id', $userId)->pluck('id');
-        
+
         $budgets = Budget::with(['bankingRecord', 'categories'])
             ->whereHas('bankingRecord', function ($query) use ($userBankingRecordIds) {
                 $query->whereIn('id', $userBankingRecordIds);
@@ -107,43 +108,43 @@ class BudgetController extends Controller
         // Find the budget and get associated category IDs
         $budget = Budget::findOrFail($budgetId);
         $categoryIds = $budget->categories()->pluck('categories.id')->toArray(); // Specify table name
-    
+
         // Build the query to aggregate transactions by year and month
         $query = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(ABS(amount)) as total_amount')
             ->whereIn('category_id', $categoryIds)
             ->groupByRaw('YEAR(date), MONTH(date)');
-    
+
         // Apply year filter if provided
         if ($year = $request->input('year')) {
             $query->whereYear('date', $year);
         }
-    
+
         // Apply month filter if provided
         if ($monthName = $request->input('month')) {
             $monthNumber = Carbon::parse($monthName)->month;
             $query->whereMonth('date', $monthNumber);
         }
-    
+
         // Execute the query and map the results
         $transactions = $query->get()->map(function ($transaction) use ($budget) {
             $transaction->remaining_amount = $budget->amount - $transaction->total_amount;
             $transaction->month_name = \Carbon\Carbon::create()->month($transaction->month)->format('F');
             return $transaction;
         });
-    
+
         // Sort transactions by amount spent if requested
         if ($sortSpent = $request->input('sort_spent')) {
             $transactions = $sortSpent === 'highest' ? $transactions->sortByDesc('total_amount') : $transactions->sortBy('total_amount');
         }
-    
+
         // Sort transactions by amount remaining if requested
         if ($sortRemaining = $request->input('sort_remaining')) {
             $transactions = $sortRemaining === 'highest' ? $transactions->sortByDesc('remaining_amount') : $transactions->sortBy('remaining_amount');
         }
-    
+
         // Debugging: Log the transactions to check if they are being retrieved correctly
         \Log::info('Transactions retrieved for history:', $transactions->toArray());
-    
+
         // Render the view with the budget and transactions
         return view('budgets.history', compact('budget', 'transactions', 'year', 'monthName', 'sortSpent', 'sortRemaining'));
     }

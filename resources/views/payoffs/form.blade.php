@@ -40,7 +40,7 @@
         </div>
         <div class="form-group-custom text-center">
             <button type="submit" class="btn-custom-form">{{ isset($payoff) ? 'Update Payoff' : 'Create Payoff' }}</button>
-            <a href="{{ route('payoffs.index') }}" class="btn-custom-form">Cancel</a>
+            <a href="{{ route('payoffs.index') }}" class="delete-custom-btn">Cancel</a>
         </div>
     </form>
 </div>

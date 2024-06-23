@@ -1,5 +1,5 @@
 <div x-data="{ is_income: @js($is_income) }">
-        <a href="{{ route('dashboard') }}" class="link">Back</a>
+        <a href="{{ route('dashboard') }}" class="back-link">Back</a>
         <form wire:submit.prevent="saveOrUpdate">
             @csrf
 
@@ -83,14 +83,14 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button type="submit" class="custom-btn">
+                <button type="submit" class="transaction-custom-btn">
                     @isset($transaction)
                         Update transaction
                     @else
                         Add transaction
                     @endisset
                 </button>
-                <a href="{{ route('dashboard') }}" class="custom-btn">Cancel</a>
+                <a href="{{ route('dashboard') }}" class="transaction-custom-delete-btn">Cancel</a>
             </div>
 
             @if ($errors->any())

@@ -1,3 +1,19 @@
+<style>
+.custom-btn {
+    display: inline-block;
+        padding: 8px 16px;
+        background-color: #A3BE84;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+}
+
+.custom-btn:hover {
+    background-color: #ffffff;
+    color: #A3BE84;
+}
+</style>
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 light:text-gray-100">
@@ -32,7 +48,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button class="custom-btn">{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'password-updated')
                 <p

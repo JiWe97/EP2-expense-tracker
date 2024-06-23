@@ -9,7 +9,7 @@
 @section('content')
     <div>
         <div class="mb-4">
-            <a href="{{ route('payoffs.create') }}" class="link">Add Payoff</a>
+            <a href="{{ route('payoffs.create') }}" class="add-payoff-link-custom">Add Payoff</a>
         </div>
 
         @if ($payoffs->isEmpty())

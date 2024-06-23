@@ -9,7 +9,7 @@
 @section('content')
     <div class="flex justify-center"> 
         <div class="category-form-container p-6 w-full max-w-lg"> 
-            <a href="{{ route('categories.index') }}" class="category-form-link mb-4">Back</a>
+            <a href="{{ route('categories.index') }}" class="back-link mb-4">Back</a>
 
             <form method="POST" action="{{ isset($category) ? route('categories.update', ['category' => $category->id]) : route('categories.store') }}">
                 @csrf
@@ -60,7 +60,7 @@
                             Add Category
                         @endisset
                     </button>
-                    <a href="{{ route('categories.index') }}" class="category-form-link">Cancel</a>
+                    <a href="{{ route('categories.index') }}" class="cancel-custom-btn">Cancel</a>
                 </div>
             </form>
         </div>

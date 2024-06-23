@@ -28,12 +28,12 @@
         }
 
         .header {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
 
         .header img {
-            width: 100px;
-            margin-bottom: 20px;
+            width: 250px;
+            margin-bottom: 10px;
         }
 
         .header h1 {
@@ -78,19 +78,22 @@
 
         .cta a {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 8px 16px;
             font-size: 1.2rem;
             color: white;
-            background-color: #FF2D20;
+            background-color: #A3BE84;
             border-radius: 5px;
             text-decoration: none;
             transition: background-color 0.3s ease;
         }
 
+
         .cta a:hover {
-            background-color: #d9241b;
+            background-color: #ffffff;
+        color: #A3BE84;
         }
 
+    
         footer {
             margin-top: 50px;
             font-size: 0.9rem;
@@ -101,8 +104,12 @@
 <body>
 <div class="container">
     <header class="header">
-        <img src="https://laravel.com/assets/img/welcome/logo.svg" alt="Expense Tracker Logo">
-        <h1>Welcome to Expense Tracker</h1>
+        <img src="{{ asset('images/logo.png') }}" alt="Expense Tracker Logo" class="logo">
+        <h1>
+            <img src="{{asset('./images/JustSprout.png')}}" alt="JustSprout" style="width: 50px; transform:  rotate(-20deg) scaleX(-1);">
+            Welcome to Expense Tracker
+            <img src="{{asset('./images/JustSprout.png')}}" alt="JustSprout" style="width: 50px; transform:  rotate(20deg) ;">
+            </h1>
         <p>Manage your finances effectively and effortlessly.</p>
     </header>
 
@@ -118,11 +125,11 @@
         </ul>
     </main>
 
-    <div class="cta">
+    <div class="cta custom-btn">
         @auth
             <a href="{{ url('/dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
         @else
-            <a href="{{ route('register') }}" class="btn btn-primary">Join Now</a>
+            <a href="{{ route('login') }}" class="btn btn-primary">Join Now</a>
         @endauth
     </div>
 

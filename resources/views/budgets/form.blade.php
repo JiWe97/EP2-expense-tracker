@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="mb-4">
-        <a href="{{ route('budgets.index') }}" class="link-budget">Back</a>
+        <a href="{{ route('budgets.index') }}" class="back-link">Back</a>
     </div>
     <div class="budget-form-container">
         <form method="POST" action="{{ isset($budget) ? route('budgets.update', $budget->id) : route('budgets.store') }}">
@@ -49,7 +49,7 @@
             <div class="mb-4">
                 <label for="completely">Mail if completely spent?</label>
                 <input type="hidden" name="completely" value="0">
-                <input type="checkbox" name="completely" id="completely" value="1" class="{{ $errors->has('completely') ? 'border-red-500' : '' }}" {{ isset($budget) && $budget->mail_when_completely_spent ? 'checked' : '' }}>
+                <input type="checkbox" name="completely" id="completely" value="1" class="{{ $errors->has('completely') ? 'border-red-500' : '' }}" {{ isset($budget) && $budget->mail_when_completely_spent ? 'checked' : '' }} class="checkbox-budget">
             </div>
 
             <div class="mb-4">
@@ -74,14 +74,14 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button type="submit" class="btn-budget">
+                <button type="submit" class="add-budget-btn">
                     @isset($budget)
                         Update Budget
                     @else
                         Add Budget
                     @endisset
                 </button>
-                <a href="{{ isset($budget) ? route('budgets.show', ['budget' => $budget->id]) : route('budgets.index') }}" class="link-budget">Cancel</a>
+                <a href="{{ isset($budget) ? route('budgets.show', ['budget' => $budget->id]) : route('budgets.index') }}" class="cancel-custom-btn">Cancel</a>
             </div>
 
             @if ($errors->any())

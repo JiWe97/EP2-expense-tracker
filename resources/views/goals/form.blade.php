@@ -52,14 +52,14 @@
         </div>
 
         <div class="flex justify-center items-center m-2">
-            <button type="submit" class="btn">
+            <button type="submit" class="add-goal-link m-2">
                 @isset($goal)
                     Update Goal
                 @else
                     Add Goal
                 @endisset
             </button>
-            <a href="{{ route('goals.index') }}" class="btn ml-2">Cancel</a>
+            <a href="{{ route('goals.index') }}" class="cancel-custom-btn">Cancel</a>
         </div>
     </form>
 
@@ -67,7 +67,7 @@
         <form action="{{ route('goals.destroy', ['goal' => $goal->id]) }}" method="POST" class="mt-4">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="delete-custom-btn">Delete</button>
         </form>
     @endisset
 </div>

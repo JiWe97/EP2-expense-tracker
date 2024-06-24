@@ -82,8 +82,21 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('Home') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
+                {{ __('Categories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('budgets.index')" :active="request()->routeIs('budgets.index')">
+                {{ __('Budgets') }} 
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.index')">
+                {{ __('Goals') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('payoffs.index')" :active="request()->routeIs('payoffs.index')">
+                {{ __('Loans') }}
+            </x-responsive-nav-link>
+            
         </div>
 
         <!-- Responsive Settings Options -->

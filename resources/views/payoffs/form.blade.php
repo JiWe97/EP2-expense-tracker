@@ -6,7 +6,7 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', isset($payoff) ? 'Edit Payoff' : 'Create Payoff')
+    
 <div class="container form-container-custom">
     <h1 class="text-center">{{ isset($payoff) ? 'Edit Payoff' : 'Create Payoff' }}</h1>
     <form method="POST" action="{{ isset($payoff) ? route('payoffs.update', $payoff) : route('payoffs.store') }}">

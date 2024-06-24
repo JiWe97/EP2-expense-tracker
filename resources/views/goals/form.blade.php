@@ -6,7 +6,6 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', isset($goal) ? 'Edit Goal' : 'Add Goal')
 
 <div class="goal-form-container">
     <h1 class="text-center">{{ isset($goal) ? 'Edit Goal' : 'Add Goal' }}</h1>

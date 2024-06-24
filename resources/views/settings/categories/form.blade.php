@@ -6,7 +6,6 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', isset($category) ? 'Edit Category' : 'Add Category')
 
     <div class="flex justify-center"> 
         <div class="category-form-container p-6 w-full max-w-lg"> 

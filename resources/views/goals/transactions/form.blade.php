@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    @section('title', isset($goal_transaction) ? 'Edit Transaction' : 'Add Transaction')
+    
     @include('layouts.styles')
 
     <div class="goal-form-container">

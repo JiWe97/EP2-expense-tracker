@@ -1,6 +1,5 @@
 <div class="dashboard-mb-4">
     <div class="dashboard-container">
-        <h1 class="text-2xl font-bold">Total Balance: € {{ $totalBalance }}</h1>
         <div class="dashboard-w-5/6 dashboard-p-8 dashboard-text-grey-800">
             @if($bankingRecords->isNotEmpty())
                 <div class="dashboard-card-container">

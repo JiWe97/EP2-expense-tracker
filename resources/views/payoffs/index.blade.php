@@ -6,7 +6,6 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', 'The list of payoffs')
     <div>
         <div class="mb-4">
             <a href="{{ route('payoffs.create') }}" class="add-payoff-link-custom">Add Payoff</a>

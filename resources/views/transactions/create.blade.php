@@ -6,7 +6,6 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', 'Add Transaction')
 
 
 

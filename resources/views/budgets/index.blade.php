@@ -7,7 +7,7 @@
         </h2>
     </x-slot>
 
-    @section('title', 'The list of budgets')
+   
     @include('layouts.styles')
 
 @section('content')

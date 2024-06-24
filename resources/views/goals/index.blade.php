@@ -7,7 +7,7 @@
 
     @include('layouts.styles')
 
-    @section('title', 'The list of goals')
+    
     <nav class="mb-4">
         <a href="{{ route('goals.create') }}" class="add-goal-link">Add Goal</a>
     </nav>

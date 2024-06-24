@@ -31,7 +31,7 @@
             <tbody>
                 @foreach ($goalTransactions as $goalTransaction)
                     <tr onclick="window.location='{{ route('goal_transactions.edit', $goalTransaction->id) }}'">
-                        <td>{{ $goalTransaction->amount }}</td>
+                        <td>&#8364; {{ $goalTransaction->amount }}</td>
                         <td>{{ $goalTransaction->created_at->format('d-m-Y') }}</td>
                     </tr>
                 @endforeach

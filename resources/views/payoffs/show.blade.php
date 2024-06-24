@@ -6,7 +6,6 @@
     </x-slot>
 
     @include('layouts.styles')
-    @section('title', $payoff->name)
 
 
 
@@ -31,7 +30,7 @@
             <p>No transactions found for this payoff.</p>
         @else
             <div class="table-responsive">
-                <table class="transactions-table">
+                <table class="dashboard-transaction-table">
                     <thead>
                         <tr>
                             <th>Date</th>

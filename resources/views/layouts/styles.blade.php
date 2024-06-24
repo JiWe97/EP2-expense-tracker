@@ -267,6 +267,7 @@
     .dashboard-form-group {
         display: flex;
         flex-direction: column;
+        width: 200px;
     }
     .dashboard-form-group label {
         margin-bottom: 0.5rem;

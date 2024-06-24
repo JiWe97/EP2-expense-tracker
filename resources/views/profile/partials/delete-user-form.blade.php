@@ -26,6 +26,7 @@
     </header>
 
     <x-danger-button
+    class="delete-btn"
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >{{ __('Delete Account') }}</x-danger-button>

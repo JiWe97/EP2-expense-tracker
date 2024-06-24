@@ -158,7 +158,7 @@
     .dashboard-card-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: center;
         gap: 30px;
         padding: 20px;
     }
@@ -233,7 +233,6 @@
     /* Dashboard Pagination */
     .dashboard-pagination {
         display: flex;
-        background-color: #ffffff;
         color: #333;
         justify-content: center;
         /*padding: 1rem 0;*/
@@ -256,6 +255,25 @@
 
     .dashboard-pagination .page-link:hover {
         background-color: #A3BE84;
+    }
+    
+    
+    /* Dashboard Search Form */
+    .dashboard-form-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .dashboard-form-group {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+    }
+    .dashboard-form-group label {
+        margin-bottom: 0.5rem;
+    }
+    .dashboard-ml-2 {
+        margin-left: 0.5rem;
     }
 
     /* Dashboard Alerts */

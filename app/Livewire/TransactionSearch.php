@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Transaction;
 use App\Models\BankingRecord;
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -41,8 +42,8 @@ class TransactionSearch extends Component
 
     public function mount()
     {
-        $this->start_date = Carbon::now()->startOfMonth()->toDateString();
-        $this->end_date = Carbon::now()->toDateString();
+        /* $this->start_date = Carbon::now()->startOfMonth()->toDateString();
+        $this->end_date = Carbon::now()->toDateString(); */
         $this->selectedBankIds = [];
         Log::info('Mounting component with initial selectedBankIds', ['selectedBankIds' => $this->selectedBankIds]);
     }
@@ -176,6 +177,7 @@ class TransactionSearch extends Component
             ->paginate(10);
 
         $bankingRecords = BankingRecord::where('user_id', $userId)->get();
+        $categories = Category::all(); // Fetch categories
 
         if (!empty($this->selectedBankIds)) {
             $this->totalBalance = $bankingRecords->whereIn('id', $this->selectedBankIds)->sum('balance');
@@ -234,6 +236,7 @@ class TransactionSearch extends Component
             'selectedBankIds' => $this->selectedBankIds,
             'bankingRecords' => $bankingRecords,
             'chartData' => $chartData,
+            'categories' => $categories, // Pass categories to the view
         ]);
     }
 }

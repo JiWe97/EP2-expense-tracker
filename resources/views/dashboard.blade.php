@@ -12,7 +12,7 @@
         <div class="dashboard-top-right">
             <a href="{{ route('transactions.create') }}" class="dashboard-btn dashboard-btn-primary dashboard-icon-button">+</a>
             <a href="{{ route('transactions.import') }}" class="dashboard-btn dashboard-btn-primary dashboard-icon-button">
-                <i class="fas fa-upload"></i>
+                <i class="fas fa-file-import"></i>
             </a>
         </div>
     </div>

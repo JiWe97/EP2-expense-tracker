@@ -1,10 +1,11 @@
-{{-- resources/views/transactions/import.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Import Transactions') }}
         </h2>
     </x-slot>
+
+    @include('layouts.styles')
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
@@ -20,7 +21,7 @@
                     @enderror
                 </div>
                 <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <button type="submit" class="back-link">
                         Preview
                     </button>
                 </div>
@@ -31,7 +32,7 @@
                     @csrf
                     <input type="hidden" name="file_path" value="{{ session('filePath') }}">
                     <div class="flex items-center justify-between mt-4">
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        <button type="submit" class="edit-custom-btn">
                             Confirm and Import
                         </button>
                     </div>
@@ -61,7 +62,7 @@
                     @csrf
                     <input type="hidden" name="file_path" value="{{ session('filePath') }}">
                     <div class="flex items-center justify-between mt-4">
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        <button type="submit" class="edit-custom-btn">
                             Confirm and Import
                         </button>
                     </div>

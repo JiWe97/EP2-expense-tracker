@@ -38,7 +38,9 @@
                 <select name="banking_record_id" id="banking_record_id" class="{{ $errors->has('banking_record_id') ? 'border-red-500' : '' }}">
                     <option value="" disabled selected>Select a bank account</option>
                     @foreach($banking_records as $record)
-                        <option value="{{ $record->id }}" {{ (isset($budget) && $record->id == $budget->banking_record_id) ? 'selected' : '' }}>{{ $record->bank_name }}</option>
+                        <option value="{{ $record->id }}" {{ (isset($budget) && $record->id == $budget->banking_record_id) ? 'selected' : '' }}>
+                            {{ $record->name ?? $record->bank_name }}
+                        </option>
                     @endforeach
                 </select>
                 @error('banking_record_id')

@@ -91,7 +91,7 @@
                                         <td><a href="{{ route('transactions.edit', ['transaction' => $transaction->id]) }}">{{ $transaction->amount }} {{ $transaction->valuta }}</a></td>
                                         <td>{{ $transaction->description }}</td>
                                         <td>{{ $transaction->type }}</td>
-                                        <td>{{ $transaction->category->name?? 'N/A' }}</td>
+                                        <td>{{ $transaction->category->name?? '--' }}</td>
                                         <td>{{ $transaction->payoff->name?? '--' }}</td>
                                         <td>
                                             @if ($transaction->attachments->isNotEmpty())

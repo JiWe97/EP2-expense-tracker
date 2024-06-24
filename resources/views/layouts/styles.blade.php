@@ -1107,16 +1107,20 @@
         color: #888;
     }
 
-    .goal-link {
+    .goal-card {
         color: #A3BE84;
-        text-decoration: underline;
+        text-decoration: none;
         cursor: pointer;
-        font-weight: 500;
+        font-weight: 500 ;
     }
 
-    .goal-link:hover {
-        color: #555;
+    
+    .goal-card:hover {
+        color: #fff;
+        background-color: #A3BE84
     }
+
+
 
     .add-goal-link {
         display: inline-block;

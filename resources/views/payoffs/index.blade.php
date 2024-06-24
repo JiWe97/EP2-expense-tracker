@@ -1,12 +1,12 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Loans') }}
+        </h2>
+    </x-slot>
 
-@section('styles')
     @include('layouts.styles')
-@endsection
-
-@section('title', 'The list of payoffs')
-
-@section('content')
+    @section('title', 'The list of payoffs')
     <div>
         <div class="mb-4">
             <a href="{{ route('payoffs.create') }}" class="add-payoff-link-custom">Add Payoff</a>
@@ -44,4 +44,5 @@
             </div>
         @endif
     </div>
-@endsection
+
+</x-app-layout>

@@ -1,12 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Goals') }}
+        </h2>
+    </x-slot>
 
-@section('title', isset($goal) ? 'Edit Goal' : 'Add Goal')
-
-@section('styles')
     @include('layouts.styles')
-@endsection
+    @section('title', isset($goal) ? 'Edit Goal' : 'Add Goal')
 
-@section('content')
 <div class="goal-form-container">
     <h1 class="text-center">{{ isset($goal) ? 'Edit Goal' : 'Add Goal' }}</h1>
     <form method="POST" action="{{ isset($goal) ? route('goals.update', $goal->id) : route('goals.store') }}">
@@ -71,4 +72,5 @@
         </form>
     @endisset
 </div>
-@endsection
+
+</x-app-layout>

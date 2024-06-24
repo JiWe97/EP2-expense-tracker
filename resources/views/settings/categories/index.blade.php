@@ -1,13 +1,20 @@
-@extends('layouts.custom')
 
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Categories') }}
+        </h2>
+    </x-slot>
+
+
     @include('layouts.styles')
-@endsection
 
-@section('content')
+
+
     <nav class="mb-4">
         <a href="{{ route('categories.create') }}" class="category-list-add-link">Add Category</a>
     </nav>
+    
     
     <div class="mb-8">
         <h2 class="category-list-header">Income Categories</h2>
@@ -26,4 +33,6 @@
             @endforeach
         </div>
     </div>
-@endsection
+
+
+</x-app-layout>

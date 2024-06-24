@@ -1,11 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Budgets') }}
+        </h2>
+    </x-slot>
 
-@section('styles')
     @include('layouts.styles')
-@endsection
 
-@section('content')
-<div class="budget-show-container">
+    <div class="budget-show-container">
     <div class="header-show">
         <a href="{{ route('budgets.index') }}" class="back-link">Back</a>
         <h1 class="text-3xl font-bold title-show">{{ $budget->name }}</h1>
@@ -51,4 +53,6 @@
         </form>
     </div>
 </div>
-@endsection
+
+</x-app-layout>
+

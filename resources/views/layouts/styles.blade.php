@@ -709,6 +709,7 @@
         background-color: #f9f9f9;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: fit-content;
     }
 
     .category-name {
@@ -1124,16 +1125,20 @@
         color: #888;
     }
 
-    .goal-link {
+    .goal-card {
         color: #A3BE84;
-        text-decoration: underline;
+        text-decoration: none;
         cursor: pointer;
-        font-weight: 500;
+        font-weight: 500 ;
     }
 
-    .goal-link:hover {
-        color: #555;
+    
+    .goal-card:hover {
+        color: #fff;
+        background-color: #A3BE84
     }
+
+
 
     .add-goal-link {
         display: inline-block;

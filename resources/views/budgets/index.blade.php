@@ -1,10 +1,14 @@
-@extends('layouts.custom')
 
-@section('title', 'The list of budgets')
 
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Budgets') }}
+        </h2>
+    </x-slot>
+
+    @section('title', 'The list of budgets')
     @include('layouts.styles')
-@endsection
 
 @section('content')
 
@@ -64,4 +68,6 @@
             @endforeach
         </div>
     </div>
-@endsection
+
+</x-app-layout>
+

@@ -1,12 +1,12 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Categories') }}
+        </h2>
+    </x-slot>
 
-
-@section('styles')
     @include('layouts.styles')
-@endsection
 
-
-@section('content')
     <div class="mb-4">
         <a href="{{ route('categories.index') }}" class="back-link">Back</a>
     </div>
@@ -45,4 +45,4 @@
     <div class="delete-form delete-custom-btn">
         @livewire('deletecategory', ['category' => $category])
     </div>
-@endsection
+</x-app-layout>

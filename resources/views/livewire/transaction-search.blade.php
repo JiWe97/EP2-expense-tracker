@@ -92,7 +92,7 @@
                                         <td>{{ $transaction->description }}</td>
                                         <td>{{ $transaction->type }}</td>
                                         <td>{{ $transaction->category->name?? 'N/A' }}</td>
-                                        <td>{{ $transaction->payoff_id }}</td>
+                                        <td>{{ $transaction->payoff->name?? '--' }}</td>
                                         <td>
                                             @if ($transaction->attachments->isNotEmpty())
                                                 @foreach ($transaction->attachments as $attachment)

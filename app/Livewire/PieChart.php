@@ -3,14 +3,15 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 
 class PieChart extends Component
 {
     public $categoryData;
 
-    protected $listeners = ['refresh-chart' => 'updateChartData'];
+    protected $listeners = ['updateChartData'];
 
-    public function mount($categoryData)
+    public function mount($categoryData = [])
     {
         $this->categoryData = $categoryData;
     }
@@ -18,7 +19,8 @@ class PieChart extends Component
     public function updateChartData($data)
     {
         $this->categoryData = $data['categories'];
-        $this->dispatchSelf('chartUpdated');
+        Log::info('Pie chart data updated', ['categoryData' => $this->categoryData]);
+        $this->dispatch('chartUpdated');
     }
 
     public function render()

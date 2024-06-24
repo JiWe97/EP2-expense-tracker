@@ -18,11 +18,12 @@
             @endif
         </div>
         <!-- Chart components -->
-        <div class="dashboard-mt-4">
+           <div class="dashboard-mt-4">
             @livewire('line-chart', ['labels' => $chartData['labels'], 'income' => $chartData['income'], 'expense' => $chartData['expense'], 'balance' => $chartData['balance']])
         </div>
         <div class="dashboard-mt-4">
             @livewire('pie-chart', ['categoryData' => $chartData['categories']])
+        </div>
         </div>
         <div class="dashboard-mb-4" x-data="{ open: false }" @reset-search-form.window="clearFields()">
             <button class="search-btn" @click="open = !open">
@@ -133,19 +134,7 @@
 </div>
 
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-    document.addEventListener('livewire:load', function () {
-        Livewire.on('renderGraph', function (categoryTotals, transactionData, balanceArr) {
-            drawPie(categoryTotals);
-            drawChart(transactionData, balanceArr);
-        });
-
-        Livewire.on('reset-search-form', function () {
-            clearFields();
-        });
-    });
-
     function clearFields() {
         const searchForm = document.querySelector('[x-ref=searchForm]');
         if (searchForm) {
@@ -156,4 +145,10 @@
             });
         }
     }
+     document.addEventListener('livewire:load', function () {
+        Livewire.on('chart-updated', chartData => {
+            Livewire.emitTo('line-chart', 'updateChartData', chartData);
+            Livewire.emitTo('pie-chart', 'updateChartData', chartData);
+        });
+    });
 </script>

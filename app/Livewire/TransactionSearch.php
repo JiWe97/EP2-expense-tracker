@@ -25,6 +25,8 @@ class TransactionSearch extends Component
     public $selectedBankIds = [];
     public $totalBalance;
 
+    public $chartData = [];
+
     protected $listeners = ['toggleBankSelection', 'search'];
 
     protected $queryString = [
@@ -41,6 +43,12 @@ class TransactionSearch extends Component
     public function mount()
     {
         $this->selectedBankIds = [];
+
+        // Set default date range to June 2024
+        $this->start_date = '2024-06-01';
+        $this->end_date = '2024-06-30';
+
+        $this->search(); // Perform the search on mount to load all data by default
     }
 
     public function toggleBankSelection($bankId)
@@ -92,10 +100,10 @@ class TransactionSearch extends Component
 
         // Prepare chart data
         $labels = [];
-        $income = [];
-        $expense = [];
+        $incomeData = [];
+        $expenseData = [];
         $categoryData = [];
-        $balance = [];
+        $balanceData = [];
 
         $startDate = Carbon::parse($this->start_date);
         $endDate = Carbon::parse($this->end_date);
@@ -111,30 +119,40 @@ class TransactionSearch extends Component
             $labels[] = $date;
             $dailyIncome = $transactions->where('date', $date)->where('type', 'income')->sum('amount');
             $dailyExpense = $transactions->where('date', $date)->where('type', 'expense')->sum('amount');
-            $income[] = $dailyIncome;
-            $expense[] = $dailyExpense;
-            $cumulativeBalance += $dailyIncome - $dailyExpense;
-            $balance[] = $cumulativeBalance;
+            $incomeData[] = $dailyIncome;
+            $expenseData[] = $dailyExpense;
+            $cumulativeBalance += $dailyIncome + $dailyExpense; // Treating expenses as negative values
+            $balanceData[] = $cumulativeBalance;
+
+            Log::info('Daily data', [
+                'date' => $date,
+                'dailyIncome' => $dailyIncome,
+                'dailyExpense' => $dailyExpense,
+                'cumulativeBalance' => $cumulativeBalance
+            ]);
 
             foreach ($transactions->where('date', $date)->where('type', 'expense') as $transaction) {
-                if (isset($categoryData[$transaction->category->name])) {
-                    $categoryData[$transaction->category->name] += $transaction->amount;
+                $categoryName = $transaction->category->name ?? 'Unknown';
+                if (isset($categoryData[$categoryName])) {
+                    $categoryData[$categoryName] += $transaction->amount;
                 } else {
-                    $categoryData[$transaction->category->name] = $transaction->amount;
+                    $categoryData[$categoryName] = $transaction->amount;
                 }
             }
         }
 
         // Dispatch new data for charts
-        $chartData = [
+        $this->chartData = [
             'labels' => $labels,
-            'income' => $income,
-            'expense' => $expense,
-            'balance' => $balance,
+            'income' => $incomeData,
+            'expense' => $expenseData,
+            'balance' => $balanceData,
             'categories' => $categoryData,
         ];
 
-        $this->dispatch('searchUpdated', $chartData);
+        Log::info('Chart data prepared', ['chartData' => $this->chartData]);
+
+        $this->dispatch('chart-updated', $this->chartData);
     }
 
     public function clear()
@@ -196,49 +214,6 @@ class TransactionSearch extends Component
             $this->totalBalance = $bankingRecords->sum('balance');
         }
 
-        // Prepare chart data for initial load
-        $labels = [];
-        $income = [];
-        $expense = [];
-        $categoryData = [];
-        $balance = [];
-
-        $startDate = Carbon::parse($this->start_date);
-        $endDate = Carbon::parse($this->end_date);
-        $dateRange = [];
-
-        // Create date range array
-        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-            $dateRange[] = $date->format('Y-m-d');
-        }
-
-        $cumulativeBalance = 0;
-        foreach ($dateRange as $date) {
-            $labels[] = $date;
-            $dailyIncome = $transactions->where('date', $date)->where('type', 'income')->sum('amount');
-            $dailyExpense = $transactions->where('date', $date)->where('type', 'expense')->sum('amount');
-            $income[] = $dailyIncome;
-            $expense[] = $dailyExpense;
-            $cumulativeBalance += $dailyIncome - $dailyExpense;
-            $balance[] = $cumulativeBalance;
-
-            foreach ($transactions->where('date', $date)->where('type', 'expense') as $transaction) {
-                if (isset($categoryData[$transaction->category->name])) {
-                    $categoryData[$transaction->category->name] += $transaction->amount;
-                } else {
-                    $categoryData[$transaction->category->name] = $transaction->amount;
-                }
-            }
-        }
-
-        $chartData = [
-            'labels' => $labels,
-            'income' => $income,
-            'expense' => $expense,
-            'balance' => $balance,
-            'categories' => $categoryData,
-        ];
-
         Log::info('Rendering component with transactions', ['transactions' => $transactions->items(), 'selectedBankIds' => $this->selectedBankIds]);
 
         return view('livewire.transaction-search', [
@@ -246,7 +221,7 @@ class TransactionSearch extends Component
             'transactions' => $transactions,
             'selectedBankIds' => $this->selectedBankIds,
             'bankingRecords' => $bankingRecords,
-            'chartData' => $chartData,
+            'chartData' => $this->chartData,
             'categories' => $categories, // Pass categories to the view
         ]);
     }

@@ -1,11 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Budgets') }}
+        </h2>
+    </x-slot>
 
-@section('styles')
     @include('layouts.styles')
-@endsection
 
-@section('content')
-<div class="container mx-auto py-8">
+    <div class="container mx-auto py-8">
     <a href="{{ route('budgets.show', ['budget' => $budget->id]) }}" class="back-link mb-2 ">Back</a>
     <h1 class="text-3xl font-bold mb-8 text-center">History for <strong>{{ $budget->name }}</strong></h1>
 
@@ -68,4 +70,5 @@
         <p class="text-gray-700">There is no history for this budget. Come back next month!</p>
     @endif
 </div>
-@endsection
+
+</x-app-layout>

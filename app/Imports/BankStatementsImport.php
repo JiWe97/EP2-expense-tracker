@@ -11,8 +11,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class BankStatementsImport implements ToModel, WithHeadingRow
 {
     /**
-     * @param array $row
+     * Define the model for each row in the import file.
      *
+     * @param array $row
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function model(array $row)
@@ -33,8 +34,7 @@ class BankStatementsImport implements ToModel, WithHeadingRow
         ];
 
         $validator = Validator::make($row, $rules);
-        
-        // Keep logs to improve this function in the future
+
         // If validation fails, log the errors and return null to skip the row
         if ($validator->fails()) {
             Log::error('Validation failed: ', $validator->errors()->toArray());
@@ -45,7 +45,7 @@ class BankStatementsImport implements ToModel, WithHeadingRow
         $transaction = new Transaction([
             'id' => (int) $row['id'],
             'date' => $row['date'],
-            'amount' => (float) $row['amount'], // Ensure amount is a float
+            'amount' => (float) $row['amount'],
             'category_id' => (int) $row['category_id'],
             'user_id' => (int) $row['user_id'],
             'description' => $row['description'],

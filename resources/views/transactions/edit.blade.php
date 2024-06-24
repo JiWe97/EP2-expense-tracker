@@ -7,11 +7,7 @@
 
     @include('layouts.styles')
 
-
-@section('content')
-  @livewire('transaction-form', ['transaction' => $transaction])
-@endsection
-
+    @section('content')
+        @livewire('transaction-form', ['transaction' => $transaction])
+    @endsection
 </x-app-layout>
-
-

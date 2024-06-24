@@ -17,30 +17,27 @@
         </div>
         <div class="category-info m-2">
             <span class="category-name">{{ $category->name }}</span>
-                <span class="income-expense-tag {{ $category->is_income ? 'income-tag' : 'expense-tag' }}">
-                    {{ $category->is_income ? 'Income' : 'Expense' }}
-                </span>
+            <span class="income-expense-tag {{ $category->is_income ? 'income-tag' : 'expense-tag' }}">
+                {{ $category->is_income ? 'Income' : 'Expense' }}
+            </span>
         </div>
     </div>
 
-    
-
     <div class="action-buttons">
-    <a href="{{ route('categories.edit', ['category' => $category->id]) }}" class="edit-custom-btn">Edit</a>
+        <a href="{{ route('categories.edit', ['category' => $category->id]) }}" class="edit-custom-btn">Edit</a>
 
-    <form action="{{ route('categories.toggle-show', ['category' => $category->id]) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <!-- Dynamically set the icon based on the category's visibility -->
-        <button type="submit" class="toggle-visibility-btn hide-custom-btn">
-            @if($category->show)
-                <i class="fa fa-eye"></i> Visible
-            @else
-                <i class="fa fa-eye-slash"></i> Hidden
-            @endif
-        </button>
-    </form>
-</div>
+        <form action="{{ route('categories.toggle-show', ['category' => $category->id]) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <button type="submit" class="toggle-visibility-btn hide-custom-btn">
+                @if ($category->show)
+                    <i class="fa fa-eye"></i> Visible
+                @else
+                    <i class="fa fa-eye-slash"></i> Hidden
+                @endif
+            </button>
+        </form>
+    </div>
 
     <div class="delete-form delete-custom-btn">
         @livewire('deletecategory', ['category' => $category])

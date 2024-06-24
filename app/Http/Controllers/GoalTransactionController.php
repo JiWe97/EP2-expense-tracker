@@ -53,7 +53,7 @@ class GoalTransactionController extends Controller
     public function edit($id)
     {
         $goal_transaction = GoalTransaction::findOrFail($id);
-        $goal = $goal_transaction->goal; // Ensure the relationship is defined in GoalTransaction model
+        $goal = $goal_transaction->goal;
 
         if (!$goal) {
             abort(404, 'Goal not found.');

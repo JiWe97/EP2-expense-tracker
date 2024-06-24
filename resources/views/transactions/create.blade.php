@@ -7,12 +7,7 @@
 
     @include('layouts.styles')
 
-
-
-@section('content')
-  @livewire('transaction-form')
-@endsection
-
-
+    @section('content')
+        @livewire('transaction-form')
+    @endsection
 </x-app-layout>
-

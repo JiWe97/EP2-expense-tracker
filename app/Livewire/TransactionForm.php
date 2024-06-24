@@ -26,6 +26,12 @@ class TransactionForm extends Component
     public $payoff_id;
     public $type;
 
+    /**
+     * Initialize the component with the given transaction data.
+     *
+     * @param \App\Models\Transaction|null $transaction
+     * @return void
+     */
     public function mount($transaction = null)
     {
         if ($transaction) {
@@ -41,11 +47,21 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Update the category_id when the income status changes.
+     *
+     * @return void
+     */
     public function updatedIsIncome()
     {
-        $this->category_id = null; // Reset category when type changes
+        $this->category_id = null;
     }
 
+    /**
+     * Validate and save or update the transaction.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function saveOrUpdate()
     {
         $this->validate([
@@ -84,31 +100,49 @@ class TransactionForm extends Component
         return redirect()->route('dashboard')->with('success', 'Transaction saved successfully.');
     }
 
+    /**
+     * Create a new transaction and update related balances.
+     *
+     * @param array $data
+     * @param float $amount
+     * @return void
+     */
     private function createTransaction($data, $amount)
     {
         $transaction = Transaction::create($data);
-        $this->transaction = $transaction; // Make sure $this->transaction is set
+        $this->transaction = $transaction;
         $this->updateBankingRecordBalance($data['banking_record_id'], $amount);
         $this->updatePayoffBalance($data['payoff_id'], $amount, $data['type']);
     }
 
+    /**
+     * Update an existing transaction and related balances.
+     *
+     * @param array $data
+     * @param float $newAmount
+     * @return void
+     */
     private function updateTransaction($data, $newAmount)
     {
         $transaction = Transaction::find($this->transaction->id);
         $oldAmount = $transaction->amount;
 
-        // Reverse the effect of the old amount
         $this->updateBankingRecordBalance($transaction->banking_record_id, -$oldAmount);
         $this->updatePayoffBalance($transaction->payoff_id, -$oldAmount, $transaction->type);
 
-        // Update the transaction
         $transaction->update($data);
 
-        // Apply the new amount
         $this->updateBankingRecordBalance($data['banking_record_id'], $newAmount);
         $this->updatePayoffBalance($data['payoff_id'], $newAmount, $data['type']);
     }
 
+    /**
+     * Update the balance of the specified banking record.
+     *
+     * @param int $bankingRecordId
+     * @param float $amount
+     * @return void
+     */
     private function updateBankingRecordBalance($bankingRecordId, $amount)
     {
         $bankingRecord = BankingRecord::find($bankingRecordId);
@@ -118,12 +152,19 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Update the balance of the specified payoff.
+     *
+     * @param int|null $payoffId
+     * @param float $amount
+     * @param string $type
+     * @return void
+     */
     private function updatePayoffBalance($payoffId, $amount, $type)
     {
         if ($payoffId) {
             $payoff = Payoff::find($payoffId);
             if ($payoff) {
-                // Switch positive and negative amounts for payoff balance
                 if ($type === 'income') {
                     $payoff->balance -= abs($amount);
                 } else {
@@ -134,27 +175,37 @@ class TransactionForm extends Component
         }
     }
 
+    /**
+     * Save the uploaded attachments for the transaction.
+     *
+     * @return void
+     */
     private function saveAttachments()
     {
-        if ($this->transaction) { // Check if transaction is not null
+        if ($this->transaction) {
             foreach ($this->attachments as $file) {
                 $path = $file->store('attachments', 'public');
                 Attachment::create([
                     'picture' => $path,
-                    'transaction_id' => $this->transaction->id
+                    'transaction_id' => $this->transaction->id,
                 ]);
             }
         }
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $categories = Category::where('user_id', Auth::id())
             ->where('is_income', $this->is_income)
-            ->where('show', true) // Ensure only categories with show=true are selectable
+            ->where('show', true)
             ->get();
         $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
-        $payoffs = Payoff::all(); // Fetch all payoffs
+        $payoffs = Payoff::all();
 
         return view('livewire.transaction-form', compact('categories', 'bankingRecords', 'payoffs'));
     }

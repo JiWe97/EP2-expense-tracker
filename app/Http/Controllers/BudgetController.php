@@ -13,10 +13,14 @@ use App\Http\Requests\BudgetRequest;
 
 class BudgetController extends Controller
 {
+    /**
+     * Display a listing of the budgets.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $userId = Auth::id();
-
         $userBankingRecordIds = BankingRecord::where('user_id', $userId)->pluck('id');
 
         $budgets = Budget::with(['bankingRecord', 'categories'])
@@ -25,9 +29,7 @@ class BudgetController extends Controller
             })
             ->get();
 
-        // Calculate the balance for each budget
         foreach ($budgets as $budget) {
-            // Filter transactions for the current month and year, and sum their absolute amounts
             $transactions = Transaction::whereIn('category_id', $budget->categories->pluck('id'))
                 ->whereMonth('date', Carbon::now()->month)
                 ->whereYear('date', Carbon::now()->year)
@@ -43,14 +45,25 @@ class BudgetController extends Controller
         return view('budgets.index', compact('budgets'));
     }
 
+    /**
+     * Show the form for creating a new budget.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $categories = Category::visibleToUser()->get();
-        $banking_records = BankingRecord::where('user_id', Auth::id())->get();
+        $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
 
-        return view('budgets.form', compact('categories', 'banking_records'));
+        return view('budgets.form', compact('categories', 'bankingRecords'));
     }
 
+    /**
+     * Store a newly created budget in storage.
+     *
+     * @param \App\Http\Requests\BudgetRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(BudgetRequest $request)
     {
         Budget::validateAndCreate($request);
@@ -59,10 +72,16 @@ class BudgetController extends Controller
             ->with('success', 'Budget created successfully');
     }
 
+    /**
+     * Display the specified budget.
+     *
+     * @param int $budgetId
+     * @return \Illuminate\View\View
+     */
     public function show($budgetId)
     {
         $budget = Budget::with('categories')->findOrFail($budgetId);
-        $categoryIds = $budget->categories->pluck('categories.id')->toArray(); // Specify table name
+        $categoryIds = $budget->categories->pluck('categories.id')->toArray();
 
         $transactions = Transaction::where('type', 'expense')
             ->whereIn('category_id', $categoryIds)
@@ -72,20 +91,33 @@ class BudgetController extends Controller
                 return $transaction;
             });
 
-        $banking_records = BankingRecord::all();
+        $bankingRecords = BankingRecord::all();
 
-        return view('budgets.show', compact('budget', 'transactions', 'banking_records'));
+        return view('budgets.show', compact('budget', 'transactions', 'bankingRecords'));
     }
 
+    /**
+     * Show the form for editing the specified budget.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $budget = Budget::findOrFail($id);
         $categories = Category::visibleToUser()->get();
-        $banking_records = BankingRecord::where('user_id', Auth::id())->get();
+        $bankingRecords = BankingRecord::where('user_id', Auth::id())->get();
 
-        return view('budgets.form', compact('budget', 'categories', 'banking_records'));
+        return view('budgets.form', compact('budget', 'categories', 'bankingRecords'));
     }
 
+    /**
+     * Update the specified budget in storage.
+     *
+     * @param \App\Http\Requests\BudgetRequest $request
+     * @param \App\Models\Budget $budget
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(BudgetRequest $request, Budget $budget)
     {
         $budget->updateAndSyncCategories($request);
@@ -94,6 +126,12 @@ class BudgetController extends Controller
             ->with('success', 'Budget updated successfully');
     }
 
+    /**
+     * Remove the specified budget from storage.
+     *
+     * @param \App\Models\Budget $budget
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Budget $budget)
     {
         $budget->categories()->detach();
@@ -103,49 +141,47 @@ class BudgetController extends Controller
             ->with('success', 'Budget deleted successfully');
     }
 
+    /**
+     * Display the transaction history for the specified budget.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $budgetId
+     * @return \Illuminate\View\View
+     */
     public function history(Request $request, $budgetId)
     {
-        // Find the budget and get associated category IDs
         $budget = Budget::findOrFail($budgetId);
-        $categoryIds = $budget->categories()->pluck('categories.id')->toArray(); // Specify table name
+        $categoryIds = $budget->categories()->pluck('categories.id')->toArray();
 
-        // Build the query to aggregate transactions by year and month
         $query = Transaction::selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(ABS(amount)) as total_amount')
             ->whereIn('category_id', $categoryIds)
             ->groupByRaw('YEAR(date), MONTH(date)');
 
-        // Apply year filter if provided
         if ($year = $request->input('year')) {
             $query->whereYear('date', $year);
         }
 
-        // Apply month filter if provided
         if ($monthName = $request->input('month')) {
             $monthNumber = Carbon::parse($monthName)->month;
             $query->whereMonth('date', $monthNumber);
         }
 
-        // Execute the query and map the results
         $transactions = $query->get()->map(function ($transaction) use ($budget) {
             $transaction->remaining_amount = $budget->amount - $transaction->total_amount;
-            $transaction->month_name = \Carbon\Carbon::create()->month($transaction->month)->format('F');
+            $transaction->month_name = Carbon::create()->month($transaction->month)->format('F');
             return $transaction;
         });
 
-        // Sort transactions by amount spent if requested
         if ($sortSpent = $request->input('sort_spent')) {
             $transactions = $sortSpent === 'highest' ? $transactions->sortByDesc('total_amount') : $transactions->sortBy('total_amount');
         }
 
-        // Sort transactions by amount remaining if requested
         if ($sortRemaining = $request->input('sort_remaining')) {
             $transactions = $sortRemaining === 'highest' ? $transactions->sortByDesc('remaining_amount') : $transactions->sortBy('remaining_amount');
         }
 
-        // Debugging: Log the transactions to check if they are being retrieved correctly
         \Log::info('Transactions retrieved for history:', $transactions->toArray());
 
-        // Render the view with the budget and transactions
         return view('budgets.history', compact('budget', 'transactions', 'year', 'monthName', 'sortSpent', 'sortRemaining'));
     }
 }

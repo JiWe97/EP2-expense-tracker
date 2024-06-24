@@ -90,7 +90,7 @@
                         Add transaction
                     @endisset
                 </button>
-                <a href="{{ route('dashboard') }}" class="transaction-custom-delete-btn">Cancel</a>
+                <a href="{{ route('dashboard') }}" class="back-link">Cancel</a>
             </div>
 
             @if ($errors->any())

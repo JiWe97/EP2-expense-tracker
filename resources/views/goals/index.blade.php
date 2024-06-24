@@ -1,17 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Goals') }}
+        </h2>
+    </x-slot>
 
-@push('styles')
     @include('layouts.styles')
-@endpush
 
-@section('title', 'The list of goals')
-
-@section('styles')
-    @include('layouts.styles')
-@endsection
-
-@section('content')
-    
+    @section('title', 'The list of goals')
         <nav class="mb-4">
             <a href="{{ route('goals.create') }}" class="add-goal-link">Add Goal</a>
         </nav>
@@ -33,4 +29,5 @@
             @endforeach
         </div>
     </div>
-@endsection
+</x-app-layout>
+

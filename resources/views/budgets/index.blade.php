@@ -1,14 +1,16 @@
-@extends('layouts.custom')
 
-@section('title', 'The list of budgets')
 
-@section('styles')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Budgets') }}
+        </h2>
+    </x-slot>
+
+    @section('title', 'The list of budgets')
     @include('layouts.styles')
-@endsection
 
-@section('content')
-    
-        <nav class="mb-4">
+    <nav class="mb-4">
             <a href="{{ route('budgets.create') }}" class="add-budget-link-custom">Add Budget</a>
         </nav>
 <div class="budget-container-wrapper-custom">
@@ -60,4 +62,6 @@
             @endforeach
         </div>
     </div>
-@endsection
+
+</x-app-layout>
+

@@ -1,10 +1,11 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Goals') }}
+        </h2>
+    </x-slot>
 
-@section('styles')
     @include('layouts.styles')
-@endsection
-
-@section('content')
     <div class="goal-detail-container">
        <div class="goal-detail-header">
             <a href="{{ route('goals.index') }}" class="back-link">Back</a>
@@ -37,4 +38,5 @@
             </tbody>
         </table>
     </div>
-@endsection
+
+</x-app-layout>

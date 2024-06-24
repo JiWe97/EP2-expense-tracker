@@ -108,7 +108,7 @@
             <form action="{{ route('transactions.destroy', ['transaction' => $transaction->id]) }}" method="POST" class="mt-4">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="custom-btn custom-btn-danger">Delete</button>
+                <button type="submit" class="delete-custom-btn">Delete</button>
             </form>
         @endisset
     </div>

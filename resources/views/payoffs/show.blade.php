@@ -1,12 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Loans') }}
+        </h2>
+    </x-slot>
 
-@section('title', $payoff->name)
-
-@section('styles')
     @include('layouts.styles')
-@endsection
+    @section('title', $payoff->name)
 
-@section('content')
 
 
 <div class="mb-4">
@@ -64,4 +65,5 @@
     </form>
     </div>
 </div>
-@endsection
+
+</x-app-layout>

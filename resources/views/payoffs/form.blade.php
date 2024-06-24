@@ -1,12 +1,12 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Loans') }}
+        </h2>
+    </x-slot>
 
-@section('title', isset($payoff) ? 'Edit Payoff' : 'Create Payoff')
-
-@section('styles')
     @include('layouts.styles')
-@endsection
-
-@section('content')
+    @section('title', isset($payoff) ? 'Edit Payoff' : 'Create Payoff')
 <div class="container form-container-custom">
     <h1 class="text-center">{{ isset($payoff) ? 'Edit Payoff' : 'Create Payoff' }}</h1>
     <form method="POST" action="{{ isset($payoff) ? route('payoffs.update', $payoff) : route('payoffs.store') }}">
@@ -44,4 +44,6 @@
         </div>
     </form>
 </div>
-@endsection
+
+</x-app-layout>
+

@@ -1,12 +1,13 @@
-@extends('layouts.custom')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Categories') }}
+        </h2>
+    </x-slot>
 
-@section('title', isset($category) ? 'Edit Category' : 'Add Category')
-
-@section('styles')
     @include('layouts.styles')
-@endsection
+    @section('title', isset($category) ? 'Edit Category' : 'Add Category')
 
-@section('content')
     <div class="flex justify-center"> 
         <div class="category-form-container p-6 w-full max-w-lg"> 
             <a href="{{ route('categories.index') }}" class="back-link mb-4">Back</a>
@@ -65,4 +66,5 @@
             </form>
         </div>
     </div>
-@endsection
+
+</x-app-layout>

@@ -26,7 +26,7 @@
         </p>
     </header>
 
-    <form method="POST" action="{{ route('store.banking.record') }}" class="mt-6 space-y-6">
+    <form method="POST" action="{{ route('store.banking.record') }}" class="mt-6 space-y-6 max-w-xl">
         @csrf
 
     <!-- Name -->

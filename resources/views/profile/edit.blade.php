@@ -20,7 +20,7 @@
             </div>
 
             <div class="p-4 sm:p-8 bg-white light:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+                <div class="max-w-100">
                     @include('profile.partials.add-bank-records')
                 </div>
             </div>

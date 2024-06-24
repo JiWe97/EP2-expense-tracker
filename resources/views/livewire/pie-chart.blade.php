@@ -1,4 +1,4 @@
-<div x-data="pieChartComponent({ categoryData: {{ Js::from($categoryData) }} })" x-init="initChart()" @chartUpdated.window="updateChart">
+<div x-data="pieChartComponent({ categoryData: @entangle('categoryData') })" x-init="initChart()" @chart-updated.window="updateChart">
     <canvas x-ref="pieChartCanvas" style="width: 400px; height: 300px;"></canvas>
 </div>
 

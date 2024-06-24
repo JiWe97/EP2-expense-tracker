@@ -1,4 +1,4 @@
-<div x-data="lineChartComponent({ labels: {{ Js::from($labels) }}, income: {{ Js::from($income) }}, expense: {{ Js::from($expense) }}, balance: {{ Js::from($balance) }} })" x-init="initChart()" @chartUpdated.window="updateChart">
+<div x-data="lineChartComponent({ labels: @entangle('labels'), income: @entangle('income'), expense: @entangle('expense'), balance: @entangle('balance') })" x-init="initChart()" @chart-updated.window="updateChart">
     <canvas x-ref="lineChartCanvas" style="width: 400px; height: 300px;"></canvas>
 </div>
 

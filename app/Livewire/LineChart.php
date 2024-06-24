@@ -11,9 +11,9 @@ class LineChart extends Component
     public $expense;
     public $balance;
 
-    protected $listeners = ['refresh-chart' => 'updateChartData'];
+    protected $listeners = ['updateChartData'];
 
-    public function mount($labels, $income, $expense, $balance)
+    public function mount($labels = [], $income = [], $expense = [], $balance = [])
     {
         $this->labels = $labels;
         $this->income = $income;
@@ -27,7 +27,7 @@ class LineChart extends Component
         $this->income = $data['income'];
         $this->expense = $data['expense'];
         $this->balance = $data['balance'];
-        $this->dispatchSelf('chartUpdated');
+        $this->dispatch('chartUpdated');
     }
 
     public function render()

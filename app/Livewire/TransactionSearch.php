@@ -21,7 +21,6 @@ class TransactionSearch extends Component
     public $type;
     public $description;
     public $amount;
-    public $banking_record;
     public $payoff;
     public $selectedBankIds = [];
     public $totalBalance;
@@ -35,30 +34,22 @@ class TransactionSearch extends Component
         'type' => ['except' => ''],
         'description' => ['except' => ''],
         'amount' => ['except' => ''],
-        'banking_record' => ['except' => ''],
         'payoff' => ['except' => ''],
         'selectedBankIds' => ['except' => []]
     ];
 
     public function mount()
     {
-        /* $this->start_date = Carbon::now()->startOfMonth()->toDateString();
-        $this->end_date = Carbon::now()->toDateString(); */
         $this->selectedBankIds = [];
-        Log::info('Mounting component with initial selectedBankIds', ['selectedBankIds' => $this->selectedBankIds]);
     }
 
     public function toggleBankSelection($bankId)
     {
-        Log::info('Received toggleBankSelection event', ['bankId' => $bankId]);
-
         if (in_array($bankId, $this->selectedBankIds)) {
             $this->selectedBankIds = array_diff($this->selectedBankIds, [$bankId]);
         } else {
             $this->selectedBankIds[] = $bankId;
         }
-
-        Log::info('Toggled bank selection', ['bankId' => $bankId, 'selectedBankIds' => $this->selectedBankIds]);
 
         $this->resetPage();
         $this->search(); // Call search method to update charts
@@ -68,7 +59,6 @@ class TransactionSearch extends Component
     {
         $this->resetPage();
 
-        // Fetch transactions based on filters
         $transactions = Transaction::where('user_id', Auth::id())
             ->when($this->start_date, function($query) {
                 $query->where('date', '>=', $this->start_date);
@@ -79,7 +69,26 @@ class TransactionSearch extends Component
             ->when(!empty($this->selectedBankIds), function($query) {
                 $query->whereIn('banking_record_id', $this->selectedBankIds);
             })
+            ->when($this->category, function($query) {
+                $query->where('category_id', $this->category);
+            })
+            ->when($this->type, function($query) {
+                $query->where('type', $this->type);
+            })
+            ->when($this->description, function($query) {
+                $query->where('description', 'like', '%' . $this->description . '%');
+            })
+            ->when($this->amount, function($query) {
+                $query->where('amount', $this->amount);
+            })
+            ->when($this->payoff, function($query) {
+                $query->whereHas('payoff', function($q) {
+                    $q->where('name', 'like', '%' . $this->payoff . '%');
+                });
+            })
             ->get();
+
+        Log::info('Transactions found', ['transactions' => $transactions]);
 
         // Prepare chart data
         $labels = [];
@@ -137,7 +146,6 @@ class TransactionSearch extends Component
             'type', 
             'description', 
             'amount', 
-            'banking_record', 
             'payoff', 
             'selectedBankIds'
         ]);
@@ -157,9 +165,7 @@ class TransactionSearch extends Component
                 $query->where('date', '<=', $this->end_date);
             })
             ->when($this->category, function($query) {
-                $query->whereHas('category', function($q) {
-                    $q->where('name', 'like', '%' . $this->category . '%');
-                });
+                $query->where('category_id', $this->category);
             })
             ->when($this->type, function($query) {
                 $query->where('type', $this->type);
@@ -169,6 +175,11 @@ class TransactionSearch extends Component
             })
             ->when($this->amount, function($query) {
                 $query->where('amount', $this->amount);
+            })
+            ->when($this->payoff, function($query) {
+                $query->whereHas('payoff', function($q) {
+                    $q->where('name', 'like', '%' . $this->payoff . '%');
+                });
             })
             ->when(!empty($this->selectedBankIds), function($query) {
                 $query->whereIn('banking_record_id', $this->selectedBankIds);

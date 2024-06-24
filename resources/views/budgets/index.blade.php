@@ -7,17 +7,18 @@
 @endsection
 
 @section('content')
-    
-        <nav class="mb-4">
-            <a href="{{ route('budgets.create') }}" class="add-budget-link-custom">Add Budget</a>
-        </nav>
-<div class="budget-container-wrapper-custom">
+
+    <nav class="mb-4">
+        <a href="{{ route('budgets.create') }}" class="add-budget-link-custom">Add Budget</a>
+    </nav>
+
+    <div class="budget-container-wrapper-custom">
         @if ($budgets->isEmpty())
             <div class="flex justify-center items-center">
                 <p class="font-bold">No Budgets</p>
             </div>
         @endif
-        
+
         <div class="budget-container-custom">
             @foreach ($budgets as $budget)
                 <div class="budget-item-custom">
@@ -52,6 +53,9 @@
                                         <div class="progress-text-custom">{{ number_format($progress) }}%</div>
                                     @endif
                                 </div>
+                                @if ($progress == 0)
+                                    <div class="progress-text-custom">{{ number_format($progress) }}%</div>
+                                @endif
                             </div>
                             <p class="remaining-custom">Remaining: €{{ number_format($remaining, 2) }} / €{{ number_format($budget->amount, 2) }}</p>
                         </div>

@@ -14,11 +14,11 @@ class TransactionFactory extends Factory
         return [
             'date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'amount' => $this->faker->randomFloat(2, 10, 1000),
-            'category_id' => null,  // This will be set in the seeder
+            'category_id' => null,
             'user_id' => 1,
             'description' => $this->faker->sentence,
             'banking_record_id' => 1,
-            'type' => null,  // This will be set in the seeder
+            'type' => null, 
             'valuta' => 'EUR',
             'payoff_id' => null,
         ];

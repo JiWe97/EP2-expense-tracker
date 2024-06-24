@@ -46,7 +46,7 @@ class BudgetController extends Controller
     public function create()
     {
         $categories = Category::visibleToUser()->get();
-        $banking_records = BankingRecord::all();
+        $banking_records = BankingRecord::where('user_id', Auth::id())->get();
 
         return view('budgets.form', compact('categories', 'banking_records'));
     }
@@ -81,7 +81,7 @@ class BudgetController extends Controller
     {
         $budget = Budget::findOrFail($id);
         $categories = Category::visibleToUser()->get();
-        $banking_records = BankingRecord::all();
+        $banking_records = BankingRecord::where('user_id', Auth::id())->get();
 
         return view('budgets.form', compact('budget', 'categories', 'banking_records'));
     }

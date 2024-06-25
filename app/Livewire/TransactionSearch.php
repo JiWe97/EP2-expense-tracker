@@ -204,7 +204,7 @@ class TransactionSearch extends Component
             ->paginate(10);
 
         $bankingRecords = BankingRecord::where('user_id', $userId)->get();
-        $categories = Category::where('user_id', $userId);
+        $categories = Category::all();
 
         if (!empty($this->selectedBankIds)) {
             $this->totalBalance = $bankingRecords->whereIn('id', $this->selectedBankIds)->sum('balance');
